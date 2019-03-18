@@ -57,11 +57,13 @@ namespace client
 				short count2 = BitConverter.ToInt16(countRead, 0);
 				count2 = IPAddress.NetworkToHostOrder(count2);
 				byte[] readBytes = new byte[count2];
-				string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
-				listUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+				
 
 				while (count != count2)
 					count += nStream.Read(readBytes, count, readBytes.Count() - count);
+
+				string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+				listUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
 			}
 		}
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)// ПРОДУМАТЬ,ШОБЕ МОЖНО БЫЛО ЗАЖИМАТЬ РАЗНЫЕ КЛАВИШИ
