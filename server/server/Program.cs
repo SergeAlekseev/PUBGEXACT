@@ -32,15 +32,16 @@ namespace server
 			{
 				TcpClient tc = host.AcceptTcpClient();
 				number++;
+				lock (listUsers)
+				{
+					listUsers.Add(new UserInfo(new Point(300, 300)));
+				}
 				Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 				thread.Start(tc);
 				Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 				thread2.Start(tc);
         
-				lock (listUsers)
-				{
-					listUsers.Add(new UserInfo(new Point(300, 300)));
-				}
+				
 				
 			}
 
@@ -54,6 +55,7 @@ namespace server
 			int count = 0;
 			byte[] countRead = new byte[2];
 			bool workingThread = true;
+			
 			while (workingThread)
 			{
 				try
@@ -84,8 +86,11 @@ namespace server
 				}
 				catch (System.IO.IOException err)
 				{
-					listUsers.RemoveAt(num);
-					listUsers.Insert(num,null); // <------------------------ Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+					lock (listUsers)
+					{
+						listUsers.RemoveAt(num);
+						listUsers.Insert(num,null); // <------------------------ Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+					}
 					Console.WriteLine(err.Message);
 					workingThread = false;
 				}
@@ -103,10 +108,10 @@ namespace server
 				try
 				{
 					string serialized="";
-				  lock (listUsers)
-				  {
-				  	serialized = JsonConvert.SerializeObject(listUsers);
-			  	}
+					lock (listUsers)
+					{
+				  		serialized = JsonConvert.SerializeObject(listUsers);
+			  		}
 					byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 					byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
 					nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать

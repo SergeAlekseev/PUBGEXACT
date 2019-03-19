@@ -96,7 +96,8 @@ namespace client
 			{
 				pictureBox.Clear(DefaultBackColor);
 				foreach (UserInfo user in listUsers)
-				{
+				{   
+					if(user!=null)
 					pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 1, user.userLocation.Y - 1, 4, 4);
 				}
 			}
