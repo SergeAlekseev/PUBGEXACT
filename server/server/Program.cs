@@ -11,12 +11,14 @@ using client;
 using System.Threading;
 using Newtonsoft.Json;
 using Action = client.Action;
+using System.Collections.Concurrent;
 
 namespace server
 {
 	class Program
 	{
 		static public List<UserInfo> listUsers;
+		
 
 		static public int number;
 
@@ -35,8 +37,10 @@ namespace server
 				thread.Start(tc);
 				Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 				thread2.Start(tc);
-				listUsers.Add(new UserInfo(new Point(300, 300)));
-				
+				lock (listUsers)
+				{
+					listUsers.Add(new UserInfo(new Point(300, 300)));
+				}
 				
 			}
 
@@ -84,12 +88,17 @@ namespace server
 			NetworkStream nStream = tcp.GetStream();
 			while (true)
 			{
-				string serialized = JsonConvert.SerializeObject(listUsers);
+				string serialized="";
+				lock (listUsers)
+				{
+					serialized = JsonConvert.SerializeObject(listUsers);
+				}
+				
 				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 				byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
 				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
 				nStream.Write(massByts, 0, massByts.Count());
-				//Thread.Sleep(60);
+				Thread.Sleep(20);
 			}
 		}
 
