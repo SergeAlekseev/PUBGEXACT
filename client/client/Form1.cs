@@ -17,20 +17,19 @@ namespace client
 	{
 		List<UserInfo> listUsers;
 		Action actionThishUser;
-		TcpClient client = new TcpClient("25.46.244.0", 1337);
+		TcpClient client;// 25.46.244.0
 		NetworkStream nStream;
 		Thread threadReading;
 		Graphics pictureBox;
+		bool threadStart = false;
 		public Client()
 		{
 			InitializeComponent();
 			timer1.Interval = 1;
 			timer1.Start();
 			pictureBox = PlayingField.CreateGraphics();
-			nStream = client.GetStream();
 
-			threadReading = new Thread(Reading);
-			threadReading.Start();	
+			Connect();//Соединение с сервером
 		}
 
 		private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
@@ -47,12 +46,13 @@ namespace client
 		{
 			int count = 0;
 			byte[] countRead = new byte[2];
-			while(true)//Поставить условие, если флаг дисконет равен истине
+			threadStart = true;
+			while (threadStart)//Поставить условие, если флаг дисконет равен истине
 			{
-				count = 0;
+				count = 0;		
 				while (count != 2)
 					count += nStream.Read(countRead, count, countRead.Count() - count);
-
+					
 				count = 0;
 
 				short count2 = BitConverter.ToInt16(countRead, 0);
@@ -94,16 +94,38 @@ namespace client
 		{
 			if (listUsers != null)
 			{
+				pictureBox.Clear(DefaultBackColor);
 				foreach (UserInfo user in listUsers)
 				{
-					pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 1, user.userLocation.Y - 1, 2, 2);
+					pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 1, user.userLocation.Y - 1, 4, 4);
 				}
 			}
 		}
 
+		public void Disconnect()
+		{
+			threadStart = false;
+			threadReading.Join();
+			nStream.Close();
+			client.Close();
+		}
+
+		public void Connect()
+		{			
+			client = new TcpClient("25.53.91.50", 1337);
+			nStream = client.GetStream();
+
+			threadReading = new Thread(Reading);
+			threadReading.Start();
+		}
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			Invalidate();
+		}
+
+		private void Client_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Disconnect();
 		}
 	}
 }

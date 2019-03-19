@@ -57,6 +57,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Client";
 			this.Text = "Form1";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
 			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
