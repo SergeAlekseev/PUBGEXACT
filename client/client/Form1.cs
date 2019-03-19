@@ -112,7 +112,7 @@ namespace client
 
 		public void Connect()
 		{			
-			client = new TcpClient("25.53.91.50", 1337);
+			client = new TcpClient("25.46.244.0", 1337);
 			nStream = client.GetStream();
 
 			threadReading = new Thread(Reading);
