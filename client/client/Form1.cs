@@ -24,7 +24,8 @@ namespace client
 		public Client()
 		{
 			InitializeComponent();
-			timer1.Interval = 30;
+			timer1.Interval = 1;
+			timer1.Start();
 			pictureBox = PlayingField.CreateGraphics();
 			nStream = client.GetStream();
 
@@ -55,7 +56,7 @@ namespace client
 				count = 0;
 
 				short count2 = BitConverter.ToInt16(countRead, 0);
-				count2 = IPAddress.NetworkToHostOrder(count2);
+				
 				byte[] readBytes = new byte[count2];
 				
 
@@ -70,29 +71,33 @@ namespace client
 		{
 			switch (e.KeyChar)
 			{
-				case 'W': actionThishUser.act = Action.action.moveUp; break;
-				case 'S': actionThishUser.act = Action.action.moveDown; break;
-				case 'D': actionThishUser.act = Action.action.moveRight; break;
-				case 'A': actionThishUser.act = Action.action.noveLeft; break;
-				default:
-					{
-
-						string serialized = JsonConvert.SerializeObject(actionThishUser);
-						byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-						byte[] countRead = BitConverter.GetBytes((short)massByts.Count());	
-
-						nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
-						nStream.Write(massByts,0, massByts.Count());
-					}
-					break;
+				case 'W': case 'w': case 'Ц': case 'ц': actionThishUser = new Action(Action.action.moveUp); PressKey(actionThishUser); break;
+				case 'S': case 's': case 'Ы': case 'ы': actionThishUser = new Action(Action.action.moveDown); PressKey(actionThishUser); break;
+				case 'D': case 'd': case 'В': case 'в': actionThishUser = new Action(Action.action.moveRight); PressKey(actionThishUser); break;
+				case 'A': case 'a': case 'Ф': case 'ф': actionThishUser = new Action(Action.action.noveLeft); PressKey(actionThishUser); break;
+				
 			}
 		}
 
-		private void Client_Paint(object sender, PaintEventArgs e)
+		private void PressKey(Action actionThishUser)
 		{
-			foreach (UserInfo user in listUsers)
+			string serialized = JsonConvert.SerializeObject(actionThishUser);
+			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+
+			nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+			nStream.Write(massByts, 0, massByts.Count());
+		}
+
+		private void Client_Paint(object sender, PaintEventArgs e)
+
+		{
+			if (listUsers != null)
 			{
-				pictureBox.FillEllipse(Brushes.Red, user.userLocation.X-1, user.userLocation.Y-1, 2,2);
+				foreach (UserInfo user in listUsers)
+				{
+					pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 1, user.userLocation.Y - 1, 2, 2);
+				}
 			}
 		}
 

@@ -22,26 +22,30 @@ namespace server
 
 		static void Main(string[] args)
 		{
-			number = 0;
-			TcpListener host = new TcpListener(IPAddress.Any, 8002);
+			number = -1;
+			TcpListener host = new TcpListener(IPAddress.Any, 1337);
 			host.Start();
-			
+			listUsers = new List<UserInfo>();
 			
 			while (true)
 			{
 				TcpClient tc = host.AcceptTcpClient();
+				number++;
 				Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 				thread.Start(tc);
 				Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
-				thread.Start(tc);
+				thread2.Start(tc);
 				listUsers.Add(new UserInfo(new Point(300, 300)));
+				
+				
 			}
 
 		}
 
 		static void PlayUser(object tc)
 		{
-			NetworkStream nStream = (NetworkStream)tc;
+			TcpClient tcp = (TcpClient)tc;
+			NetworkStream nStream = tcp.GetStream();
 			int num = number;
 			int count = 0;
 			byte[] countRead = new byte[2];
@@ -54,7 +58,7 @@ namespace server
 				count = 0;
 
 				short count2 = BitConverter.ToInt16(countRead, 0);
-				count2 = IPAddress.NetworkToHostOrder(count2);
+				
 				byte[] readBytes = new byte[count2];
 
 
@@ -76,12 +80,17 @@ namespace server
 
 		static void InfoUsers(object tc)
 		{
-			NetworkStream nStream = (NetworkStream)tc;
-			string serialized = JsonConvert.SerializeObject(listUsers);
-			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
-			nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
-			nStream.Write(massByts, 0, massByts.Count());
+			TcpClient tcp = (TcpClient)tc;
+			NetworkStream nStream = tcp.GetStream();
+			while (true)
+			{
+				string serialized = JsonConvert.SerializeObject(listUsers);
+				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+				byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(massByts, 0, massByts.Count());
+				//Thread.Sleep(60);
+			}
 		}
 
 
