@@ -116,7 +116,7 @@ namespace server
 					byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
 					nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
 					nStream.Write(massByts, 0, massByts.Count()); 
-																  //Thread.Sleep(60);
+					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException err)
 				{

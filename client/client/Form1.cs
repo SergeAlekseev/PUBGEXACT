@@ -25,7 +25,7 @@ namespace client
 		public Client()
 		{
 			InitializeComponent();
-			timer1.Interval = 1;
+			timer1.Interval = 20;
 			timer1.Start();
 			pictureBox = PlayingField.CreateGraphics();
 
@@ -65,6 +65,7 @@ namespace client
 
 				string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
 				listUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+				
 			}
 		}
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)// ПРОДУМАТЬ,ШОБЕ МОЖНО БЫЛО ЗАЖИМАТЬ РАЗНЫЕ КЛАВИШИ
@@ -96,11 +97,12 @@ namespace client
 			{
 				pictureBox.Clear(DefaultBackColor);
 				foreach (UserInfo user in listUsers)
-				{   
-					if(user!=null)
-					pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 1, user.userLocation.Y - 1, 4, 4);
+				{
+					if (user != null)
+						pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 2, user.userLocation.Y - 2, 4, 4);
 				}
 			}
+			
 		}
 
 		public void Disconnect()
