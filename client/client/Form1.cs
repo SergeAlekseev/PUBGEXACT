@@ -21,6 +21,8 @@ namespace client
 		NetworkStream nStream;
 		Thread threadReading;
 		Graphics pictureBox;
+		BufferedGraphicsContext bufferedGraphicsContext;
+		BufferedGraphics bufferedGraphics;
 		bool threadStart = false;
 		public Client()
 		{
@@ -28,7 +30,9 @@ namespace client
 			timer1.Interval = 20;
 			timer1.Start();
 			pictureBox = PlayingField.CreateGraphics();
-
+			bufferedGraphicsContext = new BufferedGraphicsContext();
+			bufferedGraphics = bufferedGraphicsContext.Allocate(pictureBox, new Rectangle(0,0, PlayingField.Width, PlayingField.Height));
+			bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			Connect();//Соединение с сервером
 		}
 
@@ -95,12 +99,14 @@ namespace client
 		{
 			if (listUsers != null)
 			{
-				pictureBox.Clear(DefaultBackColor);
 				foreach (UserInfo user in listUsers)
 				{
 					if (user != null)
-						pictureBox.FillEllipse(Brushes.Red, user.userLocation.X - 2, user.userLocation.Y - 2, 4, 4);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 2, user.userLocation.Y - 2, 4, 4);
 				}
+
+				bufferedGraphics.Render(pictureBox);
+				bufferedGraphics.Graphics.Clear(DefaultBackColor);
 			}
 			
 		}
