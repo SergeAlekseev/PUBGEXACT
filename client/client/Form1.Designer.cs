@@ -31,7 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Client));
 			this.PlayingField = new System.Windows.Forms.PictureBox();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
+			this.timerPaint = new System.Windows.Forms.Timer(this.components);
+			this.timerPing = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -43,10 +44,15 @@
 			this.PlayingField.Size = new System.Drawing.Size(600, 600);
 			this.PlayingField.TabIndex = 0;
 			this.PlayingField.TabStop = false;
+			this.PlayingField.Click += new System.EventHandler(this.PlayingField_Click);
 			// 
-			// timer1
+			// timerPaint
 			// 
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			this.timerPaint.Tick += new System.EventHandler(this.timerPaint_Tick);
+			// 
+			// timerPing
+			// 
+			this.timerPing.Tick += new System.EventHandler(this.timerPing_Tick);
 			// 
 			// Client
 			// 
@@ -56,7 +62,7 @@
 			this.Controls.Add(this.PlayingField);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Client";
-			this.Text = "Form1";
+			this.Text = "Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
@@ -70,7 +76,8 @@
 		#endregion
 
 		private System.Windows.Forms.PictureBox PlayingField;
-		private System.Windows.Forms.Timer timer1;
+		private System.Windows.Forms.Timer timerPaint;
+		private System.Windows.Forms.Timer timerPing;
 	}
 }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -23,17 +24,21 @@ namespace client
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
 		BufferedGraphics bufferedGraphics;
+		Stopwatch PingWatch = new Stopwatch();
+		int Ping;
 		bool threadStart = false;
 		public Client()
 		{
 			InitializeComponent();
-			timer1.Interval = 20;
-			timer1.Start();
+			timerPaint.Interval = 20;
+			timerPaint.Start();
+			timerPing.Interval = 2000;
+			timerPing.Start();
 			pictureBox = PlayingField.CreateGraphics();
 			bufferedGraphicsContext = new BufferedGraphicsContext();
 			bufferedGraphics = bufferedGraphicsContext.Allocate(pictureBox, new Rectangle(0,0, PlayingField.Width, PlayingField.Height));
 			bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			Connect();//Соединение с сервером
+			
 		}
 
 		private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
@@ -50,7 +55,6 @@ namespace client
 		{
 			int count = 0;
 			byte[] countRead = new byte[2];
-			threadStart = true;
 			while (threadStart)//Поставить условие, если флаг дисконет равен истине
 			{
 				count = 0;		
@@ -60,20 +64,28 @@ namespace client
 				count = 0;
 
 				short count2 = BitConverter.ToInt16(countRead, 0);
-				
-				byte[] readBytes = new byte[count2];
-				
+				if (count2 != -1)
+				{
+					byte[] readBytes = new byte[count2];
 
-				while (count != count2)
-					count += nStream.Read(readBytes, count, readBytes.Count() - count);
 
-				string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
-				listUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+					while (count != count2)
+						count += nStream.Read(readBytes, count, readBytes.Count() - count);
+
+					string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+					listUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+				}
+				else //ping
+				{
+					PingWatch.Stop();
+					Ping = (int)PingWatch.ElapsedMilliseconds;
+				}
 				
 			}
 		}
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)// ПРОДУМАТЬ,ШОБЕ МОЖНО БЫЛО ЗАЖИМАТЬ РАЗНЫЕ КЛАВИШИ
 		{
+			if(threadStart)
 			switch (e.KeyChar)
 			{
 				case 'W': case 'w': case 'Ц': case 'ц': actionThishUser = new Action(Action.action.moveUp); PressKey(actionThishUser); break;
@@ -104,6 +116,7 @@ namespace client
 					if (user != null)
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 2, user.userLocation.Y - 2, 4, 4);
 				}
+				bufferedGraphics.Graphics.DrawString(Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
@@ -113,28 +126,76 @@ namespace client
 
 		public void Disconnect()
 		{
-			threadStart = false;
-			threadReading.Join();
-			nStream.Close();
-			client.Close();
+
+			if (threadStart)
+			{
+				
+				threadReading.Abort();
+				nStream.Close();
+				client.Close();
+				threadStart = false;
+			}
 		}
 
 		public void Connect()
-		{			
-			client = new TcpClient("25.53.91.50", 1337);
-			nStream = client.GetStream();
+		{
+			try
+			{
+				client = new TcpClient("25.46.244.0", 1337);
 
-			threadReading = new Thread(Reading);
-			threadReading.Start();
+				nStream = client.GetStream();
+
+				threadReading = new Thread(Reading);
+				threadReading.Start();
+				threadStart = true;
+			}
+			catch (System.Net.Sockets.SocketException err) //не удалось подключится по заданным параметрам
+			{
+				Application.Exit();
+				Close();
+				
+			}
+
 		}
-		private void timer1_Tick(object sender, EventArgs e)
+		private void timerPaint_Tick(object sender, EventArgs e)
 		{
 			Invalidate();
+		}
+
+		private void timerPing_Tick(object sender, EventArgs e)
+		{
+			if (threadStart)
+			{
+				if (PingWatch.ElapsedMilliseconds > 2000)
+				{
+					PingWatch.Stop();
+					OnFormClosing(null);
+				}
+				else
+				{
+					PingWatch = new Stopwatch();
+					byte[] Ping = BitConverter.GetBytes((short)-1);
+					nStream.Write(Ping, 0, 2);
+					PingWatch.Start();
+				}
+			}
+
 		}
 
 		private void Client_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			Disconnect();
 		}
+
+		private void PlayingField_Click(object sender, EventArgs e)
+		{
+			if (!threadStart)
+			{
+				Connect();
+				threadStart = true;
+			}//Соединение с сервером
+		}
+
+		
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace server
 {
-	partial class Form1
+	partial class Server
 	{
 		/// <summary>
 		/// Обязательная переменная конструктора.
@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Server));
 			this.start = new System.Windows.Forms.Button();
 			this.stop = new System.Windows.Forms.Button();
 			this.status = new System.Windows.Forms.Label();
@@ -62,7 +63,7 @@
 			this.status.TabIndex = 2;
 			this.status.Text = "Сервер отключен";
 			// 
-			// Form1
+			// Server
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,8 +71,10 @@
 			this.Controls.Add(this.status);
 			this.Controls.Add(this.stop);
 			this.Controls.Add(this.start);
-			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Name = "Server";
+			this.Text = "Server";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Server_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
