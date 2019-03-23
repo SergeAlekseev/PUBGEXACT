@@ -33,7 +33,7 @@ namespace server
 		}
 
 		public void Start(object tmpObject)
-		{
+		{ 
 			number = -1;
 			TcpListener host = new TcpListener(IPAddress.Any, 1337);
 			host.Start();
