@@ -33,18 +33,21 @@ namespace server
 		}
 
 		public void Start(object tmpObject)
-		{
+		{ 
 			number = -1;
 			TcpListener host = new TcpListener(IPAddress.Any, 1337);
 			host.Start();
 			listUsers = new List<UserInfo>();
-			//status.Text = "Сервер включен"; Потом сделаю, чтобы можно было менять интерфейс формы из других потоков..
+
+			BeginInvoke(new MethodInvoker(delegate
+			{
+				status.Text = "Сервер включен";
+			}));
+
 			while (workingServer)
 			{
 				TcpClient tc = host.AcceptTcpClient();
 				number++;
-
-
 
 				lock (listUsers)
 				{
@@ -60,7 +63,11 @@ namespace server
 		{
 			workingServer = false;
 			workingThread = false;
-			//status.Text = "Сервер отключен";
+
+			BeginInvoke(new MethodInvoker(delegate
+			{
+				status.Text = "Сервер отключен";
+			}));
 		}
 
 		public void PlayUser(object tc)
