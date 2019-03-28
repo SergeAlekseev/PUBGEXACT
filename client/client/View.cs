@@ -25,7 +25,7 @@ namespace client
 		public delegate void ActionD ();
 		public event ActionD ActionEvent;
 
-		static Model model;
+		static Model model = new Model();
 		Controller controller = new Controller(model);
 		
 		Graphics pictureBox;
