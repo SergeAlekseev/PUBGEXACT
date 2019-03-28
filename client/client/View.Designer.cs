@@ -50,10 +50,6 @@
 			// 
 			this.timerPaint.Tick += new System.EventHandler(this.timerPaint_Tick);
 			// 
-			// timerPing
-			// 
-			this.timerPing.Tick += new System.EventHandler(this.timerPing_Tick);
-			// 
 			// Client
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

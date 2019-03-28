@@ -133,10 +133,10 @@ namespace server
 						Action act = JsonConvert.DeserializeObject<Action>(tmpString);
 						switch (act.act)
 						{
-							case Action.action.moveUp: if (listUsers[num].userLocation.Y != 0) listUsers[num].userLocation.Y -= 1; break;
-							case Action.action.moveDown: if (listUsers[num].userLocation.Y != 600) listUsers[num].userLocation.Y += 1; break;
-							case Action.action.noveLeft: if (listUsers[num].userLocation.X != 0) listUsers[num].userLocation.X -= 1; break;
-							case Action.action.moveRight: if (listUsers[num].userLocation.X != 600) listUsers[num].userLocation.X += 1; break;
+							case Action.action.moveUp: if (listUsers[num].userLocation.Y != 0) listUsers[num].userLocation.Y -= 5; break;
+							case Action.action.moveDown: if (listUsers[num].userLocation.Y != 600) listUsers[num].userLocation.Y += 5; break;
+							case Action.action.noveLeft: if (listUsers[num].userLocation.X != 0) listUsers[num].userLocation.X -= 5; break;
+							case Action.action.moveRight: if (listUsers[num].userLocation.X != 600) listUsers[num].userLocation.X += 5; break;
 						}
 					}
 					else //ping пока будет работать так, потом следует после количества посылать вид команды
