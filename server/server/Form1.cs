@@ -25,25 +25,16 @@ namespace server
 			InitializeComponent();
 		}
 
-		private void start_Click(object sender, EventArgs e)//Controller и событие
+		private void start_Click(object sender, EventArgs e)
 		{
 			controller.start();
 		}
 
-		
-		private void stop_Click(object sender, EventArgs e)//Controller и событие
+		private void stop_Click(object sender, EventArgs e)
 		{
-			if (model.WorkingServer)
-			{
-				controller.StopServer();
-				BeginInvoke(new MethodInvoker(delegate
-				{
-					status.Text = "Сервер отключен";
-				}));
-			}
+			controller.stop();
 		}
-
-		private void Server_FormClosing(object sender, FormClosingEventArgs e)//Controller
+		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			controller.StopServer();
 		}

@@ -97,12 +97,15 @@ namespace client
 
 		public void PressKey() // Controller
 		{
-			string serialized = JsonConvert.SerializeObject(model.Action);
-			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+			if (threadStart)
+			{
+				string serialized = JsonConvert.SerializeObject(model.Action);
+				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+				byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
 
-			nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
-			nStream.Write(massByts, 0, massByts.Count());
+				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(massByts, 0, massByts.Count());
+			}
 		}
 
 		public void Disconnect()// Controller
@@ -124,7 +127,7 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.53.91.50", 1337);
+					client = new TcpClient("25.46.244.0", 1337);
 
 					nStream = client.GetStream();
 

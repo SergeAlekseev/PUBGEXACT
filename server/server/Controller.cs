@@ -69,7 +69,7 @@ namespace server
 			}
 		}
 
-		private void stop_Click(object sender, EventArgs e)//Controller
+		public void stop()//Controller
 		{
 			if (model.WorkingServer)
 			{
