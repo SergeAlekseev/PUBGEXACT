@@ -8,7 +8,7 @@ namespace client
 {
 	public class Action
 	{
-		public enum action { moveUp, moveDown, moveRight, noveLeft };
+		public enum action { moveUp, moveDown, moveRight, noveLeft, stopUp, stopDown, stopLeft, stopRight };
 		public action act;
 		public Action()
 		{

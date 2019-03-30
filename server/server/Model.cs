@@ -10,7 +10,6 @@ namespace server
 	class Model
 	{
 		static private List<UserInfo> listUsers; //Model
-		
 		public List<UserInfo> ListUsers
 		{
 			get { return listUsers; }

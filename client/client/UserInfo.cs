@@ -9,11 +9,12 @@ namespace client
 {
 	class UserInfo
 	{
-		public Point userLocation;
+		public Point userLocation ;
 
 		public UserInfo(Point userLocation)
 		{
 			this.userLocation = userLocation;
+
 		}		
 	}
 }

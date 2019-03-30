@@ -11,26 +11,40 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Action = client.Action;
+using Timer = System.Threading.Timer;
 
 namespace server
 {
 	class Controller
 	{
+
+
 		bool workingThread;
 		bool workingServer;
 		int number; //Model
 
-		Model model;
+		Model model = new Model();
 		TcpListener PublicHost; // Это тоже в модел,наверное. И вообще в клиенте тоже много данных из контроллера можно перенести в модел  и обращаться к ним через модел _!__!__!__!_!_!_!__!_!__
+
+
 
 		public Controller(Model model)
 		{
 			this.model = model;
 		}
 
+		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft,bool moveRight, int num) //Здесь будет выполняться перемещение игрока
+		{		
+
+				if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
+				if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; // Вверх
+				if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
+				if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1; // Вправо			
+		}
+
 		public void start()
 		{
-			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer)); 
+			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer));
 			startThread.Start();
 		}
 
@@ -63,7 +77,7 @@ namespace server
 
 					lock (model.ListUsers)
 					{
-						model.ListUsers.Add(new UserInfo(new Point(300, 300))); 
+						model.ListUsers.Add(new UserInfo(new Point(300, 300)));
 					}
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
@@ -85,12 +99,22 @@ namespace server
 
 		public void PlayUser(object tc)//Controller
 		{
+			bool moveUp = false;
+			bool moveDown = false;
+			bool moveLeft = false;
+			bool moveRight = false;
+
 			TcpClient tcp = (TcpClient)tc;
 			NetworkStream nStream = tcp.GetStream();
 			int num = number;
 			int count = 0;
 			byte[] countRead = new byte[2];
 			bool PrivateWorkingThread = true;
+
+			System.Timers.Timer timerMove = new System.Timers.Timer();
+			timerMove.Interval = 20;
+			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, num); };
+			timerMove.Start();
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -117,10 +141,16 @@ namespace server
 						Action act = JsonConvert.DeserializeObject<Action>(tmpString);
 						switch (act.act)
 						{
-							case Action.action.moveUp: if (model.ListUsers[num].userLocation.Y != 0) model.ListUsers[num].userLocation.Y -= 1; break;
-							case Action.action.moveDown: if (model.ListUsers[num].userLocation.Y != 600) model.ListUsers[num].userLocation.Y += 1; break;
-							case Action.action.noveLeft: if (model.ListUsers[num].userLocation.X != 0) model.ListUsers[num].userLocation.X -= 1; break;
-							case Action.action.moveRight: if (model.ListUsers[num].userLocation.X != 600) model.ListUsers[num].userLocation.X += 1; break;
+							case Action.action.moveUp: moveUp = true; break;
+							case Action.action.moveDown: moveDown = true; break;
+							case Action.action.noveLeft: moveLeft = true; break;
+							case Action.action.moveRight: moveRight = true; break;
+
+							case Action.action.stopUp: moveUp = false; break;
+							case Action.action.stopDown: moveDown = false; break;
+							case Action.action.stopLeft: moveLeft = false; break;
+							case Action.action.stopRight: moveRight = false; break;
+
 						}
 					}
 					else //ping пока будет работать так, потом следует после количества посылать вид команды или наоборот
@@ -132,7 +162,7 @@ namespace server
 						}
 					}
 				}
-				catch (System.IO.IOException )
+				catch (System.IO.IOException)
 				{
 					lock (model.ListUsers)
 					{
@@ -140,6 +170,7 @@ namespace server
 						model.ListUsers.Insert(num, null); // <------------------------ Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
 					}
 					PrivateWorkingThread = false;
+					timerMove.Stop();
 				}
 			}
 		}
@@ -167,7 +198,7 @@ namespace server
 						Thread.Sleep(20);
 					}
 				}
-				catch (System.IO.IOException )
+				catch (System.IO.IOException)
 				{
 					PrivateWorkingThread = false;
 				}
