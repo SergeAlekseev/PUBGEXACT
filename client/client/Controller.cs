@@ -48,7 +48,7 @@ namespace client
 				if (PingWatch.ElapsedMilliseconds > 2000)
 				{
 					PingWatch.Stop();
-					CloseFormEvent(null,null);
+					CloseFormEvent(null, null);
 				}
 				else
 				{
@@ -59,7 +59,7 @@ namespace client
 				}
 			}
 
-		}
+			}
 
 		private void Reading()// Controller
 		{
@@ -127,7 +127,7 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.46.244.0", 1337);
+					client = new TcpClient("25.53.91.50", 1337);
 
 					nStream = client.GetStream();
 

@@ -56,26 +56,38 @@ namespace client
 
 		private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
 		{
-
+			switch (e.KeyCode)
+			{
+				case Keys.W: model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
+				case Keys.S:  model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
+				case Keys.D:  model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
+				case Keys.A:  model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+			}
 		}
 
 		private void Form1_KeyUp(object sender, KeyEventArgs e) //Обработчик  отпускания кнопки
 		{
-
+			switch (e.KeyCode)
+			{
+				case Keys.W: model.Action.actionThishUser = Action.action.stopUp; ActionEvent(); break;
+				case Keys.S: model.Action.actionThishUser = Action.action.stopDown; ActionEvent(); break;
+				case Keys.D: model.Action.actionThishUser = Action.action.stopRight; ActionEvent(); break;
+				case Keys.A: model.Action.actionThishUser = Action.action.stopLeft; ActionEvent(); break;
+			}
 		}
 
 		
 		private void Form1_KeyPress(object sender, KeyPressEventArgs e)// ПРОДУМАТЬ,ШОБЕ МОЖНО БЫЛО ЗАЖИМАТЬ РАЗНЫЕ КЛАВИШИ 
 		{
 			
-			switch (e.KeyChar)
-			{
-				case 'W': case 'w': case 'Ц': case 'ц': model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
-				case 'S': case 's': case 'Ы': case 'ы': model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
-				case 'D': case 'd': case 'В': case 'в': model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
-				case 'A': case 'a': case 'Ф': case 'ф': model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+			//switch (e.KeyChar)
+			//{
+			//	case 'W': case 'w': case 'Ц': case 'ц': model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
+			//	case 'S': case 's': case 'Ы': case 'ы': model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
+			//	case 'D': case 'd': case 'В': case 'в': model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
+			//	case 'A': case 'a': case 'Ф': case 'ф': model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
 				
-			}
+			//}
 		}
 		
 

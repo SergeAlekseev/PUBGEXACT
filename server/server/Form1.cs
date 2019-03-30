@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using client;
 using System.Threading;
-using Action = client.Action;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Net;
