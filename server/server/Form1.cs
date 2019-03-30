@@ -17,26 +17,40 @@ namespace server
 {
 	public partial class Server : Form
 	{
-		Model model = new Model();
-		Controller controller = new Controller();
+
+		public delegate void StartServerD();
+		public event StartServerD StartServerEvent;
+
+		public delegate void StopServerD();
+		public event StopServerD StopServerEvent;
+
+		static Model model = new Model();
+		Controller controller = new Controller(model);
 
 		public Server()
 		{
 			InitializeComponent();
+
+			StopServerEvent += controller.StopServer;
+			StartServerEvent += controller.start;
 		}
 
 		private void start_Click(object sender, EventArgs e)
 		{
-			controller.start();
+			StartServerEvent();
+
+			status.Text = "Сервер включен";
 		}
 
 		private void stop_Click(object sender, EventArgs e)
 		{
-			controller.stop();
+			StopServerEvent();
+			
+			status.Text = "Сервер отключен";
 		}
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			controller.StopServer();
+			StopServerEvent();
 		}
 	}
 }

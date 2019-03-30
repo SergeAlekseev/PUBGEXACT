@@ -16,10 +16,19 @@ namespace server
 {
 	class Controller
 	{
-		Model model = new Model();
+		bool workingThread;
+		bool workingServer;
+		int number; //Model
+
+		Model model;
 		TcpListener PublicHost; // Это тоже в модел,наверное. И вообще в клиенте тоже много данных из контроллера можно перенести в модел  и обращаться к ним через модел _!__!__!__!_!_!_!__!_!__
 
-		public void start()//Controller
+		public Controller(Model model)
+		{
+			this.model = model;
+		}
+
+		public void start()
 		{
 			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer)); 
 			startThread.Start();
@@ -27,24 +36,19 @@ namespace server
 
 		public void StartServer(object tmpObject)//Controller
 		{
-			if (!model.WorkingServer)
+			if (!workingServer)
 			{
-				model.Number = -1;
+				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
 				PublicHost = host;
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
-				model.WorkingServer = true;
+				workingServer = true;
 
-				//BeginInvoke(new MethodInvoker(delegate
-				//{
-				//	status.Text = "Сервер включен";
-				//}));
-
-				while (model.WorkingServer)
+				while (workingServer)
 				{
 					TcpClient tc = null;
-					model.WorkingThread = true;//возможно сделать красивее
+					workingThread = true;//возможно сделать красивее
 					try
 					{
 						tc = host.AcceptTcpClient();
@@ -55,7 +59,7 @@ namespace server
 							tc.Close();
 						break;
 					}
-					model.Number++;
+					number++;
 
 					lock (model.ListUsers)
 					{
@@ -69,24 +73,12 @@ namespace server
 			}
 		}
 
-		public void stop()//Controller
-		{
-			if (model.WorkingServer)
-			{
-				StopServer();
-				//BeginInvoke(new MethodInvoker(delegate
-				//{
-				//	status.Text = "Сервер отключен";
-				//}));
-			}
-		}
-
 		public void StopServer()//Controller
 		{
-			if (model.WorkingServer)
+			if (workingServer)
 			{
-				model.WorkingServer = false;
-				model.WorkingThread = false;
+				workingServer = false;
+				workingThread = false;
 				PublicHost.Stop();
 			}
 		}
@@ -95,12 +87,12 @@ namespace server
 		{
 			TcpClient tcp = (TcpClient)tc;
 			NetworkStream nStream = tcp.GetStream();
-			int num = model.Number;
+			int num = number;
 			int count = 0;
 			byte[] countRead = new byte[2];
 			bool PrivateWorkingThread = true;
 
-			while (model.WorkingThread && PrivateWorkingThread)
+			while (workingThread && PrivateWorkingThread)
 			{
 				try
 				{
@@ -131,7 +123,7 @@ namespace server
 							case Action.action.moveRight: if (model.ListUsers[num].userLocation.X != 600) model.ListUsers[num].userLocation.X += 1; break;
 						}
 					}
-					else //ping пока будет работать так, потом следует после количества посылать вид команды
+					else //ping пока будет работать так, потом следует после количества посылать вид команды или наоборот
 					{
 						byte[] ping = BitConverter.GetBytes(-1);
 						lock (nStream)
@@ -147,19 +139,17 @@ namespace server
 						model.ListUsers.RemoveAt(num);
 						model.ListUsers.Insert(num, null); // <------------------------ Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
 					}
-					//Console.WriteLine(err.Message);
 					PrivateWorkingThread = false;
 				}
 			}
 		}
 
-
-		public void InfoUsers(object tc)//Controller
+		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
 			NetworkStream nStream = tcp.GetStream();
 			bool PrivateWorkingThread = true;
-			while (model.WorkingThread && PrivateWorkingThread)
+			while (workingThread && PrivateWorkingThread)
 			{
 				try
 				{
@@ -179,15 +169,12 @@ namespace server
 				}
 				catch (System.IO.IOException )
 				{
-					//Console.WriteLine(err.Message);
 					PrivateWorkingThread = false;
 				}
-				//catch()
-
 			}
 		}
 
-		private void Server_FormClosing(object sender, FormClosingEventArgs e)//Controller
+		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StopServer();
 		}

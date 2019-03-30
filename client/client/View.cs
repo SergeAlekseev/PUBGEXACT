@@ -31,8 +31,10 @@ namespace client
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
 		BufferedGraphics bufferedGraphics;
-		
-		
+
+		bool Start = false;
+
+
 		public Client() 
 		{
 			InitializeComponent();
@@ -108,13 +110,20 @@ namespace client
 
 		private void PlayingField_Click(object sender, EventArgs e) //Вызвать событие в Controller
 		{
-			ConnectEvent();
+			if (!Start)
+			{
+				ConnectEvent();
+				Start = true;
+			}
 		}
 
 		public void ErrorOfConnect()
 		{
-			Application.Exit();
-			Close();
+			BeginInvoke(new MethodInvoker(delegate
+			{
+				Application.Exit();
+				Close();
+			}));
 		}
 	}
 }

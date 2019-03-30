@@ -29,7 +29,6 @@ namespace client
 		Thread threadReading;
 
 		Stopwatch PingWatch = new Stopwatch();
-		int Ping;
 		bool threadStart = false;
 
 		System.Timers.Timer timerPing = new System.Timers.Timer();
@@ -89,7 +88,7 @@ namespace client
 				else //ping
 				{
 					PingWatch.Stop();
-					Ping = (int)PingWatch.ElapsedMilliseconds;
+					model.Ping = (int)PingWatch.ElapsedMilliseconds;
 				}
 
 			}
@@ -118,6 +117,7 @@ namespace client
 				nStream.Close();
 				client.Close();
 				threadStart = false;
+				CloseEvent();
 			}
 		}
 
