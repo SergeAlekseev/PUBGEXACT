@@ -1,5 +1,4 @@
-﻿using client;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,10 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Action = client.Action;
-using Timer = System.Threading.Timer;
 
 namespace server
 {
@@ -33,13 +29,13 @@ namespace server
 			this.model = model;
 		}
 
-		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft,bool moveRight, int num) //Здесь будет выполняться перемещение игрока
-		{		
+		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, int num) //Здесь будет выполняться перемещение игрока
+		{
 
-				if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
-				if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; // Вверх
-				if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
-				if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1; // Вправо			
+			if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
+			if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; // Вверх
+			if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
+			if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1; // Вправо			
 		}
 
 		public void start()
@@ -106,8 +102,15 @@ namespace server
 
 			TcpClient tcp = (TcpClient)tc;
 			NetworkStream nStream = tcp.GetStream();
-			int num = number;
-			int count = 0;
+
+			int num = number;   //шанс ошибки при одновременном подключении
+			byte[] numberUser = new byte[1];
+			numberUser[0] = (byte)num;
+			nStream.Write(numberUser, 0, 1);
+
+
+
+			int countReadingBytes = 0;
 			byte[] countRead = new byte[2];
 			bool PrivateWorkingThread = true;
 
@@ -120,46 +123,60 @@ namespace server
 			{
 				try
 				{
-					count = 0;
-					while (count != 2)
-						count += nStream.Read(countRead, count, countRead.Count() - count);
+					byte[] typeCommand = new byte[1];
+					nStream.Read(typeCommand, 0, 1);
 
-					count = 0;
-
-					short count2 = BitConverter.ToInt16(countRead, 0);
-
-					if (count2 != -1)
+					switch (typeCommand[0])
 					{
+						case 1:
+							{
+								countReadingBytes = 0;
+								while (countReadingBytes != 2)
+									countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
 
-						byte[] readBytes = new byte[count2];
+								countReadingBytes = 0;
+
+								short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+
+								byte[] readBytes = new byte[lengthBytesRaed];
 
 
-						while (count != count2)
-							count += nStream.Read(readBytes, count, readBytes.Count() - count);
+								while (countReadingBytes != lengthBytesRaed)
+									countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
 
-						string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
-						Action act = JsonConvert.DeserializeObject<Action>(tmpString);
-						switch (act.act)
-						{
-							case Action.action.moveUp: moveUp = true; break;
-							case Action.action.moveDown: moveDown = true; break;
-							case Action.action.noveLeft: moveLeft = true; break;
-							case Action.action.moveRight: moveRight = true; break;
+								string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+								Action act = JsonConvert.DeserializeObject<Action>(tmpString);
+								switch (act.act)
+								{
+									case Action.action.moveUp: moveUp = true; break;
+									case Action.action.moveDown: moveDown = true; break;
+									case Action.action.noveLeft: moveLeft = true; break;
+									case Action.action.moveRight: moveRight = true; break;
 
-							case Action.action.stopUp: moveUp = false; break;
-							case Action.action.stopDown: moveDown = false; break;
-							case Action.action.stopLeft: moveLeft = false; break;
-							case Action.action.stopRight: moveRight = false; break;
+									case Action.action.stopUp: moveUp = false; break;
+									case Action.action.stopDown: moveDown = false; break;
+									case Action.action.stopLeft: moveLeft = false; break;
+									case Action.action.stopRight: moveRight = false; break;
 
-						}
-					}
-					else //ping пока будет работать так, потом следует после количества посылать вид команды или наоборот
-					{
-						byte[] ping = BitConverter.GetBytes(-1);
-						lock (nStream)
-						{
-							nStream.Write(ping, 0, 2);
-						}
+								}
+
+								break;
+							}
+						case 2:
+							{
+								byte[] ping = new byte[1];
+								ping[0] = 2;
+								lock (nStream)
+								{
+									nStream.Write(ping, 0, 1);
+								}
+								break;
+							}
+						case 3:
+							{
+
+								break;
+							}
 					}
 				}
 				catch (System.IO.IOException)
@@ -167,7 +184,7 @@ namespace server
 					lock (model.ListUsers)
 					{
 						model.ListUsers.RemoveAt(num);
-						model.ListUsers.Insert(num, null); // <------------------------ Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+						model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
 					}
 					PrivateWorkingThread = false;
 					timerMove.Stop();
@@ -184,19 +201,23 @@ namespace server
 			{
 				try
 				{
+					string serialized = "";
+					lock (model.ListUsers)
+					{
+						serialized = JsonConvert.SerializeObject(model.ListUsers);
+					}
+					byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+					byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+					byte[] typeComand = new byte[1];
+					typeComand[0] = 1;
+
 					lock (nStream)
 					{
-						string serialized = "";
-						lock (model.ListUsers)
-						{
-							serialized = JsonConvert.SerializeObject(model.ListUsers);
-						}
-						byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-						byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+						nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
 						nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
 						nStream.Write(massByts, 0, massByts.Count());
-						Thread.Sleep(20);
 					}
+					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException)
 				{

@@ -45,7 +45,7 @@ namespace client
 		{
 			if (threadStart)
 			{
-				if (PingWatch.ElapsedMilliseconds > 2000)
+				if (PingWatch.ElapsedMilliseconds > 2002)
 				{
 					PingWatch.Stop();
 					CloseFormEvent(null, null);
@@ -53,45 +53,64 @@ namespace client
 				else
 				{
 					PingWatch = new Stopwatch();
-					byte[] Ping = BitConverter.GetBytes((short)-1);
+					byte[] Ping = BitConverter.GetBytes((short)2);
 					nStream.Write(Ping, 0, 2);
 					PingWatch.Start();
 				}
 			}
 
-			}
+		}
 
 		private void Reading()// Controller
 		{
-			int count = 0;
+			int countReadingBytes = 0;
 			byte[] countRead = new byte[2];
-			while (threadStart)//Поставить условие, если флаг дисконет равен истине
+
+			while (threadStart)
 			{
-				count = 0;
-				while (count != 2)
-					count += nStream.Read(countRead, count, countRead.Count() - count);
 
-				count = 0;
+				byte[] typeCommand = new byte[1];
+				nStream.Read(typeCommand, 0, 1);
 
-				short count2 = BitConverter.ToInt16(countRead, 0);
-				if (count2 != -1)
+				switch (typeCommand[0])
 				{
-					byte[] readBytes = new byte[count2];
+					case 1:
+						{
+							countReadingBytes = 0;
+							while (countReadingBytes != 2)
+								countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
+
+							countReadingBytes = 0;
+
+							short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+
+							byte[] readBytes = new byte[lengthBytesRaed];
 
 
-					while (count != count2)
-						count += nStream.Read(readBytes, count, readBytes.Count() - count);
+							while (countReadingBytes != lengthBytesRaed)
+								countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
 
-					string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
-					model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+							string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+							model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+
+							break;
+						}
+					case 2:
+						{
+							PingWatch.Stop();
+							model.Ping = (int)PingWatch.ElapsedMilliseconds;
+							break;
+						}
+					case 3:
+						{
+
+							break;
+						}
 				}
-				else //ping
-				{
-					PingWatch.Stop();
-					model.Ping = (int)PingWatch.ElapsedMilliseconds;
-				}
+
 
 			}
+
 		}
 
 		public void PressKey() // Controller
@@ -101,7 +120,10 @@ namespace client
 				string serialized = JsonConvert.SerializeObject(model.Action);
 				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 				byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+				byte[] typeComand = new byte[1];
+				typeComand[0] = 1;
 
+				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
 				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
 				nStream.Write(massByts, 0, massByts.Count());
 			}
@@ -127,13 +149,16 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.53.91.50", 1337);
+					client = new TcpClient("25.46.244.0", 1337);
 
 					nStream = client.GetStream();
 
 					threadReading = new Thread(Reading);
 					threadReading.Start();
 					threadStart = true;
+					byte[] number = new byte[1];
+					nStream.Read(number, 0, 1);
+					model.ThisUser.userNumber = number[0];
 				}
 				catch (System.Net.Sockets.SocketException) //не удалось подключится по заданным параметрам
 				{

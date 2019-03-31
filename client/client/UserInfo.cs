@@ -9,6 +9,7 @@ namespace client
 {
 	class UserInfo
 	{
+		public int userNumber;
 		public Point userLocation ;
 
 		public UserInfo(Point userLocation)

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+
 namespace client
 {
 	public partial class Client : Form
@@ -99,7 +100,13 @@ namespace client
 				foreach (UserInfo user in model.ListUsers)
 				{
 					if (user != null)
+					{
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 2, user.userLocation.Y - 2, 4, 4);
+					}
+					else
+					{
+
+					}
 				}
 				bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 

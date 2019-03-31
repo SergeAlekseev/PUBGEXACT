@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using client;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
