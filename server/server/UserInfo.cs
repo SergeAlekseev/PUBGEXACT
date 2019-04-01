@@ -9,7 +9,11 @@ namespace server
 {
 	class UserInfo
 	{
+		public int userNumber;
 		public Point userLocation;
+		public bool flagShoting;
+		public bool flagWaitShoting;
+		public Point mouseLocation;
 
 		public UserInfo(Point userLocation)
 		{

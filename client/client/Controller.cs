@@ -33,6 +33,32 @@ namespace client
 
 		System.Timers.Timer timerPing = new System.Timers.Timer();
 
+		public void Shot(byte type)
+		{
+			if (threadStart)
+			{
+				Writing(null, type);
+			}
+		}
+
+		private void Writing(object obj, byte numComand)
+		{
+			string serialized = JsonConvert.SerializeObject(obj);
+			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+			byte[] typeComand = new byte[1];
+			typeComand[0] = numComand;
+
+			nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+			nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+			nStream.Write(massByts, 0, massByts.Count());
+		}
+
+		public void WriteMouseLocation(Point mouseLocation)
+		{
+			Writing(mouseLocation,5);
+		}
+
 		public Controller(Model model) // Конструктор
 		{
 			this.model = model;
@@ -45,7 +71,7 @@ namespace client
 		{
 			if (threadStart)
 			{
-				if (PingWatch.ElapsedMilliseconds > 2002)
+				if (PingWatch.ElapsedMilliseconds > 4000)
 				{
 					PingWatch.Stop();
 					CloseFormEvent(null, null);
@@ -61,11 +87,30 @@ namespace client
 
 		}
 
-		private void Reading()// Controller
+		public string Reading(NetworkStream nStream)
 		{
-			int countReadingBytes = 0;
 			byte[] countRead = new byte[2];
+			int countReadingBytes = 0;
+			while (countReadingBytes != 2)
+				countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
 
+			countReadingBytes = 0;
+
+			short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+
+			byte[] readBytes = new byte[lengthBytesRaed];
+
+
+			while (countReadingBytes != lengthBytesRaed)
+				countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
+
+			string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+
+			return tmpString;
+		}
+
+		private void ReadingStream()// Controller
+		{
 			while (threadStart)
 			{
 
@@ -76,23 +121,10 @@ namespace client
 				{
 					case 1:
 						{
-							countReadingBytes = 0;
-							while (countReadingBytes != 2)
-								countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
-
-							countReadingBytes = 0;
-
-							short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
-
-							byte[] readBytes = new byte[lengthBytesRaed];
-
-
-							while (countReadingBytes != lengthBytesRaed)
-								countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
-
-							string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+							string tmpString = Reading(nStream);
 							model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
-
+							model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
+							model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
 							break;
 						}
 					case 2:
@@ -103,7 +135,18 @@ namespace client
 						}
 					case 3:
 						{
+							string tmpString = Reading(nStream);
+							model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString);
+							break;
+						}
+					case 4:
+						{
 
+							break;
+						}
+					case 5:
+						{
+							Disconnect();
 							break;
 						}
 				}
@@ -117,15 +160,7 @@ namespace client
 		{
 			if (threadStart)
 			{
-				string serialized = JsonConvert.SerializeObject(model.Action);
-				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-				byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
-				byte[] typeComand = new byte[1];
-				typeComand[0] = 1;
-
-				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
-				nStream.Write(massByts, 0, massByts.Count());
+				Writing(model.Action, 1);
 			}
 		}
 
@@ -134,12 +169,12 @@ namespace client
 
 			if (threadStart)
 			{
-
-				threadReading.Abort();
+				threadStart = false;
 				nStream.Close();
 				client.Close();
-				threadStart = false;
+				timerPing.Stop();
 				CloseEvent();
+				threadReading.Abort();
 			}
 		}
 
@@ -152,13 +187,13 @@ namespace client
 					client = new TcpClient("25.46.244.0", 1337);
 
 					nStream = client.GetStream();
-
-					threadReading = new Thread(Reading);
-					threadReading.Start();
 					threadStart = true;
+					threadReading = new Thread(ReadingStream);
+					threadReading.Start();
 					byte[] number = new byte[1];
 					nStream.Read(number, 0, 1);
 					model.ThisUser.userNumber = number[0];
+					
 				}
 				catch (System.Net.Sockets.SocketException) //не удалось подключится по заданным параметрам
 				{

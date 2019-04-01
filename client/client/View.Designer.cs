@@ -32,7 +32,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Client));
 			this.PlayingField = new System.Windows.Forms.PictureBox();
 			this.timerPaint = new System.Windows.Forms.Timer(this.components);
-			this.timerPing = new System.Windows.Forms.Timer(this.components);
+			this.timerMouseLocation = new System.Windows.Forms.Timer(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -45,10 +45,16 @@
 			this.PlayingField.TabIndex = 0;
 			this.PlayingField.TabStop = false;
 			this.PlayingField.Click += new System.EventHandler(this.PlayingField_Click);
+			this.PlayingField.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PlayingField_MouseDown);
+			this.PlayingField.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PlayingField_MouseUp);
 			// 
 			// timerPaint
 			// 
 			this.timerPaint.Tick += new System.EventHandler(this.timerPaint_Tick);
+			// 
+			// timerMouseLocation
+			// 
+			this.timerMouseLocation.Tick += new System.EventHandler(this.timerMouseLocation_Tick);
 			// 
 			// Client
 			// 
@@ -73,7 +79,7 @@
 
 		private System.Windows.Forms.PictureBox PlayingField;
 		private System.Windows.Forms.Timer timerPaint;
-		private System.Windows.Forms.Timer timerPing;
+		private System.Windows.Forms.Timer timerMouseLocation;
 	}
 }
 

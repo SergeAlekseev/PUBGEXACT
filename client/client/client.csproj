@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="BulletInfo.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>

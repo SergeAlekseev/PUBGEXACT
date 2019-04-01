@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace server
 {
-	class ShotInfo
+	class BulletInfo
 	{
-		Point UserPoint, ClickPoint;
+		public double speedX, speedY;
+		public Point location;
+
+		public BulletInfo(Point loc)
+		{
+			this.location = loc;
+		}
 	}
 }

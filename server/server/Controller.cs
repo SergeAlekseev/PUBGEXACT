@@ -31,11 +31,13 @@ namespace server
 
 		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, int num) //Здесь будет выполняться перемещение игрока
 		{
-
-			if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
-			if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; // Вверх
-			if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
-			if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1; // Вправо			
+			if (workingThread)
+			{
+				if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
+				if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
+				if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
+				if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1;// Вправо	
+			}		
 		}
 
 		public void start()
@@ -71,15 +73,21 @@ namespace server
 					}
 					number++;
 
+					UserInfo userInfoTmp = new UserInfo(new Point(300, 300));
+					userInfoTmp.userNumber = number;
+
 					lock (model.ListUsers)
 					{
-						model.ListUsers.Add(new UserInfo(new Point(300, 300)));
+						model.ListUsers.Add(userInfoTmp);
 					}
+					model.ListNs.Add(tc.GetStream());
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Start(tc);
 				}
+				Thread.Sleep(1000);
+				model.Remove();
 			}
 		}
 
@@ -90,7 +98,92 @@ namespace server
 				workingServer = false;
 				workingThread = false;
 				PublicHost.Stop();
+				byte[] numberUser = new byte[1];
+				foreach (NetworkStream ns in model.ListNs)
+				{
+					numberUser[0] = 5;
+					try
+					{
+						ns.Write(numberUser, 0, 1);
+						ns.Close();
+					}
+					catch { }
+				}
+				
 			}
+		}
+
+		public void ShotUser(object ui)//Controller
+		{
+			UserInfo userInfo = (UserInfo)ui;
+
+			while (userInfo.flagShoting)
+			{
+				if (userInfo.userLocation != userInfo.mouseLocation)
+				{
+					BulletInfo bulletInfo = new BulletInfo(userInfo.userLocation);
+					double k = Math.Sqrt(Math.Pow(userInfo.mouseLocation.X - userInfo.userLocation.X, 2)
+										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 2;
+					bulletInfo.speedX = (userInfo.mouseLocation.X - userInfo.userLocation.X) / k;
+					bulletInfo.speedY = (userInfo.mouseLocation.Y - userInfo.userLocation.Y) / k;
+
+
+					if (userInfo.flagShoting)
+					{
+						lock (model.ListBullet)
+						{
+							model.ListBullet.Add(bulletInfo);
+						}
+						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
+						thread.Start(bulletInfo);
+						Thread.Sleep(500);
+					}
+					else { break; }
+				}
+			}
+		
+		
+		}
+
+		public void Bullet(object tmpObject)
+		{
+			
+			BulletInfo bulletInfo = (BulletInfo)tmpObject;
+			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
+			for (int i = 0; i < 300; i++)
+			{
+				X += bulletInfo.speedX;
+				bulletInfo.location.X = (int)X;
+				Y += bulletInfo.speedY;
+				bulletInfo.location.Y = (int)Y;
+				Thread.Sleep(20);
+			}
+			lock (model.ListBullet)
+			{
+				model.ListBullet.Remove(bulletInfo);
+			}
+		}
+
+		public string Reading(NetworkStream nStream)
+		{
+			byte[] countRead = new byte[2];
+			int countReadingBytes = 0;
+			while (countReadingBytes != 2)
+				countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
+
+			countReadingBytes = 0;
+
+			short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+
+			byte[] readBytes = new byte[lengthBytesRaed];
+
+
+			while (countReadingBytes != lengthBytesRaed)
+				countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
+
+			string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+
+			return tmpString;
 		}
 
 		public void PlayUser(object tc)//Controller
@@ -108,16 +201,15 @@ namespace server
 			numberUser[0] = (byte)num;
 			nStream.Write(numberUser, 0, 1);
 
-
-
 			int countReadingBytes = 0;
-			byte[] countRead = new byte[2];
 			bool PrivateWorkingThread = true;
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 20;
 			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, num); };
 			timerMove.Start();
+
+			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -130,21 +222,7 @@ namespace server
 					{
 						case 1:
 							{
-								countReadingBytes = 0;
-								while (countReadingBytes != 2)
-									countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
-
-								countReadingBytes = 0;
-
-								short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
-
-								byte[] readBytes = new byte[lengthBytesRaed];
-
-
-								while (countReadingBytes != lengthBytesRaed)
-									countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
-
-								string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+								string tmpString = Reading(nStream);
 								Action act = JsonConvert.DeserializeObject<Action>(tmpString);
 								switch (act.act)
 								{
@@ -174,13 +252,43 @@ namespace server
 							}
 						case 3:
 							{
-
+								string tmpString = Reading(nStream);
+								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting)
+								{
+									model.ListUsers[num].flagShoting = true;
+									Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
+									Shoting.Start(model.ListUsers[num]);
+								}
+								break;
+							}
+						case 4:
+							{
+								string tmpString = Reading(nStream);
+								if (model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting)
+								{
+									model.ListUsers[num].flagWaitShoting = true;
+									Shoting.Abort();
+									model.ListUsers[num].flagShoting = false;
+									Thread t = new Thread(() =>
+									{
+										Thread.Sleep(500);
+										model.ListUsers[num].flagWaitShoting = false;
+									});
+									t.Start();
+								}
+								break;
+							}
+						case 5:
+							{
+								string tmpString = Reading(nStream);
+								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString); ;
 								break;
 							}
 					}
 				}
 				catch (System.IO.IOException)
 				{
+					model.ListUsers[num].flagShoting = false;
 					lock (model.ListUsers)
 					{
 						model.ListUsers.RemoveAt(num);
@@ -192,6 +300,8 @@ namespace server
 			}
 		}
 
+
+
 		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
@@ -201,28 +311,36 @@ namespace server
 			{
 				try
 				{
-					string serialized = "";
-					lock (model.ListUsers)
-					{
-						serialized = JsonConvert.SerializeObject(model.ListUsers);
-					}
-					byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-					byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
-					byte[] typeComand = new byte[1];
-					typeComand[0] = 1;
+					Writing(model.ListUsers, 1, nStream);
+					Writing(model.ListBullet, 3, nStream);
 
-					lock (nStream)
-					{
-						nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-						nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
-						nStream.Write(massByts, 0, massByts.Count());
-					}
+
 					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException)
 				{
 					PrivateWorkingThread = false;
 				}
+			}
+		}
+
+		private void Writing(object obj, byte numComand, NetworkStream nStream)
+		{
+			string serialized = "";
+			lock (obj)
+			{
+				serialized = JsonConvert.SerializeObject(obj);
+			}
+			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+			byte[] typeComand = new byte[1];
+			typeComand[0] = numComand;
+
+			lock (nStream)
+			{
+				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(massByts, 0, massByts.Count());
 			}
 		}
 
