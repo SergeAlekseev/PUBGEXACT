@@ -9,8 +9,9 @@ namespace client
 {
 	class UserInfo
 	{
-		public int userNumber;
-		public Point userLocation ;
+		public ushort hp = 100;
+		public short userNumber;
+		public Point userLocation;
 		public bool flagShoting;
 		public bool flagWaitShoting;
 		public Point mouseLocation;
@@ -18,6 +19,6 @@ namespace client
 		public UserInfo(Point userLocation)
 		{
 			this.userLocation = userLocation;
-		}		
+		}
 	}
 }

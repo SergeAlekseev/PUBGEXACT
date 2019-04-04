@@ -17,7 +17,7 @@ namespace server
 
 		bool workingThread;
 		bool workingServer;
-		int number; //Model
+		short number; //Model
 
 		Model model = new Model();
 		TcpListener PublicHost; // Это тоже в модел,наверное. И вообще в клиенте тоже много данных из контроллера можно перенести в модел  и обращаться к ним через модел _!__!__!__!_!_!_!__!_!__
@@ -37,7 +37,7 @@ namespace server
 				if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
 				if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
 				if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1;// Вправо	
-			}		
+			}
 		}
 
 		public void start()
@@ -109,7 +109,7 @@ namespace server
 					}
 					catch { }
 				}
-				
+
 			}
 		}
 
@@ -130,32 +130,48 @@ namespace server
 
 					if (userInfo.flagShoting)
 					{
+						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
+						thread.Start(bulletInfo);
 						lock (model.ListBullet)
 						{
 							model.ListBullet.Add(bulletInfo);
 						}
-						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
-						thread.Start(bulletInfo);
-						Thread.Sleep(500);
+						Thread.Sleep(5);
 					}
 					else { break; }
 				}
 			}
-		
-		
+
+
 		}
 
 		public void Bullet(object tmpObject)
 		{
-			
+			bool flagBreak= false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
+			X += bulletInfo.speedX;
+			bulletInfo.location.X = (int)X;
+			Y += bulletInfo.speedY;
+			bulletInfo.location.Y = (int)Y;
 			for (int i = 0; i < 300; i++)
 			{
 				X += bulletInfo.speedX;
 				bulletInfo.location.X = (int)X;
 				Y += bulletInfo.speedY;
 				bulletInfo.location.Y = (int)Y;
+				for (int j = 0; j < model.ListUsers.Count; j++)
+				{
+					if (Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
+					{
+						byte[] popad = new byte[1];
+						popad[0] = 6;
+						model.ListUsers[j].hp -= 20;
+						flagBreak = true;
+						break;
+					}
+				}
+				if (flagBreak) break;
 				Thread.Sleep(20);
 			}
 			lock (model.ListBullet)
@@ -166,14 +182,14 @@ namespace server
 
 		public string Reading(NetworkStream nStream)
 		{
-			byte[] countRead = new byte[2];
+			byte[] countRead = new byte[4];
 			int countReadingBytes = 0;
-			while (countReadingBytes != 2)
+			while (countReadingBytes != 4)
 				countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
 
 			countReadingBytes = 0;
 
-			short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+			int lengthBytesRaed = BitConverter.ToInt32(countRead, 0);
 
 			byte[] readBytes = new byte[lengthBytesRaed];
 
@@ -271,7 +287,7 @@ namespace server
 									model.ListUsers[num].flagShoting = false;
 									Thread t = new Thread(() =>
 									{
-										Thread.Sleep(500);
+										Thread.Sleep(5);
 										model.ListUsers[num].flagWaitShoting = false;
 									});
 									t.Start();
@@ -332,14 +348,14 @@ namespace server
 				serialized = JsonConvert.SerializeObject(obj);
 			}
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+			byte[] countRead = BitConverter.GetBytes(massByts.Count());
 			byte[] typeComand = new byte[1];
 			typeComand[0] = numComand;
 
 			lock (nStream)
 			{
 				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-				nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 				nStream.Write(massByts, 0, massByts.Count());
 			}
 		}

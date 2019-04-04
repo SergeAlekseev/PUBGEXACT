@@ -109,7 +109,7 @@ namespace client
 
 		{
 
-			if (model.ListUsers != null&&Start)
+			if (model.ListUsers != null && Start)
 			{
 				foreach (UserInfo user in model.ListUsers)
 				{
@@ -118,12 +118,14 @@ namespace client
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 3, user.userLocation.Y - 3, 6, 6);
 					}
 				}
-				if(model.ListUsers.Count>0)
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.ListUsers[model.ThisUser.userNumber].userLocation.X - 3, model.ListUsers[model.ThisUser.userNumber].userLocation.Y - 3, 6, 6);
-
+				if (model.ListUsers.Count > 0)
+				{
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.ThisUser.userLocation.X - 3, model.ThisUser.userLocation.Y - 3, 6, 6);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
+				}
 				foreach (BulletInfo bullet in model.ListBullet)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X-1, bullet.location.Y-1 , 2, 2);
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1, bullet.location.Y - 1, 2, 2);
 				}
 
 				bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
@@ -190,7 +192,7 @@ namespace client
 			{
 				MouseLocatinEvent(PlayingField.PointToClient(Cursor.Position));
 			}
-			
+
 		}
 	}
 }

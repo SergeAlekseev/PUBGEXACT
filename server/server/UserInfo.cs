@@ -9,7 +9,8 @@ namespace server
 {
 	class UserInfo
 	{
-		public int userNumber;
+		public ushort hp = 100;
+		public short userNumber;
 		public Point userLocation;
 		public bool flagShoting;
 		public bool flagWaitShoting;

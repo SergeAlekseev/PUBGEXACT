@@ -45,12 +45,12 @@ namespace client
 		{
 			string serialized = JsonConvert.SerializeObject(obj);
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes((short)massByts.Count());
+			byte[] countRead = BitConverter.GetBytes(massByts.Count());
 			byte[] typeComand = new byte[1];
 			typeComand[0] = numComand;
 
 			nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-			nStream.Write(countRead, 0, 2);//Отпраляет кол-во байт, которое сервер должен будет читать
+			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 			nStream.Write(massByts, 0, massByts.Count());
 		}
 
@@ -89,14 +89,14 @@ namespace client
 
 		public string Reading(NetworkStream nStream)
 		{
-			byte[] countRead = new byte[2];
+			byte[] countRead = new byte[4];
 			int countReadingBytes = 0;
-			while (countReadingBytes != 2)
+			while (countReadingBytes != 4)
 				countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
 
 			countReadingBytes = 0;
 
-			short lengthBytesRaed = BitConverter.ToInt16(countRead, 0);
+			int lengthBytesRaed = BitConverter.ToInt32(countRead, 0);
 
 			byte[] readBytes = new byte[lengthBytesRaed];
 
@@ -169,8 +169,8 @@ namespace client
 
 			if (threadStart)
 			{
-				threadStart = false;
 				nStream.Close();
+				threadStart = false;
 				client.Close();
 				timerPing.Stop();
 				CloseEvent();
