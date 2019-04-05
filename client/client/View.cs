@@ -128,17 +128,17 @@ namespace client
 				{
 					if (user != null && user.userLocation != model.ThisUser.userLocation)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + 300 - model.ThisUser.userLocation.X, user.userLocation.Y + 300 - model.ThisUser.userLocation.Y, 6, 6);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + 300 - 3 - model.ThisUser.userLocation.X, user.userLocation.Y + 300 - 3 - model.ThisUser.userLocation.Y, 6, 6);
 					}
 				}
 				if (model.ListUsers.Count > 0)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, 300, 300, 6, 6);
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, 300-3, 300-3, 6, 6);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 				}
 				foreach (BulletInfo bullet in model.ListBullet)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1 - model.ThisUser.userLocation.X, bullet.location.Y - 1 - model.ThisUser.userLocation.Y, 2, 2);
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + 300 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + 300 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 				}			
 				bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 				bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X+":"+ model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 20, 2);
@@ -202,7 +202,11 @@ namespace client
 		{
 			if (Start)
 			{
-				MouseLocatinEvent(PlayingField.PointToClient(Cursor.Position));
+				Point cursorPoint = PlayingField.PointToClient(Cursor.Position);
+				cursorPoint.X = cursorPoint.X - 300 + model.ThisUser.userLocation.X;
+				cursorPoint.Y = cursorPoint.Y - 300 + model.ThisUser.userLocation.Y;
+				
+				MouseLocatinEvent(cursorPoint);
 			}
 
 		}

@@ -137,7 +137,7 @@ namespace server
 						{
 							model.ListBullet.Add(bulletInfo);
 						}
-						Thread.Sleep(5);
+						Thread.Sleep(200);
 					}
 					else { break; }
 				}
@@ -151,9 +151,9 @@ namespace server
 			bool flagBreak= false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += bulletInfo.speedX;
+			X += 2 * bulletInfo.speedX;
 			bulletInfo.location.X = (int)X;
-			Y += bulletInfo.speedY;
+			Y += 2 * bulletInfo.speedY;
 			bulletInfo.location.Y = (int)Y;
 			for (int i = 0; i < 300; i++)
 			{
@@ -163,7 +163,7 @@ namespace server
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
+					if (workingServer && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
@@ -288,7 +288,7 @@ namespace server
 									model.ListUsers[num].flagShoting = false;
 									Thread t = new Thread(() =>
 									{
-										Thread.Sleep(5);
+										Thread.Sleep(200);
 										model.ListUsers[num].flagWaitShoting = false;
 									});
 									t.Start();
@@ -313,6 +313,7 @@ namespace server
 					}
 					PrivateWorkingThread = false;
 					timerMove.Stop();
+					Shoting.Abort();
 				}
 			}
 		}
