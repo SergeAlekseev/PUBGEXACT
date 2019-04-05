@@ -124,7 +124,7 @@ namespace server
 				{
 					BulletInfo bulletInfo = new BulletInfo(userInfo.userLocation);
 					double k = Math.Sqrt(Math.Pow(userInfo.mouseLocation.X - userInfo.userLocation.X, 2)
-										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 2;
+										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 4;
 					bulletInfo.speedX = (userInfo.mouseLocation.X - userInfo.userLocation.X) / k;
 					bulletInfo.speedY = (userInfo.mouseLocation.Y - userInfo.userLocation.Y) / k;
 
@@ -151,11 +151,11 @@ namespace server
 			bool flagBreak= false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += 2 * bulletInfo.speedX;
+			X += bulletInfo.speedX;
 			bulletInfo.location.X = (int)X;
-			Y += 2 * bulletInfo.speedY;
+			Y += bulletInfo.speedY;
 			bulletInfo.location.Y = (int)Y;
-			for (int i = 0; i < 300; i++)
+			for (int i = 0; i < 150; i++)
 			{
 				X += bulletInfo.speedX;
 				bulletInfo.location.X = (int)X;
