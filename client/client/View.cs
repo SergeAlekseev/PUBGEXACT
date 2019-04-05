@@ -146,13 +146,17 @@ namespace client
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Green, bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 12, 12);
+						bufferedGraphics.Graphics.DrawImage(Image.FromFile(@"Picture\Bush3.png"), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 				}
 				else
 				{
+
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, 600, 600);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
+
+					
+
 				}
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
@@ -216,7 +220,7 @@ namespace client
 				Point cursorPoint = PlayingField.PointToClient(Cursor.Position);
 				cursorPoint.X = cursorPoint.X - 300 + model.ThisUser.userLocation.X;
 				cursorPoint.Y = cursorPoint.Y - 300 + model.ThisUser.userLocation.Y;
-				
+
 				MouseLocatinEvent(cursorPoint);
 			}
 
