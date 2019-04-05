@@ -146,7 +146,7 @@ namespace client
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
-						bufferedGraphics.Graphics.DrawImage(Image.FromFile(@"Picture\Bush3.png"), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
+						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20,20,null,IntPtr.Zero), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 				}
 				else
