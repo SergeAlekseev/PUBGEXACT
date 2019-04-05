@@ -73,7 +73,7 @@ namespace server
 					}
 					number++;
 
-					UserInfo userInfoTmp = new UserInfo(new Point(300, 300));
+					UserInfo userInfoTmp = new UserInfo(new Point(0, 0));
 					userInfoTmp.userNumber = number;
 
 					lock (model.ListUsers)
@@ -83,6 +83,7 @@ namespace server
 					model.ListNs.Add(tc.GetStream());
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
+
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Start(tc);
 				}
@@ -316,8 +317,6 @@ namespace server
 			}
 		}
 
-
-
 		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
@@ -329,8 +328,6 @@ namespace server
 				{
 					Writing(model.ListUsers, 1, nStream);
 					Writing(model.ListBullet, 3, nStream);
-
-
 					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException)

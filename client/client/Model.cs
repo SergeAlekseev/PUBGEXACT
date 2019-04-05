@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace client
 		int ping = 0;
 		UserInfo thisUser = new UserInfo(new Point(300, 300));
 		List<BulletInfo> listBullet = new List<BulletInfo>();
+		List<Box> box = new List<Box>();
+
 		public bool Start = false;
 
 		public Model()
@@ -31,5 +34,6 @@ namespace client
 		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; } }
 		public Action Action { get { return action; } set { action = value; } }
 		public int Ping { get { return ping; } set { ping = value; } }
+		public List<Box> ListBox { get { return box; } set { box = value; } }
 	}
 }

@@ -50,8 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="Box.cs" />
     <Compile Include="BulletInfo.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
