@@ -163,7 +163,7 @@ namespace server
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (workingServer && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
+					if (model.ListUsers[j]!=null &&Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
