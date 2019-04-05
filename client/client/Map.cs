@@ -8,12 +8,19 @@ namespace client
 {
 	class Map
 	{
-		Box box = new Box();
+		List<Box> listBox = new List<Box>();
+		List<Bush> listBush = new List<Bush>();
 
-		public Box Box
+		public List<Box> ListBox
 		{
-			get { return box; }
-			set { box = value; }
+			get { return listBox; }
+			set { listBox = value; }
+		}
+
+		public List<Bush> ListBush
+		{
+			get { return listBush; }
+			set { listBush = value; }
 		}
 	}
 }

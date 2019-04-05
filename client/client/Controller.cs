@@ -149,6 +149,12 @@ namespace client
 							Disconnect();
 							break;
 						}
+					case 6:
+						{
+							string tmpString = Reading(nStream);
+							model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString);
+						}
+						break;
 				}
 
 
@@ -184,7 +190,7 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.46.244.0", 1337);
+					client = new TcpClient("25.53.91.50", 1337);
 
 					nStream = client.GetStream();
 					threadStart = true;
@@ -201,7 +207,6 @@ namespace client
 				}
 			}
 
-		}
-
+		}	
 	}
 }

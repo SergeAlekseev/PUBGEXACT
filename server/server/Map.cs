@@ -8,13 +8,20 @@ namespace server
 {
 	class Map
 	{
-		//Пока не знаю,что здесь будет лежать
-		Box box = new Box();
+		//Пока не знаю,что здесь будет лежать	
+		List<Box> listBox = new List<Box>();
+		List<Bush> listBush = new List<Bush>();
 
-		public Box Box
+		public List<Box> ListBox
 		{
-			get { return box; }
-			set { box = value; }
+			get { return listBox; }
+			set { listBox = value; }
+		}
+
+		public List<Bush> ListBush
+		{
+			get { return listBush; }
+			set { listBush = value; }
 		}
 	}
 }

@@ -148,7 +148,7 @@ namespace server
 
 		public void Bullet(object tmpObject)
 		{
-			bool flagBreak= false;
+			bool flagBreak = false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
 			X += 2 * bulletInfo.speedX;
@@ -163,7 +163,7 @@ namespace server
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (model.ListUsers[j]!=null &&Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
+					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
@@ -227,6 +227,8 @@ namespace server
 			timerMove.Start();
 
 			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
+
+			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -361,6 +363,15 @@ namespace server
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StopServer();
+		}
+
+		public void WritingBush(List<Bush> listBush, NetworkStream ns)
+		{
+			listBush.Add(new Bush(50, 50));
+			listBush.Add(new Bush(25, 170));
+			listBush.Add(new Bush(340, 150));
+
+			Writing(listBush, 6, ns);
 		}
 	}
 }

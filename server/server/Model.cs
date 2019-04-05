@@ -13,7 +13,7 @@ namespace server
 		static private List<BulletInfo> listBullet =new List<BulletInfo>();
 		static private List<UserInfo> listUsers = new List<UserInfo>();
 		static private List<NetworkStream> listNs = new List<NetworkStream>();
-		static private List<Box> listBox = new List<Box>();
+		static private Map map = new Map();
 
 		public List<UserInfo> ListUsers
 		{
@@ -33,17 +33,17 @@ namespace server
 			set { listNs = value; }
 		}
 
+		public Map Map
+		{
+			get { return map; }
+			set { map = value; }
+		}
+
 		public void Remove()
 		{
 			listBullet = new List<BulletInfo>();
 			listUsers = new List<UserInfo>();
 			listNs = new List<NetworkStream>();
-		}
-
-		public List<Box> ListBox
-		{
-			get { return listBox; }
-			set { listBox = value; }
 		}
 	}
 }
