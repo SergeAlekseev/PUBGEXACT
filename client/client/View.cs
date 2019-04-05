@@ -143,7 +143,12 @@ namespace client
 				bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 				bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X+":"+ model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 20, 2);
 
-				bufferedGraphics.Render(pictureBox);
+				foreach (Bush bush in model.Map.ListBush)
+				{
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Green, bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 12, 12);
+				}
+
+					bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
 			}
 

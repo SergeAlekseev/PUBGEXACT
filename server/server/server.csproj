@@ -55,6 +55,7 @@
     <Compile Include="Action.cs" />
     <Compile Include="Box.cs" />
     <Compile Include="BulletInfo.cs" />
+    <Compile Include="Bush.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

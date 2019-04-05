@@ -15,8 +15,9 @@ namespace client
 		int ping = 0;
 		UserInfo thisUser = new UserInfo(new Point(300, 300));
 		List<BulletInfo> listBullet = new List<BulletInfo>();
-		List<Box> box = new List<Box>();
+		Map map = new Map();
 		short lifes;
+
 
 		public bool Start = false;
 
@@ -36,6 +37,6 @@ namespace client
 		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; } }
 		public Action Action { get { return action; } set { action = value; } }
 		public int Ping { get { return ping; } set { ping = value; } }
-		public List<Box> ListBox { get { return box; } set { box = value; } }
+		public Map Map { get { return map; } set { map = value; } }
 	}
 }
