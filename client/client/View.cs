@@ -145,7 +145,7 @@ namespace client
 
 				foreach (Bush bush in model.Map.ListBush)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Green, bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 12, 12);
+					bufferedGraphics.Graphics.DrawImage(Image.FromFile(@"Picture\Bush3.png"), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
 				}
 
 					bufferedGraphics.Render(pictureBox);
