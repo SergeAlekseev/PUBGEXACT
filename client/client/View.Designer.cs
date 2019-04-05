@@ -39,7 +39,7 @@
 			// PlayingField
 			// 
 			this.PlayingField.BackColor = System.Drawing.SystemColors.ActiveCaption;
-			this.PlayingField.Location = new System.Drawing.Point(12, 12);
+			this.PlayingField.Location = new System.Drawing.Point(12, 10);
 			this.PlayingField.Name = "PlayingField";
 			this.PlayingField.Size = new System.Drawing.Size(600, 600);
 			this.PlayingField.TabIndex = 0;
@@ -60,7 +60,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(626, 631);
+			this.ClientSize = new System.Drawing.Size(624, 622);
 			this.Controls.Add(this.PlayingField);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Client";
@@ -68,7 +68,6 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).EndInit();
 			this.ResumeLayout(false);

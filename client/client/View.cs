@@ -90,52 +90,64 @@ namespace client
 			}
 		}
 
+		//private void Client_Paint(object sender, PaintEventArgs e)
+		//{
 
-		private void Form1_KeyPress(object sender, KeyPressEventArgs e)// ПРОДУМАТЬ,ШОБЕ МОЖНО БЫЛО ЗАЖИМАТЬ РАЗНЫЕ КЛАВИШИ 
-		{
+		//	if (model.ListUsers != null && Start)
+		//	{
+		//		foreach (UserInfo user in model.ListUsers)
+		//		{
+		//			if (user != null)
+		//			{
+		//				bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 3, user.userLocation.Y - 3, 6, 6);
+		//			}
+		//		}
+		//		if (model.ListUsers.Count > 0)
+		//		{
+		//			bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.ThisUser.userLocation.X - 3, model.ThisUser.userLocation.Y - 3, 6, 6);
+		//			bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
+		//		}
+		//		foreach (BulletInfo bullet in model.ListBullet)
+		//		{
+		//			bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1, bullet.location.Y - 1, 2, 2);
+		//		}
 
-			//switch (e.KeyChar)
-			//{
-			//	case 'W': case 'w': case 'Ц': case 'ц': model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
-			//	case 'S': case 's': case 'Ы': case 'ы': model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
-			//	case 'D': case 'd': case 'В': case 'в': model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
-			//	case 'A': case 'a': case 'Ф': case 'ф': model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+		//		bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 
-			//}
-		}
+		//		bufferedGraphics.Render(pictureBox);
+		//		bufferedGraphics.Graphics.Clear(DefaultBackColor);
+		//	}
 
-
+		//}
 		private void Client_Paint(object sender, PaintEventArgs e)
-
 		{
-
 			if (model.ListUsers != null && Start)
 			{
+
 				foreach (UserInfo user in model.ListUsers)
 				{
-					if (user != null)
+					if (user != null && user.userLocation != model.ThisUser.userLocation)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 3, user.userLocation.Y - 3, 6, 6);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + 300 - model.ThisUser.userLocation.X, user.userLocation.Y + 300 - model.ThisUser.userLocation.Y, 6, 6);
 					}
 				}
 				if (model.ListUsers.Count > 0)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.ThisUser.userLocation.X - 3, model.ThisUser.userLocation.Y - 3, 6, 6);
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, 300, 300, 6, 6);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 				}
 				foreach (BulletInfo bullet in model.ListBullet)
 				{
-					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1, bullet.location.Y - 1, 2, 2);
-				}
-
+					bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1 - model.ThisUser.userLocation.X, bullet.location.Y - 1 - model.ThisUser.userLocation.Y, 2, 2);
+				}			
 				bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
+				bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X+":"+ model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 20, 2);
 
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
 			}
 
 		}
-
 
 		private void timerPaint_Tick(object sender, EventArgs e)
 		{
