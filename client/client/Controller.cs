@@ -56,7 +56,8 @@ namespace client
 
 		public void WriteMouseLocation(Point mouseLocation)
 		{
-			Writing(mouseLocation,5);
+			if (threadStart)
+				Writing(mouseLocation, 5);
 		}
 
 		public Controller(Model model) // Конструктор
@@ -160,8 +161,18 @@ namespace client
 						{
 							string tmpString = Reading(nStream);
 							model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString);
+							break;
 						}
-						break;
+					case 7:
+						{
+							model.Die = true;
+							nStream.Close();
+							threadStart = false;
+							client.Close();
+							timerPing.Stop();
+							threadReading.Abort();
+							break;
+						}
 				}
 
 
@@ -198,7 +209,7 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.53.91.50", 1337);
+					client = new TcpClient("25.46.244.0", 1337);
 
 					nStream = client.GetStream();
 					threadStart = true;
@@ -207,7 +218,7 @@ namespace client
 					byte[] number = new byte[1];
 					nStream.Read(number, 0, 1);
 					model.ThisUser.userNumber = number[0];
-					
+
 				}
 				catch (System.Net.Sockets.SocketException) //не удалось подключится по заданным параметрам
 				{
@@ -215,6 +226,6 @@ namespace client
 				}
 			}
 
-		}	
+		}
 	}
 }

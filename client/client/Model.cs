@@ -17,6 +17,7 @@ namespace client
 		List<BulletInfo> listBullet = new List<BulletInfo>();
 		Map map = new Map();
 		short lifes;
+		bool die;
 
 
 		public bool Start = false;
@@ -31,6 +32,7 @@ namespace client
 			Start = true;
 		}
 
+		public bool Die { get { return die; } set { die = value; } }
 		public short Lifes { get { return lifes; } set { lifes = value; } }
 		public List<BulletInfo> ListBullet {get { return listBullet; }set { listBullet = value; }}
 		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; } }

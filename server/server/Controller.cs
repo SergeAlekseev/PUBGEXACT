@@ -169,6 +169,12 @@ namespace server
 						popad[0] = 6;
 						model.ListUsers[j].hp -= 20;
 						flagBreak = true;
+						if (model.ListUsers[j].hp <= 0)
+						{
+							byte[] flagDie = new byte[1];
+							flagDie[0] = 7;
+							model.ListNs[j].Write(flagDie,0,1);
+						}
 						break;
 					}
 				}
