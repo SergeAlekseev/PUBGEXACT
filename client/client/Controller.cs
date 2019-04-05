@@ -115,7 +115,14 @@ namespace client
 			{
 
 				byte[] typeCommand = new byte[1];
-				nStream.Read(typeCommand, 0, 1);
+				try
+				{
+					nStream.Read(typeCommand, 0, 1);
+				}
+				catch
+				{
+					break;
+				}
 
 				switch (typeCommand[0])
 				{
@@ -175,6 +182,7 @@ namespace client
 
 			if (threadStart)
 			{
+
 				nStream.Close();
 				threadStart = false;
 				client.Close();
