@@ -10,7 +10,7 @@ namespace server
 	class Zone
 	{
 		double timeTocompression;
-		double zoneRadius;
+		int zoneRadius;
 		Point zoneCenterCoordinates;
 
 		public double TimeTocompression
@@ -19,7 +19,7 @@ namespace server
 			set { timeTocompression = value; }
 		}
 
-		public double ZoneRadius
+		public int ZoneRadius
 		{
 			get { return zoneRadius; }
 			set { zoneRadius = value; }
@@ -31,25 +31,31 @@ namespace server
 			set { zoneCenterCoordinates = value; }
 		}
 
-		public void NewCenterZone(Point center, double radius) //Костыльный метод. Убрать цикл!!
+		public void NewCenterZone(Rectangle mapBorders,Point prevCenter,int prevRadius) //Костыльный метод. 
 		{
+			int minX, minY, maxX, maxY;
+			minX = prevCenter.X - prevRadius + zoneRadius;
+			minY = prevCenter.Y - prevRadius + zoneRadius;
+			maxX = prevCenter.X + prevRadius - zoneRadius;
+			maxY = prevCenter.Y + prevRadius - zoneRadius;
+			if (minX < 0) minX = 0;
+			if (minY < 0) minY = 0;
+			if (maxY > mapBorders.Width) maxY = mapBorders.Width;
+			if (maxX > mapBorders.Height) maxX = mapBorders.Height;
 			do
 			{
 				Random n = new Random();
-				zoneCenterCoordinates.X = n.Next(0, 600);
-				zoneCenterCoordinates.Y = n.Next(0, 600);
+				zoneCenterCoordinates.X = n.Next(minX, maxX);
+				zoneCenterCoordinates.Y = n.Next(minY, maxY);
 			}
-			while (Math.Pow(radius, 2) <= Math.Sqrt(Math.Pow(radius, 2) + 2 * center.X * zoneCenterCoordinates.X + (zoneCenterCoordinates.Y - center.Y) * (zoneCenterCoordinates.Y - center.Y)));
+			while (Math.Sqrt(Math.Pow(prevCenter.X-zoneCenterCoordinates.X,2)+Math.Pow(prevCenter.Y - zoneCenterCoordinates.Y, 2))> prevRadius - zoneRadius);
 		}
 
 		public void startCenterZone(Rectangle rectangle)
 		{
-
 			Random n = new Random();
-			//zoneCenterCoordinates.X = n.Next(rectangle.X, rectangle.Height);
-			//zoneCenterCoordinates.Y = n.Next(rectangle.Y, rectangle.Width);
-			zoneCenterCoordinates.X = n.Next(100);
-			zoneCenterCoordinates.Y = n.Next(100);
+			zoneCenterCoordinates.X = n.Next(rectangle.Width);
+			zoneCenterCoordinates.Y = n.Next(rectangle.Height);
 		}
 	}
 }

@@ -42,19 +42,22 @@ namespace server
 
 		private void timerZone_Tick()
 		{
-			if (model.Map.Zone.TimeTocompression > 0)
+			if (model.Map.NextZone.TimeTocompression > 0)
 			{
-				model.Map.Zone.TimeTocompression -= 1;
+				model.Map.NextZone.TimeTocompression -= 1;
 			}
 			else
 			{
-				model.Map.Zone.NewCenterZone(model.Map.Zone.ZoneCenterCoordinates, model.Map.Zone.ZoneRadius);
-				model.Map.Zone.ZoneRadius -= 150;
-				foreach (NetworkStream ns in model.ListNs)
+				model.Map.PrevZone = model.Map.NextZone;
+				model.Map.NextZone = new Zone();
+				model.Map.NextZone.ZoneRadius = (int)model.Map.PrevZone.ZoneRadius / 2;
+				model.Map.NextZone.NewCenterZone(model.Map.MapBorders, model.Map.PrevZone.ZoneCenterCoordinates, model.Map.PrevZone.ZoneRadius);//не страдает ли тут MVC?
+				for (int i = 0; i < model.ListNs.Count; i++)
 				{
-					Writing(model.Map.Zone, 9, ns);
+					if (model.ListUsers[i] != null)
+						Writing(model.Map.NextZone, 9, model.ListNs[i]);
 				}
-				model.Map.Zone.TimeTocompression = 3600;
+				model.Map.NextZone.TimeTocompression = 60;
 			}
 		}
 
@@ -260,7 +263,7 @@ namespace server
 
 			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
 			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
-			Writing(model.Map.Zone, 9, nStream); // Инфа  о стартовой зоне
+			Writing(model.Map.NextZone, 9, nStream); // Инфа  о стартовой зоне
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -408,9 +411,9 @@ namespace server
 
 		public void createdZone()
 		{
-			model.Map.Zone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
-			model.Map.Zone.TimeTocompression = 3600;
-			model.Map.Zone.ZoneRadius = 600;
+			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
+			model.Map.NextZone.TimeTocompression = 20;
+			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
 		}
 	}
 }

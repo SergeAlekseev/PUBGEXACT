@@ -9,8 +9,9 @@ namespace client
 {
 	class Zone
 	{
+
 		double timeTocompression;
-		double zoneRadius;
+		int zoneRadius;
 		Point zoneCenterCoordinates;
 
 		public double TimeTocompression
@@ -19,7 +20,7 @@ namespace client
 			set { timeTocompression = value; }
 		}
 
-		public double ZoneRadius
+		public int ZoneRadius
 		{
 			get { return zoneRadius; }
 			set { zoneRadius = value; }
@@ -44,11 +45,9 @@ namespace client
 
 		public void startCenterZone(Rectangle rectangle)
 		{
-
 			Random n = new Random();
-			zoneCenterCoordinates.X = n.Next(rectangle.X, rectangle.Height);
-			zoneCenterCoordinates.Y = n.Next(rectangle.Y, rectangle.Width);
-
+			zoneCenterCoordinates.X = n.Next(rectangle.Width);
+			zoneCenterCoordinates.Y = n.Next(rectangle.Height);
 		}
 	}
 }

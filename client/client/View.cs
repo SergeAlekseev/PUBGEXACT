@@ -117,11 +117,12 @@ namespace client
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
-						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20,20,null,IntPtr.Zero), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
+						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20,20,null,IntPtr.Zero), bush.Location.X + 300 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - 3 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - 3 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width+3, model.Map.MapBorders.Height+3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.Zone.ZoneCenterCoordinates.X + 300 - 3 - model.ThisUser.userLocation.X, model.Map.Zone.ZoneCenterCoordinates.Y + 300 - 3 - model.ThisUser.userLocation.Y, (float)model.Map.Zone.ZoneRadius, (float)model.Map.Zone.ZoneRadius);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width+3, model.Map.MapBorders.Height+3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius*2, (float)model.Map.NextZone.ZoneRadius*2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
 				}
 				else
 				{

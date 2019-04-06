@@ -11,8 +11,9 @@ namespace client
 	{
 		List<Box> listBox = new List<Box>();
 		List<Bush> listBush = new List<Bush>();
-		Rectangle mapBorders = new Rectangle();
-		Zone zone = new Zone();
+		Rectangle mapBorders = new Rectangle(0, 0, 600, 600);
+		Zone nextZone = new Zone();
+		Zone prevZone = new Zone();
 
 		public List<Box> ListBox
 		{
@@ -32,10 +33,16 @@ namespace client
 			set { mapBorders = value; }
 		}
 
-		public Zone Zone
+		public Zone NextZone
 		{
-			get { return zone; }
-			set { zone = value; }
+			get { return nextZone; }
+			set { nextZone = value; }
+		}
+
+		public Zone PrevZone
+		{
+			get { return prevZone; }
+			set { prevZone = value; }
 		}
 	}
 }
