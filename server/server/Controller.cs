@@ -61,6 +61,33 @@ namespace server
 			}
 		}
 
+		private void timerUsersInZone_Tick()
+		{
+			for (int i = 0; i < model.ListUsers.Count; i++)
+			{
+				if (model.ListUsers[i] != null)
+				{
+					if (Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.NextZone.ZoneCenterCoordinates.Y, 2)) > model.Map.NextZone.ZoneRadius)
+					{
+						model.ListUsers[i].flagZone = true;						
+					}
+					else model.ListUsers[i].flagZone = false;
+
+					if (model.Map.PrevZone!=null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
+					{
+						model.ListUsers[i].hp -= 2;
+						if (model.ListUsers[i].hp <= 0)
+						{
+							byte[] flagDie = new byte[1];
+							flagDie[0] = 7;
+							model.ListNs[i].Write(flagDie, 0, 1);
+						}
+					}
+					
+				}
+			}
+		}
+
 		public void start()
 		{
 			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer));
@@ -83,6 +110,11 @@ namespace server
 				timerZone.Interval = 1000;
 				timerZone.Elapsed += (x, y) => { timerZone_Tick(); };
 				timerZone.Start();
+
+				System.Timers.Timer timerUsersInZone = new System.Timers.Timer();
+				timerUsersInZone.Interval = 1000;
+				timerUsersInZone.Elapsed += (x, y) => { timerUsersInZone_Tick(); };
+				timerUsersInZone.Start();
 
 				while (workingServer)
 				{

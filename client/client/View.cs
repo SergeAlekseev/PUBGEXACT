@@ -107,6 +107,7 @@ namespace client
 					{
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, 300 - 3, 300 - 3, 6, 6);
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
+						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + 300 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + 300 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.ThisUser.userLocation.Y);
 					}
 					foreach (BulletInfo bullet in model.ListBullet)
 					{
@@ -117,12 +118,14 @@ namespace client
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
-						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20,20,null,IntPtr.Zero), bush.Location.X + 300 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20, 20, null, IntPtr.Zero), bush.Location.X + 300 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width+3, model.Map.MapBorders.Height+3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius*2, (float)model.Map.NextZone.ZoneRadius*2);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
 					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
+
+
 				}
 				else
 				{

@@ -14,6 +14,7 @@ namespace server
 		public Point userLocation;
 		public bool flagShoting;
 		public bool flagWaitShoting;
+		public bool flagZone;
 		public Point mouseLocation;
 
 		public UserInfo(Point userLocation)
