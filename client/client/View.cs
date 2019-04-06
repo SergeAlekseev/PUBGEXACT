@@ -90,35 +90,6 @@ namespace client
 			}
 		}
 
-		//private void Client_Paint(object sender, PaintEventArgs e)
-		//{
-
-		//	if (model.ListUsers != null && Start)
-		//	{
-		//		foreach (UserInfo user in model.ListUsers)
-		//		{
-		//			if (user != null)
-		//			{
-		//				bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X - 3, user.userLocation.Y - 3, 6, 6);
-		//			}
-		//		}
-		//		if (model.ListUsers.Count > 0)
-		//		{
-		//			bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.ThisUser.userLocation.X - 3, model.ThisUser.userLocation.Y - 3, 6, 6);
-		//			bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
-		//		}
-		//		foreach (BulletInfo bullet in model.ListBullet)
-		//		{
-		//			bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X - 1, bullet.location.Y - 1, 2, 2);
-		//		}
-
-		//		bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
-
-		//		bufferedGraphics.Render(pictureBox);
-		//		bufferedGraphics.Graphics.Clear(DefaultBackColor);
-		//	}
-
-		//}
 		private void Client_Paint(object sender, PaintEventArgs e)
 		{
 			if (model.ListUsers != null && Start)
@@ -148,14 +119,14 @@ namespace client
 					{
 						bufferedGraphics.Graphics.DrawImage(client.Properties.Resources.Bush3.GetThumbnailImage(20,20,null,IntPtr.Zero), bush.Location.X + 300 - 6 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 6 - model.ThisUser.userLocation.Y, 20, 20);
 					}
+
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - 3 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - 3 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width+3, model.Map.MapBorders.Height+3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.Zone.ZoneCenterCoordinates.X + 300 - 3 - model.ThisUser.userLocation.X, model.Map.Zone.ZoneCenterCoordinates.Y + 300 - 3 - model.ThisUser.userLocation.Y, (float)model.Map.Zone.ZoneRadius, (float)model.Map.Zone.ZoneRadius);
 				}
 				else
 				{
-
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, 600, 600);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
-
-					
 
 				}
 				bufferedGraphics.Render(pictureBox);

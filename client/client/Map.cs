@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace client
 	{
 		List<Box> listBox = new List<Box>();
 		List<Bush> listBush = new List<Bush>();
+		Rectangle mapBorders = new Rectangle();
+		Zone zone = new Zone();
 
 		public List<Box> ListBox
 		{
@@ -21,6 +24,18 @@ namespace client
 		{
 			get { return listBush; }
 			set { listBush = value; }
+		}
+
+		public Rectangle MapBorders
+		{
+			get { return mapBorders; }
+			set { mapBorders = value; }
+		}
+
+		public Zone Zone
+		{
+			get { return zone; }
+			set { zone = value; }
 		}
 	}
 }

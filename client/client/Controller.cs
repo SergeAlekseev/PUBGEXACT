@@ -173,6 +173,18 @@ namespace client
 							threadReading.Abort();
 							break;
 						}
+					case 8:
+						{
+							string tmpString = Reading(nStream);
+							model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString);
+							break;
+						}
+					case 9:
+						{
+							string tmpString = Reading(nStream);
+							model.Map.Zone = JsonConvert.DeserializeObject<Zone>(tmpString);
+							break;
+						}
 				}
 
 
@@ -209,7 +221,7 @@ namespace client
 			{
 				try
 				{
-					client = new TcpClient("25.46.244.0", 1337);
+					client = new TcpClient("25.53.91.50", 1337);
 
 					nStream = client.GetStream();
 					threadStart = true;

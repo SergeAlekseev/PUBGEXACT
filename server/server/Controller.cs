@@ -33,10 +33,28 @@ namespace server
 		{
 			if (workingThread)
 			{
-				if (model.ListUsers[num].userLocation.Y != 0 && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
-				if (model.ListUsers[num].userLocation.Y != 600 && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
-				if (model.ListUsers[num].userLocation.X != 0 && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
-				if (model.ListUsers[num].userLocation.X != 600 && (moveRight)) model.ListUsers[num].userLocation.X += 1;// Вправо	
+				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Y && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
+				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Width && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
+				if (model.ListUsers[num].userLocation.X != model.Map.MapBorders.X && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
+				if (model.ListUsers[num].userLocation.X != model.Map.MapBorders.Height && (moveRight)) model.ListUsers[num].userLocation.X += 1;// Вправо	
+			}
+		}
+
+		private void timerZone_Tick()
+		{
+			if (model.Map.Zone.TimeTocompression > 0)
+			{
+				model.Map.Zone.TimeTocompression -= 1;
+			}
+			else
+			{
+				model.Map.Zone.NewCenterZone(model.Map.Zone.ZoneCenterCoordinates, model.Map.Zone.ZoneRadius);
+				model.Map.Zone.ZoneRadius -= 150;
+				foreach (NetworkStream ns in model.ListNs)
+				{
+					Writing(model.Map.Zone, 9, ns);
+				}
+				model.Map.Zone.TimeTocompression = 3600;
 			}
 		}
 
@@ -55,7 +73,13 @@ namespace server
 				PublicHost = host;
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
+				createdZone();
 				workingServer = true;
+
+				System.Timers.Timer timerZone = new System.Timers.Timer();
+				timerZone.Interval = 1000;
+				timerZone.Elapsed += (x, y) => { timerZone_Tick(); };
+				timerZone.Start();
 
 				while (workingServer)
 				{
@@ -173,7 +197,7 @@ namespace server
 						{
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
-							model.ListNs[j].Write(flagDie,0,1);
+							model.ListNs[j].Write(flagDie, 0, 1);
 						}
 						break;
 					}
@@ -235,6 +259,8 @@ namespace server
 			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
 
 			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
+			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			Writing(model.Map.Zone, 9, nStream); // Инфа  о стартовой зоне
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -378,6 +404,13 @@ namespace server
 			listBush.Add(new Bush(340, 150));
 
 			Writing(listBush, 6, ns);
+		}
+
+		public void createdZone()
+		{
+			model.Map.Zone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
+			model.Map.Zone.TimeTocompression = 3600;
+			model.Map.Zone.ZoneRadius = 600;
 		}
 	}
 }
