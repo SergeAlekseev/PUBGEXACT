@@ -18,7 +18,7 @@ namespace client
 		Map map = new Map();
 		short lifes;
 		bool die;
-
+		Image[] images = new Image[8];
 
 		public bool Start = false;
 
@@ -32,6 +32,7 @@ namespace client
 			Start = true;
 		}
 
+		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }
 		public short Lifes { get { return lifes; } set { lifes = value; } }
 		public List<BulletInfo> ListBullet {get { return listBullet; }set { listBullet = value; }}

@@ -222,8 +222,8 @@ namespace client
 			{
 				try
 				{
+					
 					client = new TcpClient("25.46.244.0", 1337);
-
 					nStream = client.GetStream();
 					threadStart = true;
 					threadReading = new Thread(ReadingStream);
