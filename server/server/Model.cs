@@ -10,10 +10,10 @@ namespace server
 {
 	class Model
 	{
-		static private List<BulletInfo> listBullet =new List<BulletInfo>();
-		static private List<UserInfo> listUsers = new List<UserInfo>();
-		static private List<NetworkStream> listNs = new List<NetworkStream>();
-		static private Map map = new Map();
+		private List<BulletInfo> listBullet =new List<BulletInfo>();
+		private List<UserInfo> listUsers = new List<UserInfo>();
+		private List<NetworkStream> listNs = new List<NetworkStream>();
+		private Map map = new Map();
 
 		public List<UserInfo> ListUsers
 		{

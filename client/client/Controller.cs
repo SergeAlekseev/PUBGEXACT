@@ -22,6 +22,9 @@ namespace client
 		public delegate void CloseD();
 		public event CloseD CloseEvent;
 
+		public delegate void ErrorConnectD();
+		public event ErrorConnectD ErrorConnect;
+
 		Model model;
 
 		TcpClient client;// 25.46.244.0 
@@ -216,22 +219,27 @@ namespace client
 			}
 		}
 
-		public void Connect()// Controller
+		public void Connect(string ip)// Controller
 		{
 			if (!threadStart)
 			{
 				try
 				{
-					
-					client = new TcpClient("25.46.244.0", 1337);
-					nStream = client.GetStream();
-					threadStart = true;
-					threadReading = new Thread(ReadingStream);
-					threadReading.Start();
-					byte[] number = new byte[1];
-					nStream.Read(number, 0, 1);
-					model.ThisUser.userNumber = number[0];
-
+					try
+					{
+						client = new TcpClient(ip, 1337);
+						nStream = client.GetStream();
+						threadStart = true;
+						threadReading = new Thread(ReadingStream);
+						threadReading.Start();
+						byte[] number = new byte[1];
+						nStream.Read(number, 0, 1);
+						model.ThisUser.userNumber = number[0];
+					}
+					catch
+					{
+						ErrorConnect();
+					}
 				}
 				catch (System.Net.Sockets.SocketException) //не удалось подключится по заданным параметрам
 				{

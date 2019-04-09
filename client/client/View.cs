@@ -17,7 +17,7 @@ namespace client
 {
 	public partial class Client : Form
 	{
-		public delegate void ConnectD();
+		public delegate void ConnectD(string ip);
 		public event ConnectD ConnectEvent;
 
 		public delegate void DisconnectD();
@@ -65,10 +65,16 @@ namespace client
 			MouseLocatinEvent += controller.WriteMouseLocation;
 
 			controller.CloseFormEvent += Client_FormClosing;
-			controller.CloseEvent += ErrorOfConnect;
+			controller.CloseEvent += AllClose;
+			controller.ErrorConnect += ErrorConnect;
 		}
 
-		private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
+		public void ErrorConnect()
+		{
+			MessageBox.Show("Неверно введен IP");
+		}
+
+			private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
 		{
 			switch (e.KeyCode)
 			{
@@ -151,15 +157,10 @@ namespace client
 
 		private void PlayingField_Click(object sender, EventArgs e) //Вызвать событие в Controller
 		{
-			if (!Start)
-			{
-				ConnectEvent();
-				Start = true;
-			}
 
 		}
 
-		public void ErrorOfConnect()
+		public void AllClose()
 		{
 			BeginInvoke(new MethodInvoker(delegate
 			{
@@ -199,6 +200,15 @@ namespace client
 				model.Images[0] = client.Properties.Resources.Bush3.GetThumbnailImage(20, 20, null, IntPtr.Zero);
 			}
 
+		}
+
+		private void Connect_Click(object sender, EventArgs e)
+		{
+			if (!Start)
+			{
+				ConnectEvent(ip.Text);
+				Start = true;
+			}
 		}
 	}
 }
