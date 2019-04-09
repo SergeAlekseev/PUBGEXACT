@@ -219,7 +219,7 @@ namespace client
 			}
 		}
 
-		public void Connect(string ip)// Controller
+		public bool Connect(string ip)// Controller
 		{
 			if (!threadStart)
 			{
@@ -235,10 +235,12 @@ namespace client
 						byte[] number = new byte[1];
 						nStream.Read(number, 0, 1);
 						model.ThisUser.userNumber = number[0];
+						return true;
 					}
 					catch
 					{
 						ErrorConnect();
+						return false;
 					}
 				}
 				catch (System.Net.Sockets.SocketException) //не удалось подключится по заданным параметрам
@@ -246,6 +248,7 @@ namespace client
 					CloseEvent();
 				}
 			}
+			return false;
 
 		}
 	}

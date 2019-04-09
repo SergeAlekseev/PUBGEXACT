@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,7 +18,7 @@ namespace client
 {
 	public partial class Client : Form
 	{
-		public delegate void ConnectD(string ip);
+		public delegate bool ConnectD(string ip);
 		public event ConnectD ConnectEvent;
 
 		public delegate void DisconnectD();
@@ -74,7 +75,7 @@ namespace client
 			MessageBox.Show("Неверно введен IP");
 		}
 
-			private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
+		private void Form1_KeyDown(object sender, KeyEventArgs e) //Обработчик нажатия на кнопку 
 		{
 			switch (e.KeyCode)
 			{
@@ -93,6 +94,26 @@ namespace client
 				case Keys.S: model.Action.actionThishUser = Action.action.stopDown; ActionEvent(); break;
 				case Keys.D: model.Action.actionThishUser = Action.action.stopRight; ActionEvent(); break;
 				case Keys.A: model.Action.actionThishUser = Action.action.stopLeft; ActionEvent(); break;
+			}
+		}
+
+		private void SelectionOfLetters(object sender, EventArgs e)
+		{
+			string pattern = @"^[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}$";
+			Regex regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
+			TextBox R = sender as TextBox;
+			if (!regex.IsMatch(R.Text))
+			{ R.Text = "00-ААаа-0а"; }
+			else
+			{ }
+		}
+
+		private void KeyPress(object sender, KeyPressEventArgs e)
+		{
+			char l = e.KeyChar;
+			if ((l < '0' || l > '9') && l != '\b' && l != '.')
+			{
+				e.Handled = true;
 			}
 		}
 
@@ -206,8 +227,8 @@ namespace client
 		{
 			if (!Start)
 			{
-				ConnectEvent(ip.Text);
-				Start = true;
+				if (ConnectEvent(ip.Text))
+					Start = true;
 			}
 		}
 	}
