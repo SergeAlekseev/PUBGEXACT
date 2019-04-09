@@ -103,7 +103,7 @@ namespace client
 			Regex regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
 			TextBox R = sender as TextBox;
 			if (!regex.IsMatch(R.Text))
-			{ R.Text = "00-ААаа-0а"; }
+			{ R.Text = "25.46.244.0"; }
 			else
 			{ }
 		}
