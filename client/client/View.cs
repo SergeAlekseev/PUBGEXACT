@@ -44,9 +44,10 @@ namespace client
 		bool MouseDown = false;
 
 
-		public Client()
+		public Client(string Name,string Pass)
 		{
 			InitializeComponent();
+
 			timerPaint.Interval = 10;
 			timerPaint.Start();
 			timerMouseLocation.Interval = 40;
@@ -58,6 +59,7 @@ namespace client
 			bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
 			model.ThisUser = new UserInfo(new Point(300, 300));
+			controller.JoinUser(Name, Pass);
 
 			ActionEvent += controller.PressKey;
 			ConnectEvent += controller.Connect;
@@ -225,11 +227,17 @@ namespace client
 
 		private void Connect_Click(object sender, EventArgs e)
 		{
+			Name.Text = model.ThisUser.Name;
 			if (!Start)
 			{
 				if (ConnectEvent(ip.Text))
 					Start = true;
 			}
+		}
+
+		private void Client_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Application.Exit();
 		}
 	}
 }

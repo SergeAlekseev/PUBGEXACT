@@ -36,6 +36,12 @@ namespace client
 
 		System.Timers.Timer timerPing = new System.Timers.Timer();
 
+		public void JoinUser(string Name, string Password)
+		{
+			model.ThisUser.Name = Name;
+			model.ThisUser.Password = Password;
+		}
+
 		public void Shot(byte type)
 		{
 			if (threadStart)

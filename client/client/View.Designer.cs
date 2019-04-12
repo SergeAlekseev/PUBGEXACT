@@ -36,6 +36,7 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.ip = new System.Windows.Forms.ToolStripTextBox();
 			this.Connect = new System.Windows.Forms.ToolStripMenuItem();
+			this.Name = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -87,18 +88,28 @@
 			this.Connect.Text = "Connect";
 			this.Connect.Click += new System.EventHandler(this.Connect_Click);
 			// 
+			// Name
+			// 
+			this.Name.AutoSize = true;
+			this.Name.Location = new System.Drawing.Point(377, 9);
+			this.Name.Name = "Name";
+			this.Name.Size = new System.Drawing.Size(35, 13);
+			this.Name.TabIndex = 2;
+			this.Name.Text = "label1";
+			// 
 			// Client
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(624, 639);
+			this.Controls.Add(this.Name);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.PlayingField);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
-			this.Name = "Client";
 			this.Text = "Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Client_FormClosed);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
@@ -118,6 +129,7 @@
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripTextBox ip;
 		private System.Windows.Forms.ToolStripMenuItem Connect;
+		private System.Windows.Forms.Label Name;
 	}
 }
 
