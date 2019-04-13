@@ -19,6 +19,9 @@ namespace server
 		public delegate void StartServerD();
 		public event StartServerD StartServerEvent;
 
+		public delegate void StartGameD();
+		public event StartGameD StartGameEvent;
+
 		public delegate void StopServerD();
 		public event StopServerD StopServerEvent;
 
@@ -31,6 +34,7 @@ namespace server
 
 			StopServerEvent += controller.StopServer;
 			StartServerEvent += controller.start;
+			StartGameEvent += controller.StartGame;
 		}
 
 		private void start_Click(object sender, EventArgs e)
@@ -49,6 +53,13 @@ namespace server
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StopServerEvent();
+		}
+
+		private void startGame_Click(object sender, EventArgs e)
+		{
+			StartGameEvent();
+
+			status.Text = "Идёт игра";
 		}
 	}
 }

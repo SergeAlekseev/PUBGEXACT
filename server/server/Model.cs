@@ -15,11 +15,18 @@ namespace server
 		List<NetworkStream> listNs = new List<NetworkStream>();
 		Map map = new Map();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
+		List<Item> items = new List<Item>();
 
 		public List<GeneralInfo> ListGInfo
 		{
 			get { return listGInfo; }
 			set { listGInfo = value; }
+		}
+
+		public List<Item> Items
+		{
+			get { return items; }
+			set { items = value; }
 		}
 
 		public List<UserInfo> ListUsers
@@ -51,6 +58,9 @@ namespace server
 			listBullet = new List<BulletInfo>();
 			listUsers = new List<UserInfo>();
 			listNs = new List<NetworkStream>();
+			listGInfo = new List<GeneralInfo>();
+			items = new List<Item>();
+			map = new Map();
 		}
 	}
 }

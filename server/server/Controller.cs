@@ -15,7 +15,7 @@ namespace server
 	class Controller
 	{
 
-
+		bool workingGame;
 		bool workingThread;
 		bool workingServer;
 		short number; //Model
@@ -25,19 +25,50 @@ namespace server
 		TcpListener PublicHost2;
 		System.Timers.Timer timerZone, timerUsersInZone;
 
+		public void StartGame()
+		{
+			if (!workingGame && workingServer)
+			{
+				workingGame = true;
+
+				createdZone();
+
+				for (int i = 0; i < model.ListNs.Count; i++)
+				{
+					if (model.ListUsers[i] != null)
+						Writing(model.Map.NextZone, 9, model.ListNs[i]); // Инфа  о стартовой зоне
+				}
+
+				timerZone = new System.Timers.Timer();
+				timerZone.Interval = 1000;
+				timerZone.Elapsed += (x, y) => { timerZone_Tick(); };
+				timerZone.Start();
+
+				timerUsersInZone = new System.Timers.Timer();
+				timerUsersInZone.Interval = 1000;
+				timerUsersInZone.Elapsed += (x, y) => { timerUsersInZone_Tick(); };
+				timerUsersInZone.Start();
+			}
+		}
+
 		public Controller(Model model)
 		{
 			this.model = model;
 		}
 
-		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, int num) //Здесь будет выполняться перемещение игрока
+		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, bool shift, int num) //Здесь будет выполняться перемещение игрока
 		{
-			if (workingThread && model.ListUsers[num] != null)
+			byte speed = 1;
+			if (shift)
 			{
-				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Y && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
-				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Width && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
-				if (model.ListUsers[num].userLocation.X != model.Map.MapBorders.X && (moveLeft)) model.ListUsers[num].userLocation.X -= 1; //Влево
-				if (model.ListUsers[num].userLocation.X != model.Map.MapBorders.Height && (moveRight)) model.ListUsers[num].userLocation.X += 1;// Вправо	
+				speed *= 2;
+			}
+			if (workingGame && model.ListUsers[num] != null)
+			{
+				if (model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1 && (moveUp)) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+				if (model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1 && (moveDown)) model.ListUsers[num].userLocation.Y += speed; //Вверх
+				if (model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1 && (moveLeft)) model.ListUsers[num].userLocation.X -= speed; //Влево
+				if (model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1 && (moveRight)) model.ListUsers[num].userLocation.X += speed;// Вправо	
 			}
 		}
 
@@ -97,9 +128,13 @@ namespace server
 
 		public void StartServer(object tmpObject)//Controller
 		{
-			
+
 			if (!workingServer)
 			{
+				workingServer = true;
+
+				Random random = new Random();
+
 				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
 
@@ -109,21 +144,11 @@ namespace server
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
 				menuConnecting.Start(host2);
 
+				RandomBushs();
+
 				PublicHost = host;
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
-				createdZone();
-				workingServer = true;
-
-				timerZone = new System.Timers.Timer();
-				timerZone.Interval = 1000;
-				timerZone.Elapsed += (x, y) => { timerZone_Tick(); };
-				timerZone.Start();
-
-				timerUsersInZone = new System.Timers.Timer();
-				timerUsersInZone.Interval = 1000;
-				timerUsersInZone.Elapsed += (x, y) => { timerUsersInZone_Tick(); };
-				timerUsersInZone.Start();
 
 				while (workingServer)
 				{
@@ -141,7 +166,7 @@ namespace server
 					}
 					number++;
 
-					UserInfo userInfoTmp = new UserInfo(new Point(0, 0));
+					UserInfo userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
 					userInfoTmp.userNumber = number;
 
 					lock (model.ListUsers)
@@ -160,23 +185,9 @@ namespace server
 			}
 		}
 
-		public void MenuConnecting(object tc)//Controller
-		{
-			while (workingServer)
-			{
-				try {
-					(tc as TcpListener).AcceptTcpClient();
 
-				}
-				catch
-				{
-					break;
-				}
-			}
-			
-		}
 
-			public void StopServer()//Controller
+		public void StopServer()
 		{
 			if (workingServer)
 			{
@@ -184,8 +195,12 @@ namespace server
 				workingThread = false;
 				PublicHost.Stop();
 				PublicHost2.Stop();
-				timerUsersInZone.Close();
-				timerZone.Close();
+				if (workingGame)
+				{
+					timerUsersInZone.Close();
+					timerZone.Close();
+				}
+				workingGame = false;
 				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in model.ListNs)
 				{
@@ -197,8 +212,33 @@ namespace server
 					}
 					catch { }
 				}
-
+				model.Remove();
 			}
+		}
+
+		public void RandomBushs()
+		{
+			Random random = new Random();
+			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 10000; i++)
+			{
+				model.Map.ListBush.Add(new Bush(random.Next(model.Map.MapBorders.Width), random.Next(model.Map.MapBorders.Height)));
+			}
+		}
+
+		public void MenuConnecting(object tc)//Controller
+		{
+			while (workingServer)
+			{
+				try
+				{
+					(tc as TcpListener).AcceptTcpClient();
+				}
+				catch
+				{
+					break;
+				}
+			}
+
 		}
 
 		public void ShotUser(object ui)//Controller
@@ -302,6 +342,11 @@ namespace server
 			bool moveDown = false;
 			bool moveLeft = false;
 			bool moveRight = false;
+			bool shift = false;
+
+			bool PrivateWorkingThread = true;
+
+			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
 
 			TcpClient tcp = (TcpClient)tc;
 			NetworkStream nStream = tcp.GetStream();
@@ -311,21 +356,13 @@ namespace server
 			numberUser[0] = (byte)num;
 			nStream.Write(numberUser, 0, 1);
 
-			int countReadingBytes = 0;
-			bool PrivateWorkingThread = true;
-
-			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
+			Writing(model.Map.ListBush, 6, nStream); // Отправку инфы о кустах
 			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
-			Writing(model.Map.NextZone, 9, nStream); // Инфа  о стартовой зоне
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
-			timerMove.Interval = 20;
-			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, num); };
+			timerMove.Interval = 15;
+			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, shift, num); };
 			timerMove.Start();
-
-			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
-
-
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -346,12 +383,13 @@ namespace server
 									case Action.action.moveDown: moveDown = true; break;
 									case Action.action.noveLeft: moveLeft = true; break;
 									case Action.action.moveRight: moveRight = true; break;
+									case Action.action.shiftDown: shift = true; break;
 
 									case Action.action.stopUp: moveUp = false; break;
 									case Action.action.stopDown: moveDown = false; break;
 									case Action.action.stopLeft: moveLeft = false; break;
 									case Action.action.stopRight: moveRight = false; break;
-
+									case Action.action.shiftUp: shift = false; break;
 								}
 
 								break;
@@ -369,7 +407,7 @@ namespace server
 						case 3:
 							{
 								string tmpString = Reading(nStream);
-								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting)
+								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting && workingGame)
 								{
 									model.ListUsers[num].flagShoting = true;
 									Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
@@ -433,11 +471,14 @@ namespace server
 				}
 				catch (System.IO.IOException)
 				{
-					model.ListUsers[num].flagShoting = false;
-					lock (model.ListUsers)
+					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
 					{
-						model.ListUsers.RemoveAt(num);
-						model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+						model.ListUsers[num].flagShoting = false;
+						lock (model.ListUsers)
+						{
+							model.ListUsers.RemoveAt(num);
+							model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+						}
 					}
 					PrivateWorkingThread = false;
 					timerMove.Stop();
@@ -503,7 +544,7 @@ namespace server
 		public void createdZone()
 		{
 			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
-			model.Map.NextZone.TimeTocompression = 20;
+			model.Map.NextZone.TimeTocompression = 120;
 			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
 		}
 
