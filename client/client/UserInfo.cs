@@ -9,9 +9,6 @@ namespace client
 {
 	class UserInfo
 	{
-		public string Name;
-		public string Password;
-
 		public short hp = 100;
 		public short userNumber;
 		public Point userLocation;

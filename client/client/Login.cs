@@ -19,7 +19,7 @@ namespace client
 
 		private void Join_Click(object sender, EventArgs e)
 		{
-			MyMenu form = new MyMenu(Name.Text, Pass.Text);
+			MyMenu form = new MyMenu(tName.Text, Pass.Text,ip.Text);
 			form.Show();
 			this.Hide();
 		}

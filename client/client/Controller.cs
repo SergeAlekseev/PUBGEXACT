@@ -38,8 +38,8 @@ namespace client
 
 		public void JoinUser(string Name, string Password)
 		{
-			model.ThisUser.Name = Name;
-			model.ThisUser.Password = Password;
+			model.GInfo.Name = Name;
+			model.GInfo.Password = Password;
 		}
 
 		public void Shot(byte type)
@@ -195,6 +195,13 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
+					//case 10:
+					//	{
+					//		string tmpString = Reading(nStream);
+					//		model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+					//		model.ThisUser = model.ListUsers[model.ListUsers.Count - 1];
+					//		break;
+					//	}
 				}
 
 
@@ -255,7 +262,6 @@ namespace client
 				}
 			}
 			return false;
-
 		}
 	}
 }

@@ -10,10 +10,17 @@ namespace server
 {
 	class Model
 	{
-		private List<BulletInfo> listBullet =new List<BulletInfo>();
-		private List<UserInfo> listUsers = new List<UserInfo>();
-		private List<NetworkStream> listNs = new List<NetworkStream>();
-		private Map map = new Map();
+		List<BulletInfo> listBullet = new List<BulletInfo>();
+		List<UserInfo> listUsers = new List<UserInfo>();
+		List<NetworkStream> listNs = new List<NetworkStream>();
+		Map map = new Map();
+		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
+
+		public List<GeneralInfo> ListGInfo
+		{
+			get { return listGInfo; }
+			set { listGInfo = value; }
+		}
 
 		public List<UserInfo> ListUsers
 		{

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -69,11 +70,11 @@ namespace server
 				{
 					if (Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.NextZone.ZoneCenterCoordinates.Y, 2)) > model.Map.NextZone.ZoneRadius)
 					{
-						model.ListUsers[i].flagZone = true;						
+						model.ListUsers[i].flagZone = true;
 					}
 					else model.ListUsers[i].flagZone = false;
 
-					if (model.Map.PrevZone!=null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
+					if (model.Map.PrevZone != null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
 					{
 						model.ListUsers[i].hp -= 2;
 						if (model.ListUsers[i].hp <= 0)
@@ -83,7 +84,7 @@ namespace server
 							model.ListNs[i].Write(flagDie, 0, 1);
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -367,7 +368,35 @@ namespace server
 						case 5:
 							{
 								string tmpString = Reading(nStream);
-								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString); ;
+								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
+								break;
+							}
+						case 10:
+							{
+								string tmpString = Reading(nStream);
+
+								GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
+								GeneralInfo tmpUser = PlayerCheck(PlayerRead(), newUser);
+								if (tmpUser == null && model.ListGInfo.Count <= 0)
+								{
+									model.ListGInfo[0].Name = newUser.Name;
+									model.ListGInfo[0].Password = newUser.Password;
+
+									PlayerSave(model.ListGInfo);
+								}
+								else if (tmpUser == null && model.ListGInfo.Count > 0)
+								{
+									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
+									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+
+									PlayerSave(model.ListGInfo);
+								}
+								else
+								{
+									model.ListGInfo = PlayerRead();
+									Writing(model.ListUsers, 10, nStream);
+									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
+								}
 								break;
 							}
 					}
@@ -446,6 +475,41 @@ namespace server
 			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
 			model.Map.NextZone.TimeTocompression = 20;
 			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
+		}
+
+		public void PlayerSave(List<GeneralInfo> listUser) //Пока что положу сюда UserInfo, но нужно будет потом выделить отдельный класс под инфу об игроке для логина
+		{
+			string json = JsonConvert.SerializeObject(listUser, Formatting.Indented);
+			FileInfo fl = new FileInfo(@"UsersData/UsersInfo.json");
+			StreamWriter sw;
+			sw = fl.AppendText();
+			sw.WriteLine(json);
+			sw.Close();
+		}
+
+
+		/// <returns>Возвращает истину, если было найдено совпадение</returns>
+		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
+		{
+			if(listUser!=null)
+			foreach (GeneralInfo user in listUser)
+			{
+				if (user.Name == newUser.Name) return user;
+			}
+
+			return null;
+		}
+
+		public List<GeneralInfo> PlayerRead()
+		{
+			try
+			{
+				return JsonConvert.DeserializeObject<List<GeneralInfo>>(File.ReadAllText(@"UsersData/UsersInfo.json"));
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 	}
 }

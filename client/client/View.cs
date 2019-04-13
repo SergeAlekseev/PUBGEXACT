@@ -44,7 +44,7 @@ namespace client
 		bool MouseDown = false;
 
 
-		public Client(string Name,string Pass)
+		public Client(string Name,string Pass, string ip)
 		{
 			InitializeComponent();
 
@@ -61,11 +61,16 @@ namespace client
 			model.ThisUser = new UserInfo(new Point(300, 300));
 			controller.JoinUser(Name, Pass);
 
+			InfoName.Text = model.GInfo.Name;
+
 			ActionEvent += controller.PressKey;
 			ConnectEvent += controller.Connect;
 			DisconnectEvent += controller.Disconnect;
 			ShotEvent += controller.Shot;
 			MouseLocatinEvent += controller.WriteMouseLocation;
+
+			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
+			Start = true;
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -104,10 +109,10 @@ namespace client
 			string pattern = @"^[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}$";
 			Regex regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
 			TextBox R = sender as TextBox;
-			if (!regex.IsMatch(R.Text))
-			{ R.Text = "25.46.244.0"; }
-			else
-			{ }
+			//if (!regex.IsMatch(R.Text))
+			//{ R.Text = ip.Text; }
+			//else
+			//{ }
 		}
 
 		private void KeyPress(object sender, KeyPressEventArgs e)
@@ -225,15 +230,15 @@ namespace client
 
 		}
 
-		private void Connect_Click(object sender, EventArgs e)
-		{
-			Name.Text = model.ThisUser.Name;
-			if (!Start)
-			{
-				if (ConnectEvent(ip.Text))
-					Start = true;
-			}
-		}
+		//private void Connect_Click(object sender, EventArgs e)
+		//{
+		//	InfoName.Text = model.GInfo.Name;
+		//	if (!Start)
+		//	{
+		//		if (ConnectEvent(ip.Text))
+		//			Start = true;
+		//	}
+		//}
 
 		private void Client_FormClosed(object sender, FormClosedEventArgs e)
 		{
