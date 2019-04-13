@@ -32,21 +32,24 @@
 			this.start = new System.Windows.Forms.Button();
 			this.stop = new System.Windows.Forms.Button();
 			this.status = new System.Windows.Forms.Label();
+			this.startGame = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// start
 			// 
-			this.start.Location = new System.Drawing.Point(116, 190);
+			this.start.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.start.Location = new System.Drawing.Point(90, 190);
 			this.start.Name = "start";
-			this.start.Size = new System.Drawing.Size(75, 23);
+			this.start.Size = new System.Drawing.Size(101, 23);
 			this.start.TabIndex = 0;
-			this.start.Text = "Старт";
+			this.start.Text = "Старт сервер";
 			this.start.UseVisualStyleBackColor = true;
 			this.start.Click += new System.EventHandler(this.start_Click);
 			// 
 			// stop
 			// 
-			this.stop.Location = new System.Drawing.Point(260, 190);
+			this.stop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.stop.Location = new System.Drawing.Point(289, 190);
 			this.stop.Name = "stop";
 			this.stop.Size = new System.Drawing.Size(75, 23);
 			this.stop.TabIndex = 1;
@@ -57,17 +60,30 @@
 			// status
 			// 
 			this.status.AutoSize = true;
+			this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.status.Location = new System.Drawing.Point(12, 9);
 			this.status.Name = "status";
-			this.status.Size = new System.Drawing.Size(95, 13);
+			this.status.Size = new System.Drawing.Size(110, 13);
 			this.status.TabIndex = 2;
 			this.status.Text = "Сервер отключен";
+			// 
+			// startGame
+			// 
+			this.startGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.startGame.Location = new System.Drawing.Point(90, 109);
+			this.startGame.Name = "startGame";
+			this.startGame.Size = new System.Drawing.Size(274, 52);
+			this.startGame.TabIndex = 3;
+			this.startGame.Text = "Начало игры";
+			this.startGame.UseVisualStyleBackColor = true;
+			this.startGame.Click += new System.EventHandler(this.startGame_Click);
 			// 
 			// Server
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(445, 238);
+			this.Controls.Add(this.startGame);
 			this.Controls.Add(this.status);
 			this.Controls.Add(this.stop);
 			this.Controls.Add(this.start);
@@ -85,6 +101,7 @@
 		private System.Windows.Forms.Button start;
 		private System.Windows.Forms.Button stop;
 		private System.Windows.Forms.Label status;
+		private System.Windows.Forms.Button startGame;
 	}
 }
 

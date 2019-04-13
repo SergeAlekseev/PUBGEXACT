@@ -90,6 +90,7 @@ namespace client
 				case Keys.S: model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
 				case Keys.D: model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
 				case Keys.A: model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+				case Keys.ShiftKey: case Keys.Shift: model.Action.actionThishUser = Action.action.shiftDown; ActionEvent(); break;
 			}
 		}
 
@@ -101,6 +102,7 @@ namespace client
 				case Keys.S: model.Action.actionThishUser = Action.action.stopDown; ActionEvent(); break;
 				case Keys.D: model.Action.actionThishUser = Action.action.stopRight; ActionEvent(); break;
 				case Keys.A: model.Action.actionThishUser = Action.action.stopLeft; ActionEvent(); break;
+				case Keys.ShiftKey: case Keys.Shift: model.Action.actionThishUser = Action.action.shiftUp; ActionEvent(); break;
 			}
 		}
 
@@ -114,36 +116,36 @@ namespace client
 					{
 						if (user != null && user.userLocation != model.ThisUser.userLocation)
 						{
-							bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + 300 - 3 - model.ThisUser.userLocation.X, user.userLocation.Y + 300 - 3 - model.ThisUser.userLocation.Y, 6, 6);
+							bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + model.Map.MapBorders.Width / 2 - 3 - model.ThisUser.userLocation.X, user.userLocation.Y + model.Map.MapBorders.Height / 2 - 3 - model.ThisUser.userLocation.Y, 6, 6);
 						}
 					}
 					if (model.ListUsers.Count > 0)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, 300 - 3, 300 - 3, 6, 6);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.Map.MapBorders.Width / 2 - 3, model.Map.MapBorders.Height / 2 - 3, 6, 6);
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
-						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + 300 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + 300 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.ThisUser.userLocation.Y);
+						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y);
 					}
 					foreach (BulletInfo bullet in model.ListBullet)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + 300 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + 300 - 1 - model.ThisUser.userLocation.Y, 2, 2);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + model.Map.MapBorders.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + model.Map.MapBorders.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 					}
 					bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 20, 2);
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
-						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + 300 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + 300 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + model.Map.MapBorders.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + model.Map.MapBorders.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + 300 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + 300 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + 300 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + 300 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
 
 
 				}
 				else
 				{
-					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, 600, 600);
+					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, model.Map.MapBorders.Width, model.Map.MapBorders.Height);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
 
 				}
