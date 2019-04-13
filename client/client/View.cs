@@ -69,12 +69,12 @@ namespace client
 			ShotEvent += controller.Shot;
 			MouseLocatinEvent += controller.WriteMouseLocation;
 
-			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
-			Start = true;
-
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
 			controller.ErrorConnect += ErrorConnect;
+
+			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
+			Start = true;
 		}
 
 		public void ErrorConnect()
