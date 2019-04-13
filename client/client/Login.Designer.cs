@@ -98,7 +98,9 @@
 			this.ip.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.ip.Name = "ip";
 			this.ip.Size = new System.Drawing.Size(150, 20);
-			this.ip.Text = "25.53.91.50";
+			this.ip.Text = "25.46.244.0";
+			this.ip.Leave += new System.EventHandler(this.SelectionOfLetters);
+			this.ip.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.KeyPress);
 			// 
 			// Login
 			// 

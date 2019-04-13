@@ -22,8 +22,8 @@ namespace server
 
 		Model model = new Model();
 		TcpListener PublicHost; // Это тоже в модел,наверное. И вообще в клиенте тоже много данных из контроллера можно перенести в модел  и обращаться к ним через модел _!__!__!__!_!_!_!__!_!__
-
-
+		TcpListener PublicHost2;
+		System.Timers.Timer timerZone, timerUsersInZone;
 
 		public Controller(Model model)
 		{
@@ -32,7 +32,7 @@ namespace server
 
 		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, int num) //Здесь будет выполняться перемещение игрока
 		{
-			if (workingThread)
+			if (workingThread && model.ListUsers[num] != null)
 			{
 				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Y && (moveUp)) model.ListUsers[num].userLocation.Y -= 1; //Вниз
 				if (model.ListUsers[num].userLocation.Y != model.Map.MapBorders.Width && (moveDown)) model.ListUsers[num].userLocation.Y += 1; //Вверх
@@ -97,22 +97,30 @@ namespace server
 
 		public void StartServer(object tmpObject)//Controller
 		{
+			
 			if (!workingServer)
 			{
 				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
+
+				TcpListener host2 = new TcpListener(IPAddress.Any, 2337);
+				host2.Start();
+				PublicHost2 = host2;
+				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
+				menuConnecting.Start(host2);
+
 				PublicHost = host;
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
 				createdZone();
 				workingServer = true;
 
-				System.Timers.Timer timerZone = new System.Timers.Timer();
+				timerZone = new System.Timers.Timer();
 				timerZone.Interval = 1000;
 				timerZone.Elapsed += (x, y) => { timerZone_Tick(); };
 				timerZone.Start();
 
-				System.Timers.Timer timerUsersInZone = new System.Timers.Timer();
+				timerUsersInZone = new System.Timers.Timer();
 				timerUsersInZone.Interval = 1000;
 				timerUsersInZone.Elapsed += (x, y) => { timerUsersInZone_Tick(); };
 				timerUsersInZone.Start();
@@ -152,13 +160,32 @@ namespace server
 			}
 		}
 
-		public void StopServer()//Controller
+		public void MenuConnecting(object tc)//Controller
+		{
+			while (workingServer)
+			{
+				try {
+					(tc as TcpListener).AcceptTcpClient();
+
+				}
+				catch
+				{
+					break;
+				}
+			}
+			
+		}
+
+			public void StopServer()//Controller
 		{
 			if (workingServer)
 			{
 				workingServer = false;
 				workingThread = false;
 				PublicHost.Stop();
+				PublicHost2.Stop();
+				timerUsersInZone.Close();
+				timerZone.Close();
 				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in model.ListNs)
 				{
@@ -287,6 +314,10 @@ namespace server
 			int countReadingBytes = 0;
 			bool PrivateWorkingThread = true;
 
+			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
+			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			Writing(model.Map.NextZone, 9, nStream); // Инфа  о стартовой зоне
+
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 20;
 			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, num); };
@@ -294,9 +325,7 @@ namespace server
 
 			Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
 
-			WritingBush(model.Map.ListBush, nStream); // Отправку инфы о кустах решил тыкнуть сюды
-			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
-			Writing(model.Map.NextZone, 9, nStream); // Инфа  о стартовой зоне
+
 
 			while (workingThread && PrivateWorkingThread)
 			{
@@ -379,13 +408,14 @@ namespace server
 								GeneralInfo tmpUser = PlayerCheck(PlayerRead(), newUser);
 								if (tmpUser == null && model.ListGInfo.Count <= 0)
 								{
+									model.ListGInfo.Add(new GeneralInfo());
 									model.ListGInfo[0].Name = newUser.Name;
 									model.ListGInfo[0].Password = newUser.Password;
-
 									PlayerSave(model.ListGInfo);
 								}
 								else if (tmpUser == null && model.ListGInfo.Count > 0)
 								{
+									model.ListGInfo.Add(new GeneralInfo());
 									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
 									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
 
@@ -491,11 +521,11 @@ namespace server
 		/// <returns>Возвращает истину, если было найдено совпадение</returns>
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
-			if(listUser!=null)
-			foreach (GeneralInfo user in listUser)
-			{
-				if (user.Name == newUser.Name) return user;
-			}
+			if (listUser != null)
+				foreach (GeneralInfo user in listUser)
+				{
+					if (user.Name == newUser.Name) return user;
+				}
 
 			return null;
 		}

@@ -104,26 +104,6 @@ namespace client
 			}
 		}
 
-		private void SelectionOfLetters(object sender, EventArgs e)
-		{
-			string pattern = @"^[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}.[0-9]{1-3}$";
-			Regex regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
-			TextBox R = sender as TextBox;
-			//if (!regex.IsMatch(R.Text))
-			//{ R.Text = ip.Text; }
-			//else
-			//{ }
-		}
-
-		private void KeyPress(object sender, KeyPressEventArgs e)
-		{
-			char l = e.KeyChar;
-			if ((l < '0' || l > '9') && l != '\b' && l != '.')
-			{
-				e.Handled = true;
-			}
-		}
-
 		private void Client_Paint(object sender, PaintEventArgs e)
 		{
 			if (model.ListUsers != null && Start)

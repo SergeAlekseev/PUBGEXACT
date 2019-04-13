@@ -27,11 +27,13 @@ namespace client
 
 		public void Connect(string ip)// Controller
 		{
+
 			client = new TcpClient(ip, 1337);
 			nStream = client.GetStream();
 
-			Writing(model.GInfo,10);
+			Writing(model.GInfo, 10);
 			Thread threadReading = new Thread(ReadingStream);
+
 			//threadReading.Start();
 
 			//byte[] number = new byte[1];
