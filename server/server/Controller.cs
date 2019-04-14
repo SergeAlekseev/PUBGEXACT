@@ -537,7 +537,7 @@ namespace server
                     Shoting.Abort();
                 }
             }
-        }
+        }	
 
         public void InfoUsers(object tc)
         {
