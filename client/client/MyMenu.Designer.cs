@@ -45,6 +45,7 @@
 			// 
 			// bPlay
 			// 
+			this.bPlay.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.bPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.bPlay.Location = new System.Drawing.Point(70, 136);
 			this.bPlay.Name = "bPlay";
@@ -56,6 +57,7 @@
 			// 
 			// button2
 			// 
+			this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.button2.Location = new System.Drawing.Point(88, 223);
 			this.button2.Name = "button2";
@@ -66,6 +68,7 @@
 			// 
 			// button3
 			// 
+			this.button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.button3.Location = new System.Drawing.Point(88, 181);
 			this.button3.Name = "button3";

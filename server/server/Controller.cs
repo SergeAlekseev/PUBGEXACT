@@ -22,8 +22,7 @@ namespace server
 		short number; //Model
 
 		Model model = new Model();
-		TcpListener PublicHost; // Это тоже в модел,наверное. И вообще в клиенте тоже много данных из контроллера можно перенести в модел  и обращаться к ним через модел _!__!__!__!_!_!_!__!_!__
-		TcpListener PublicHost2;
+		TcpListener PublicHost, PublicHost2, PublicHost3;
 		System.Timers.Timer timerZone, timerUsersInZone;
 
 		public void StartGame()
@@ -123,7 +122,7 @@ namespace server
 
 		public void start()
 		{
-			if (PlayerRead(null)!=null)
+			if (PlayerRead(null) != null)
 			{
 				model.ListGInfo = PlayerRead(null);
 			}
@@ -134,7 +133,7 @@ namespace server
 		public void StartServer(object tmpObject)//Controller
 		{
 
-			if (!workingServer)
+			if (!workingServer&&!workingGame)
 			{
 				workingServer = true;
 
@@ -151,7 +150,7 @@ namespace server
 
 				TcpListener host3 = new TcpListener(IPAddress.Any, 3337);
 				host3.Start();
-				PublicHost2 = host3;
+				PublicHost3 = host3;
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
 				menuConnecting.Start(host3);
 
@@ -202,16 +201,15 @@ namespace server
 		{
 			if (workingServer)
 			{
-				workingServer = false;
-				workingThread = false;
+				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
+				PublicHost3.Stop();
 				if (workingGame)
 				{
 					timerUsersInZone.Close();
 					timerZone.Close();
 				}
-				workingGame = false;
 				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in model.ListNs)
 				{
@@ -223,7 +221,11 @@ namespace server
 					}
 					catch { }
 				}
+				workingServer = false;
+				workingThread = false;
 				model.Remove();
+				workingGame = false;
+				Thread.Sleep(1000);
 			}
 		}
 
@@ -258,16 +260,16 @@ namespace server
 			NetworkStream nStream = null;
 			while (workingServer)
 			{
+
 				try
 				{
 					tc = (tl as TcpListener).AcceptTcpClient();
 				}
 				catch
 				{
-					if (tc != null)
-						tc.Close();
 					break;
 				}
+
 				nStream = tc.GetStream();
 
 				byte[] typeCommand = new byte[1];
@@ -277,28 +279,64 @@ namespace server
 				{
 					case 10:
 						{
+
 							string tmpString = Reading(nStream);
 							GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
 
 							GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
-							if (tmpUser == null && model.ListGInfo.Count > 0)
+							if (!workingGame)
 							{
-								model.ListGInfo.Add(new GeneralInfo());
-								model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
-								model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+								if (tmpUser == null && model.ListGInfo.Count > 0)
+								{
+									model.ListGInfo.Add(new GeneralInfo());
+									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
+									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
 
-								PlayerSave(model.ListGInfo);
-								Writing(model.ListGInfo, 10, nStream);
+									PlayerSave(model.ListGInfo);
+									Writing(model.ListGInfo[model.ListGInfo.Count - 1], 10, nStream);
+								}
+								else
+								{
+									if (CheckData(model.ListGInfo, newUser))
+									{
+										model.ListGInfo = PlayerRead(newUser);
+										Writing(tmpUser, 10, nStream);
+									}
+									else
+									{
+										Writing("1", 11, nStream);
+									}
+									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
+								}
 							}
 							else
 							{
-								model.ListGInfo = PlayerRead(newUser);
-								Writing(model.ListGInfo, 10, nStream);
-								//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
+								if (tmpUser == null && model.ListGInfo.Count > 0)
+								{
+									model.ListGInfo.Add(new GeneralInfo());
+									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
+									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+
+									PlayerSave(model.ListGInfo);
+									Writing(model.ListGInfo[model.ListGInfo.Count - 1], 12, nStream);
+								}
+								else
+								{
+									if (CheckData(model.ListGInfo, newUser))
+									{
+										model.ListGInfo = PlayerRead(newUser);
+										Writing(tmpUser, 12, nStream);
+									}
+									else
+									{
+										Writing("1", 12, nStream);
+									}
+								}
 							}
 							break;
 						}
 				}
+				tc.Close();
 			}
 		}
 
@@ -499,36 +537,6 @@ namespace server
 								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
 								break;
 							}
-						case 10:
-							{
-								string tmpString = Reading(nStream);
-								GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
-
-								GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
-								if (tmpUser == null && model.ListGInfo.Count > 0)
-								{
-									model.ListGInfo.Add(new GeneralInfo());
-									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
-									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
-
-									PlayerSave(model.ListGInfo);
-									Writing(model.ListGInfo, 10, nStream);
-								}
-								else
-								{
-									if (CheckData(model.ListGInfo, newUser))
-									{
-										model.ListGInfo = PlayerRead(newUser);
-										Writing(model.ListGInfo, 10, nStream);
-									}
-									else
-									{
-										Writing("1", 11, nStream);
-									}
-									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
-								}
-								break;
-							}
 					}
 				}
 				catch (System.IO.IOException)
@@ -635,7 +643,7 @@ namespace server
 		{
 			foreach (GeneralInfo user in listUser)
 			{
-				if (user.Name == newUser.Name && user.Password == newUser.Password) return true;		
+				if (user != null && user.Name == newUser.Name && user.Password == newUser.Password) return true;
 			}
 			return false;
 		}

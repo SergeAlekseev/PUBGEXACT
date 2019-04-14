@@ -14,7 +14,7 @@ namespace client
 		TcpClient client;// 25.46.244.0 
 		NetworkStream nStream;
 		Model model = new Model();
-
+		public bool flagGame = false;
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
@@ -49,20 +49,30 @@ namespace client
 				}
 				catch
 				{
+					flagGame = false;
 					break;
 				}
 				if (typeCommand[0] == 10)
 				{
 					string tmpString = Reading(nStream);
-					model.ListGInfo = JsonConvert.DeserializeObject<List<GeneralInfo>>(tmpString);
-					model.GInfo = model.ListGInfo[model.ListGInfo.Count - 1];
+					model.GInfo = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
 					flag = true;
+					flagGame = false;
 					return true;
 				}
 				else if (typeCommand[0] == 11)
 				{
 					flag = true;
+					flagGame = false;
 					return false;
+				}
+				else if (typeCommand[0] == 12)
+				{
+					string tmpString = Reading(nStream);
+					model.GInfo = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
+					flag = true;
+					flagGame = true;
+					return true;
 				}
 			}
 			return false;
