@@ -548,10 +548,10 @@ namespace server
 		{
 			BinaryFormatter formatter = new BinaryFormatter();
 
-			//string tmp = AppDomain.CurrentDomain.BaseDirectory;
+			string tmp = AppDomain.CurrentDomain.BaseDirectory;
 			//string tmp1 = Application.StartupPath;
 
-			using (FileStream fs = new FileStream(@"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\server\server\UsersData\usersInfo.dat", FileMode.OpenOrCreate))
+			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory+"usersInfo.dat", FileMode.OpenOrCreate))
 			{//пока что будет косталь с постоянным адресом
 				formatter.Serialize(fs, listUsers);
 			}
@@ -574,7 +574,7 @@ namespace server
 			BinaryFormatter formatter = new BinaryFormatter();
 			try
 			{
-				using (FileStream fs = new FileStream(@"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\server\server\UsersData\usersInfo.dat", FileMode.Open))
+				using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory +"usersInfo.dat", FileMode.Open))
 				{
 					return (List<GeneralInfo>)formatter.Deserialize(fs);
 				}
