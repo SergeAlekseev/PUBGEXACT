@@ -25,18 +25,19 @@ namespace client
 			this.model = model;
 		}
 
-		public void Connect(string ip)// Controller
+		public bool Connect(string ip)// Controller
 		{
 
 			client = new TcpClient(ip, 1337);
 			nStream = client.GetStream();
 
 			Writing(model.GInfo, 10);
-			ReadingStream();
+			if (ReadingStream()) return true;
+			else return false;
 
 		}
 
-		public void ReadingStream()
+		public bool ReadingStream()
 		{
 			bool flag = false;
 			while (!flag)
@@ -56,8 +57,15 @@ namespace client
 					model.ListGInfo = JsonConvert.DeserializeObject<List<GeneralInfo>>(tmpString);
 					model.GInfo = model.ListGInfo[model.ListGInfo.Count - 1];
 					flag = true;
+					return true;
+				}
+				else if (typeCommand[0] == 11)
+				{
+					flag = true;
+					return false;
 				}
 			}
+			return false;
 		}
 
 		public string Reading(NetworkStream nStream)

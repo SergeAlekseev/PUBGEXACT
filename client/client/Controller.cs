@@ -195,7 +195,7 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
-					//case 10 	уже зарезервирован		
+					//case 10 и 11 	уже зарезервированы	
 				}
 
 
