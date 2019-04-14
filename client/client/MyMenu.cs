@@ -38,10 +38,17 @@ namespace client
 
 		private void MyMenu_Load(object sender, EventArgs e)
 		{
-			Controller.Connect(InfoIP.Text);
-			InfoName.Text = model.GInfo.Name;
-			InfoKills.Text = "" + model.GInfo.Kills;
-			InfoWins.Text = "" + model.GInfo.Wins;
+			if (Controller.Connect(InfoIP.Text))
+			{
+				InfoName.Text = model.GInfo.Name;
+				InfoKills.Text = "" + model.GInfo.Kills;
+				InfoWins.Text = "" + model.GInfo.Wins;
+			}
+			else
+			{
+				InfoName.Text = "Этот пользователь существует,/t но у него другой пароль";
+				bPlay.Enabled = false;
+			}
 
 		}
 	}

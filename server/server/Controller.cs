@@ -123,7 +123,10 @@ namespace server
 
 		public void start()
 		{
-			model.ListGInfo = PlayerRead(null);
+			if (PlayerRead(null)!=null)
+			{
+				model.ListGInfo = PlayerRead(null);
+			}
 			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer));
 			startThread.Start();
 		}
@@ -513,8 +516,15 @@ namespace server
 								}
 								else
 								{
-									model.ListGInfo = PlayerRead(newUser);
-									Writing(model.ListGInfo, 10, nStream);
+									if (CheckData(model.ListGInfo, newUser))
+									{
+										model.ListGInfo = PlayerRead(newUser);
+										Writing(model.ListGInfo, 10, nStream);
+									}
+									else
+									{
+										Writing("1", 11, nStream);
+									}
 									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
 								}
 								break;
@@ -603,10 +613,6 @@ namespace server
 		public void PlayerSave(List<GeneralInfo> listUsers) //Пока что положу сюда UserInfo, но нужно будет потом выделить отдельный класс под инфу об игроке для логина
 		{
 			BinaryFormatter formatter = new BinaryFormatter();
-
-			string tmp = AppDomain.CurrentDomain.BaseDirectory;
-			//string tmp1 = Application.StartupPath;
-
 			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
 			{//пока что будет косталь с постоянным адресом
 				formatter.Serialize(fs, listUsers);
@@ -614,17 +620,25 @@ namespace server
 		}
 
 
-		/// <returns>Возвращает истину, если было найдено совпадение</returns>
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
 			if (listUser != null)
 				foreach (GeneralInfo user in listUser)
 				{
+
 					if (user != null && user.Name == newUser.Name) return user;
+
 				}
 			return null;
 		}
-
+		public bool CheckData(List<GeneralInfo> listUser, GeneralInfo newUser)
+		{
+			foreach (GeneralInfo user in listUser)
+			{
+				if (user.Name == newUser.Name && user.Password == newUser.Password) return true;		
+			}
+			return false;
+		}
 		public List<GeneralInfo> PlayerRead(GeneralInfo newUser)// Читает данные из файла
 		{
 			BinaryFormatter formatter = new BinaryFormatter();
@@ -638,7 +652,15 @@ namespace server
 			catch (Exception)
 			{
 				List<GeneralInfo> newList = new List<GeneralInfo>();
-				newList.Add(newUser);
+				if (newUser != null)
+					newList.Add(newUser);
+				else
+				{
+					GeneralInfo g = new GeneralInfo();
+					g.Name = "kek";
+					g.Password = "-1";
+					newList.Add(g);
+				}
 				PlayerSave(newList);
 				return newList;
 			}
