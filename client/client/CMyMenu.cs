@@ -28,7 +28,7 @@ namespace client
 		public void Connect(string ip)// Controller
 		{
 
-			client = new TcpClient(ip, 1337);
+			client = new TcpClient(ip, 2337);
 			nStream = client.GetStream();
 
 			Writing(model.GInfo, 10);
