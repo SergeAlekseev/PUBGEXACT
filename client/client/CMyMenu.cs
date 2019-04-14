@@ -32,17 +32,14 @@ namespace client
 			nStream = client.GetStream();
 
 			Writing(model.GInfo, 10);
-			Thread threadReading = new Thread(ReadingStream);
+			ReadingStream();
 
-			//threadReading.Start();
-
-			//byte[] number = new byte[1];
-			//nStream.Read(number, 0, 1);
 		}
 
 		public void ReadingStream()
 		{
-			while (true)
+			bool flag = false;
+			while (!flag)
 			{
 				byte[] typeCommand = new byte[1];
 				try
@@ -53,10 +50,13 @@ namespace client
 				{
 					break;
 				}
-
-				string tmpString = Reading(nStream);
-				model.ListGInfo = JsonConvert.DeserializeObject<List<GeneralInfo>>(tmpString);
-				model.ThisUser = model.ListUsers[model.ListUsers.Count - 1];
+				if (typeCommand[0] == 10)
+				{
+					string tmpString = Reading(nStream);
+					model.ListGInfo = JsonConvert.DeserializeObject<List<GeneralInfo>>(tmpString);
+					model.GInfo = model.ListGInfo[model.ListGInfo.Count - 1];
+					flag = true;
+				}
 			}
 		}
 

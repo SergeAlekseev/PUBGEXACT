@@ -73,11 +73,11 @@ namespace client
 		{
 			this.model = model;
 			timerPing.Elapsed += timerPing_Tick;
-			timerPing.Interval = 2000;// Controller
-			timerPing.Start();// Controller
+			timerPing.Interval = 2000;
+			timerPing.Start();
 		}
 
-		private void timerPing_Tick(object sender, EventArgs e) // Controller
+		private void timerPing_Tick(object sender, EventArgs e) 
 		{
 			if (threadStart)
 			{
@@ -119,7 +119,7 @@ namespace client
 			return tmpString;
 		}
 
-		private void ReadingStream()// Controller
+		private void ReadingStream()
 		{
 			while (threadStart)
 			{
@@ -195,13 +195,7 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
-					//case 10:
-					//	{
-					//		string tmpString = Reading(nStream);
-					//		model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
-					//		model.ThisUser = model.ListUsers[model.ListUsers.Count - 1];
-					//		break;
-					//	}
+					//case 10 	уже зарезервирован		
 				}
 
 
@@ -209,7 +203,7 @@ namespace client
 
 		}
 
-		public void PressKey() // Controller
+		public void PressKey()
 		{
 			if (threadStart)
 			{
@@ -217,7 +211,7 @@ namespace client
 			}
 		}
 
-		public void Disconnect()// Controller
+		public void Disconnect()
 		{
 
 			if (threadStart)

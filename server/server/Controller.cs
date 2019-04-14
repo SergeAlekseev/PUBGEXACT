@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -122,6 +123,7 @@ namespace server
 
 		public void start()
 		{
+			model.ListGInfo = PlayerRead(null);
 			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer));
 			startThread.Start();
 		}
@@ -441,28 +443,22 @@ namespace server
 						case 10:
 							{
 								string tmpString = Reading(nStream);
-
 								GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
-								GeneralInfo tmpUser = PlayerCheck(PlayerRead(), newUser);
-								if (tmpUser == null && model.ListGInfo.Count <= 0)
-								{
-									model.ListGInfo.Add(new GeneralInfo());
-									model.ListGInfo[0].Name = newUser.Name;
-									model.ListGInfo[0].Password = newUser.Password;
-									PlayerSave(model.ListGInfo);
-								}
-								else if (tmpUser == null && model.ListGInfo.Count > 0)
+
+								GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
+								if (tmpUser == null && model.ListGInfo.Count > 0)
 								{
 									model.ListGInfo.Add(new GeneralInfo());
 									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
 									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
 
 									PlayerSave(model.ListGInfo);
+									Writing(model.ListGInfo, 10, nStream);
 								}
 								else
 								{
-									model.ListGInfo = PlayerRead();
-									Writing(model.ListUsers, 10, nStream);
+									model.ListGInfo = PlayerRead(newUser);
+									Writing(model.ListGInfo, 10, nStream);
 									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
 								}
 								break;
@@ -548,14 +544,17 @@ namespace server
 			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
 		}
 
-		public void PlayerSave(List<GeneralInfo> listUser) //Пока что положу сюда UserInfo, но нужно будет потом выделить отдельный класс под инфу об игроке для логина
+		public void PlayerSave(List<GeneralInfo> listUsers) //Пока что положу сюда UserInfo, но нужно будет потом выделить отдельный класс под инфу об игроке для логина
 		{
-			string json = JsonConvert.SerializeObject(listUser, Formatting.Indented);
-			FileInfo fl = new FileInfo(@"UsersData/UsersInfo.json");
-			StreamWriter sw;
-			sw = fl.AppendText();
-			sw.WriteLine(json);
-			sw.Close();
+			BinaryFormatter formatter = new BinaryFormatter();
+
+			//string tmp = AppDomain.CurrentDomain.BaseDirectory;
+			//string tmp1 = Application.StartupPath;
+
+			using (FileStream fs = new FileStream(@"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\server\server\UsersData\usersInfo.dat", FileMode.OpenOrCreate))
+			{//пока что будет косталь с постоянным адресом
+				formatter.Serialize(fs, listUsers);
+			}
 		}
 
 
@@ -567,19 +566,25 @@ namespace server
 				{
 					if (user.Name == newUser.Name) return user;
 				}
-
 			return null;
 		}
 
-		public List<GeneralInfo> PlayerRead()
+		public List<GeneralInfo> PlayerRead(GeneralInfo newUser)// Читает данные из файла
 		{
+			BinaryFormatter formatter = new BinaryFormatter();
 			try
 			{
-				return JsonConvert.DeserializeObject<List<GeneralInfo>>(File.ReadAllText(@"UsersData/UsersInfo.json"));
+				using (FileStream fs = new FileStream(@"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\server\server\UsersData\usersInfo.dat", FileMode.Open))
+				{
+					return (List<GeneralInfo>)formatter.Deserialize(fs);
+				}
 			}
 			catch (Exception)
 			{
-				return null;
+				List<GeneralInfo> newList = new List<GeneralInfo>();
+				newList.Add(newUser);
+				PlayerSave(newList);
+				return newList;
 			}
 		}
 	}

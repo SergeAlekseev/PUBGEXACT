@@ -13,20 +13,20 @@ namespace client
 	public partial class MyMenu : Form
 	{
 		Model model = new Model();
-		CMyMenu Controller ;
+		CMyMenu Controller;
 
-		public MyMenu(string Name, string Pass,string ip)
+		public MyMenu(string Name, string Pass, string ip)
 		{
 			InitializeComponent();
 			Controller = new CMyMenu(model);
-			Controller.JoinUser(Name,Pass);
+			Controller.JoinUser(Name, Pass);
 			InfoIP.Text = ip;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 
-			Client form = new Client(model.GInfo.Name, model.GInfo.Password,InfoIP.Text);
+			Client form = new Client(model.GInfo.Name, model.GInfo.Password, InfoIP.Text);
 			form.Show();
 			this.Hide();
 		}
@@ -40,8 +40,9 @@ namespace client
 		{
 			Controller.Connect(InfoIP.Text);
 			InfoName.Text = model.GInfo.Name;
-			InfoKills.Text = ""+model.GInfo.Kills;
-			InfoWins.Text = ""+model.GInfo.Wins;
+			InfoKills.Text = "" + model.GInfo.Kills;
+			InfoWins.Text = "" + model.GInfo.Wins;
+
 		}
 	}
 }

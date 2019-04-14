@@ -41,7 +41,7 @@ namespace client
 			Regex regex = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
 			ToolStripTextBox R = sender as ToolStripTextBox;
 			if (!regex.IsMatch(R.Text))
-			{ R.Text = "25.46.244.0"; }
+			{ ip.Text = "25.53.91.50"; }
 		}
 
 		private void KeyPress(object sender, KeyPressEventArgs e)
