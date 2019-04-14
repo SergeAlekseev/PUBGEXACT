@@ -23,7 +23,7 @@ namespace client
 		{
 			try
 			{
-				TcpClient client = new TcpClient(ip.Text, 2337);
+				TcpClient client = new TcpClient(ip.Text, 3337);
 				NetworkStream nStream = client.GetStream();
 				MyMenu form = new MyMenu(tName.Text, Pass.Text, ip.Text);
 				form.Show();

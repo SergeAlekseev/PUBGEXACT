@@ -146,8 +146,14 @@ namespace server
 				TcpListener host2 = new TcpListener(IPAddress.Any, 2337);
 				host2.Start();
 				PublicHost2 = host2;
+				Thread menuStarting = new Thread(new ParameterizedThreadStart(MenuStarting));
+				menuStarting.Start(host2);
+
+				TcpListener host3 = new TcpListener(IPAddress.Any, 3337);
+				host3.Start();
+				PublicHost2 = host3;
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
-				menuConnecting.Start(host2);
+				menuConnecting.Start(host3);
 
 				RandomBushs();
 
@@ -244,6 +250,56 @@ namespace server
 				}
 			}
 
+		}
+
+		public void MenuStarting(object tl)//Controller
+		{
+			TcpClient tc = null;
+			NetworkStream nStream = null;
+			while (workingServer)
+			{
+				try
+				{
+					tc = (tl as TcpListener).AcceptTcpClient();
+				}
+				catch
+				{
+					if (tc != null)
+						tc.Close();
+					break;
+				}
+				nStream = tc.GetStream();
+
+				byte[] typeCommand = new byte[1];
+				nStream.Read(typeCommand, 0, 1);
+
+				switch (typeCommand[0])
+				{
+					case 10:
+						{
+							string tmpString = Reading(nStream);
+							GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
+
+							GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
+							if (tmpUser == null && model.ListGInfo.Count > 0)
+							{
+								model.ListGInfo.Add(new GeneralInfo());
+								model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
+								model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+
+								PlayerSave(model.ListGInfo);
+								Writing(model.ListGInfo, 10, nStream);
+							}
+							else
+							{
+								model.ListGInfo = PlayerRead(newUser);
+								Writing(model.ListGInfo, 10, nStream);
+								//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
+							}
+							break;
+						}
+				}
+			}
 		}
 
 		public void ShotUser(object ui)//Controller
@@ -569,7 +625,9 @@ namespace server
 			if (listUser != null)
 				foreach (GeneralInfo user in listUser)
 				{
-					if (user.Name == newUser.Name ) return user;
+
+					if (user != null && user.Name == newUser.Name) return user;
+
 				}
 			return null;
 		}
