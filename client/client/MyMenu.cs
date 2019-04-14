@@ -12,18 +12,21 @@ namespace client
 {
 	public partial class MyMenu : Form
 	{
-		CMyMenu Controller = new CMyMenu();
+		Model model = new Model();
+		CMyMenu Controller;
 
-		public MyMenu(string Name, string Pass)
+		public MyMenu(string Name, string Pass, string ip)
 		{
 			InitializeComponent();
-			Controller.JoinUser(Name,Pass);
+			Controller = new CMyMenu(model);
+			Controller.JoinUser(Name, Pass);
+			InfoIP.Text = ip;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 
-			Client form = new Client(Controller.Model.ThisUser.Name, Controller.Model.ThisUser.Password);
+			Client form = new Client(model.GInfo.Name, model.GInfo.Password, InfoIP.Text);
 			form.Show();
 			this.Hide();
 		}
@@ -31,6 +34,15 @@ namespace client
 		private void MyMenu_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void MyMenu_Load(object sender, EventArgs e)
+		{
+			Controller.Connect(InfoIP.Text);
+			InfoName.Text = model.GInfo.Name;
+			InfoKills.Text = "" + model.GInfo.Kills;
+			InfoWins.Text = "" + model.GInfo.Wins;
+
 		}
 	}
 }

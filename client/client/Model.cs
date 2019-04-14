@@ -19,7 +19,8 @@ namespace client
 		short lifes;
 		bool die;
 		Image[] images = new Image[8];
-
+		GeneralInfo gInfo = new GeneralInfo();
+		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		public bool Start = false;
 
 		public Model()
@@ -41,5 +42,7 @@ namespace client
 		public Action Action { get { return action; } set { action = value; } }
 		public int Ping { get { return ping; } set { ping = value; } }
 		public Map Map { get { return map; } set { map = value; } }
+		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
+		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 	}
 }
