@@ -258,29 +258,34 @@ namespace client
 			return false;
 		}
 
-		public double Rotate(Vector A, Vector B)
-		{
-			Vector C = new Vector();
-			C.startPoint.X = B.startPoint.X - A.startPoint.X;
-			C.endPoint.X = B.endPoint.X - A.endPoint.X;
+		//public double Rotate(Vector A, Vector B)
+		//{
+		//	Vector C = new Vector();
+		//	C.startPoint.X = B.startPoint.X - A.startPoint.X;
+		//	C.endPoint.X = B.endPoint.X - A.endPoint.X;
 
-			C.startPoint.Y = B.startPoint.Y - A.startPoint.Y;
-			C.endPoint.Y = B.endPoint.Y - A.endPoint.Y;
+		//	C.startPoint.Y = B.startPoint.Y - A.startPoint.Y;
+		//	C.endPoint.Y = B.endPoint.Y - A.endPoint.Y;
 
-			return (180/Math.PI)*Math.Atan2(C.endPoint.X - C.startPoint.X, C.endPoint.Y - C.startPoint.Y);
-		}
+		//	return (180/Math.PI)*Math.Atan2(C.endPoint.X - C.startPoint.X, C.endPoint.Y - C.startPoint.Y);
+		//}
 
 		public double mouseMove()
 		{
-			Vector v1 = new Vector();
-			Vector v2 = new Vector();
+			Point start1 = new Point { X = 300, Y = 300 };
+			Point end1 = new Point { X = 300, Y = 500 };
+			Vector vector1 = Vector.FromPoints(start1, end1);
 
-			v1.startPoint = new Point(300, 300);
-			v1.endPoint = new Point(300, 500);
-			v2.startPoint = new Point(300, 300);
-			v2.endPoint = model.MouseCoord;
-			model.Rotate = Rotate(v1, v2);
-			return model.Rotate;
+			Point start2 = new Point { X = 300, Y = 300 };
+			Point end2 = new Point { X = model.MouseCoord.X, Y = model.MouseCoord.Y };
+			Vector vector2 = Vector.FromPoints(start2, end2);
+
+			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
+
+			double angleDegree = angleRad / Math.PI * 180;
+			model.Rotate = angleDegree;
+
+			return angleDegree;
 		}
 	}
 }

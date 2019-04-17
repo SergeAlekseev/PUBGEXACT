@@ -50,6 +50,9 @@ namespace client
 		{
 			InitializeComponent();
 
+			model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(20, 20, null, IntPtr.Zero);
+			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+
 			timerPaint.Interval = 10;
 			timerPaint.Start();
 			timerMouseLocation.Interval = 40;
@@ -139,10 +142,10 @@ namespace client
 						//userBufferedGraphics.Graphics.TranslateTransform(-300, -300);
 
 						System.Drawing.TextureBrush tb = new System.Drawing.TextureBrush(model.Images[0]);     //Создаём кисть из изображения.        		
-						tb.TranslateTransform(300, 300);
+						tb.TranslateTransform(300,300);
 						tb.RotateTransform((float)model.Rotate); // поворачиваем объект графики
 						tb.TranslateTransform(-300, -300);
-						bufferedGraphics.Graphics.FillRectangle(tb, 300, 300, 23, 23);
+						bufferedGraphics.Graphics.FillRectangle(tb, 288, 288, 23, 23);
 
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y);
@@ -224,8 +227,6 @@ namespace client
 				cursorPoint.X = cursorPoint.X - 300 + model.ThisUser.userLocation.X;
 				cursorPoint.Y = cursorPoint.Y - 300 + model.ThisUser.userLocation.Y;
 				MouseLocatinEvent(cursorPoint);
-				model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(20, 20, null, IntPtr.Zero);
-				model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			}
 
 		}

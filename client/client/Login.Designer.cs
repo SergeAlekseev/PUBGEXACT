@@ -53,7 +53,7 @@
 			this.Pass.PasswordChar = '*';
 			this.Pass.Size = new System.Drawing.Size(173, 20);
 			this.Pass.TabIndex = 1;
-			this.Pass.Text = "123";
+			this.Pass.Text = "123666";
 			// 
 			// label1
 			// 
