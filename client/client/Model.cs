@@ -18,11 +18,12 @@ namespace client
 		Map map = new Map();
 		short lifes;
 		bool die;
-		Image[] images = new Image[8];
+		Image[] images = new Image[9];
 		GeneralInfo gInfo = new GeneralInfo();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		public bool Start = false;
-
+		Point mouseCoord = new Point();
+		double rotate;
 		public Model()
 		{
 			listUsers = new List<UserInfo>();
@@ -44,5 +45,7 @@ namespace client
 		public Map Map { get { return map; } set { map = value; } }
 		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
+		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
+		public double Rotate { get { return rotate; } set { rotate = value; } }
 	}
 }

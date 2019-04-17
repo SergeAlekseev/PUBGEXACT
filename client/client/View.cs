@@ -33,18 +33,20 @@ namespace client
 		public delegate void ShotD(byte type);
 		public event ShotD ShotEvent;
 
+		public delegate double RotatateD();
+		public event RotatateD RotatateEvent;
+
 		static Model model = new Model();
 		Controller controller = new Controller(model);
 
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
 		BufferedGraphics bufferedGraphics;
-
 		bool Start = false;
 		bool MouseDown = false;
 
 
-		public Client(string Name,string Pass, string ip)
+		public Client(string Name, string Pass, string ip)
 		{
 			InitializeComponent();
 
@@ -68,6 +70,7 @@ namespace client
 			DisconnectEvent += controller.Disconnect;
 			ShotEvent += controller.Shot;
 			MouseLocatinEvent += controller.WriteMouseLocation;
+			RotatateEvent += controller.mouseMove;
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -112,6 +115,13 @@ namespace client
 			{
 				if (!model.Die)
 				{
+					if (model.Images[1] != null)
+					{
+						TextureBrush grass = new TextureBrush(model.Images[1]); 
+						grass.TranslateTransform(-model.ThisUser.userLocation.X, -model.ThisUser.userLocation.Y);
+						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					}
+
 					foreach (UserInfo user in model.ListUsers)
 					{
 						if (user != null && user.userLocation != model.ThisUser.userLocation)
@@ -121,7 +131,19 @@ namespace client
 					}
 					if (model.ListUsers.Count > 0)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Blue, model.Map.MapBorders.Width / 2 - 3, model.Map.MapBorders.Height / 2 - 3, 6, 6);
+						/*user*/
+						//bufferedGraphics.Graphics.FillRectangle(Brushes.Blue, model.Map.MapBorders.Width / 2 - 3, model.Map.MapBorders.Height / 2 - 3, 6, 6);
+
+						//userBufferedGraphics.Graphics.TranslateTransform(300, 300);
+						//userBufferedGraphics.Graphics.RotateTransform((float)model.Rotate);
+						//userBufferedGraphics.Graphics.TranslateTransform(-300, -300);
+
+						System.Drawing.TextureBrush tb = new System.Drawing.TextureBrush(model.Images[0]);     //Создаём кисть из изображения.        		
+						tb.TranslateTransform(300, 300);
+						tb.RotateTransform((float)model.Rotate); // поворачиваем объект графики
+						tb.TranslateTransform(-300, -300);
+						bufferedGraphics.Graphics.FillRectangle(tb, 300, 300, 23, 23);
+
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y);
 					}
@@ -165,11 +187,6 @@ namespace client
 			DisconnectEvent();
 		}
 
-		private void PlayingField_Click(object sender, EventArgs e) //Вызвать событие в Controller
-		{
-
-		}
-
 		public void AllClose()
 		{
 			BeginInvoke(new MethodInvoker(delegate
@@ -207,24 +224,22 @@ namespace client
 				cursorPoint.X = cursorPoint.X - 300 + model.ThisUser.userLocation.X;
 				cursorPoint.Y = cursorPoint.Y - 300 + model.ThisUser.userLocation.Y;
 				MouseLocatinEvent(cursorPoint);
-				model.Images[0] = client.Properties.Resources.Bush3.GetThumbnailImage(20, 20, null, IntPtr.Zero);
+				model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(20, 20, null, IntPtr.Zero);
+				model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			}
 
 		}
 
-		//private void Connect_Click(object sender, EventArgs e)
-		//{
-		//	InfoName.Text = model.GInfo.Name;
-		//	if (!Start)
-		//	{
-		//		if (ConnectEvent(ip.Text))
-		//			Start = true;
-		//	}
-		//}
-
 		private void Client_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void PlayingField_MouseMove(object sender, MouseEventArgs e)
+		{
+			model.MouseCoord = e.Location;
+			string st = "" + RotatateEvent();
+			label1.Text = st;
 		}
 	}
 }

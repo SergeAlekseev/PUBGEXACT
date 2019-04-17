@@ -77,7 +77,7 @@ namespace client
 			timerPing.Start();
 		}
 
-		private void timerPing_Tick(object sender, EventArgs e) 
+		private void timerPing_Tick(object sender, EventArgs e)
 		{
 			if (threadStart)
 			{
@@ -195,7 +195,7 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
-					//case 10 и 11 	уже зарезервированы	
+						//case 10 и 11 	уже зарезервированы	
 				}
 
 
@@ -256,6 +256,31 @@ namespace client
 				}
 			}
 			return false;
+		}
+
+		public double Rotate(Vector A, Vector B)
+		{
+			Vector C = new Vector();
+			C.startPoint.X = B.startPoint.X - A.startPoint.X;
+			C.endPoint.X = B.endPoint.X - A.endPoint.X;
+
+			C.startPoint.Y = B.startPoint.Y - A.startPoint.Y;
+			C.endPoint.Y = B.endPoint.Y - A.endPoint.Y;
+
+			return (180/Math.PI)*Math.Atan2(C.endPoint.X - C.startPoint.X, C.endPoint.Y - C.startPoint.Y);
+		}
+
+		public double mouseMove()
+		{
+			Vector v1 = new Vector();
+			Vector v2 = new Vector();
+
+			v1.startPoint = new Point(300, 300);
+			v1.endPoint = new Point(300, 500);
+			v2.startPoint = new Point(300, 300);
+			v2.endPoint = model.MouseCoord;
+			model.Rotate = Rotate(v1, v2);
+			return model.Rotate;
 		}
 	}
 }
