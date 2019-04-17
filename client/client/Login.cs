@@ -141,5 +141,10 @@ namespace client
 			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 			nStream.Write(massByts, 0, massByts.Count());
 		}
+
+		private void Ip_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
