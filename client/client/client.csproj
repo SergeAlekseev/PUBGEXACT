@@ -70,6 +70,7 @@
     <Compile Include="MyMenu.Designer.cs">
       <DependentUpon>MyMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Vector.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +138,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Picture\shotgun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Picture\box.jpg" />
+    <None Include="Picture\clear.png" />
+    <Content Include="Picture\grass.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

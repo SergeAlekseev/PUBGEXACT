@@ -77,7 +77,7 @@ namespace client
 			timerPing.Start();
 		}
 
-		private void timerPing_Tick(object sender, EventArgs e) 
+		private void timerPing_Tick(object sender, EventArgs e)
 		{
 			if (threadStart)
 			{
@@ -195,7 +195,7 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
-					//case 10 и 11 	уже зарезервированы	
+						//case 10 и 11 	уже зарезервированы	
 				}
 
 
@@ -256,6 +256,36 @@ namespace client
 				}
 			}
 			return false;
+		}
+
+		//public double Rotate(Vector A, Vector B)
+		//{
+		//	Vector C = new Vector();
+		//	C.startPoint.X = B.startPoint.X - A.startPoint.X;
+		//	C.endPoint.X = B.endPoint.X - A.endPoint.X;
+
+		//	C.startPoint.Y = B.startPoint.Y - A.startPoint.Y;
+		//	C.endPoint.Y = B.endPoint.Y - A.endPoint.Y;
+
+		//	return (180/Math.PI)*Math.Atan2(C.endPoint.X - C.startPoint.X, C.endPoint.Y - C.startPoint.Y);
+		//}
+
+		public double mouseMove()
+		{
+			Point start1 = new Point { X = 300, Y = 300 };
+			Point end1 = new Point { X = 300, Y = 500 };
+			Vector vector1 = Vector.FromPoints(start1, end1);
+
+			Point start2 = new Point { X = 300, Y = 300 };
+			Point end2 = new Point { X = model.MouseCoord.X, Y = model.MouseCoord.Y };
+			Vector vector2 = Vector.FromPoints(start2, end2);
+
+			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
+
+			double angleDegree = angleRad / Math.PI * 180;
+			if (model.MouseCoord.X >= 300) angleDegree = 360 - angleDegree;
+			model.Rotate = angleDegree;
+			return angleDegree;
 		}
 	}
 }

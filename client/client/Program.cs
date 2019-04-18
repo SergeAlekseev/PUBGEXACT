@@ -18,8 +18,6 @@ namespace client
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			Application.Run(new Login());
-			//Application.Run(new MyMenu());
-			//Application.Run(new Client());
 		}
 	}
 }
