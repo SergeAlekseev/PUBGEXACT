@@ -283,8 +283,8 @@ namespace client
 			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
 
 			double angleDegree = angleRad / Math.PI * 180;
+			if (model.MouseCoord.X >= 300) angleDegree = 360 - angleDegree;
 			model.Rotate = angleDegree;
-
 			return angleDegree;
 		}
 	}

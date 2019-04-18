@@ -52,8 +52,11 @@ namespace client
 		{
 			InitializeComponent();
 
-			model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(20, 20, null, IntPtr.Zero);
+			model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -136,30 +139,17 @@ namespace client
 					}
 					if (model.ListUsers.Count > 0)
 					{
-						/*user*/
-						//bufferedGraphics.Graphics.FillRectangle(Brushes.Blue, model.Map.MapBorders.Width / 2 - 3, model.Map.MapBorders.Height / 2 - 3, 6, 6);
-
-						//userBufferedGraphics.Graphics.TranslateTransform(300, 300);
-						//userBufferedGraphics.Graphics.RotateTransform((float)model.Rotate);
-						//userBufferedGraphics.Graphics.TranslateTransform(-300, -300);
-						Bitmap bitmap = new Bitmap(model.Images[0]);
 						
-						//RotateFlipType rotateFlipType = new RotateFlipType();
-						bitmap = RotateImage(bitmap, (int)model.Rotate);
+						Bitmap background = new Bitmap(model.Images[2]);
 
-						//Graphics g = Graphics.FromImage(bitmap);
-						//g.RotateTransform((float)model.Rotate);
-					
-						//tb = new System.Drawing.TextureBrush(bitmap,System.Drawing.Drawing2D.WrapMode.Clamp);     //Создаём кисть из изображения.        		
-
-
-
-						//tb.TranslateTransform(300, 300);
-						//tb.RotateTransform((float)model.Rotate); // поворачиваем объект графики
-						bufferedGraphics.Graphics.DrawImage(bitmap, 288, 288,23,23);
-						//tb.Dispose();
-
-
+						Graphics g = Graphics.FromImage(background);
+						g.TranslateTransform(10, 10);
+						g.RotateTransform((float)model.Rotate);
+						g.TranslateTransform(-10, -10);
+						g.DrawImage(model.Images[0], 0, 0,23,23);
+						
+						bufferedGraphics.Graphics.DrawImage(background, 288, 288,23,23);
+						
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + model.Map.MapBorders.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + model.Map.MapBorders.Height / 2 - model.ThisUser.userLocation.Y);
 					}
@@ -193,77 +183,6 @@ namespace client
 
 		}
 
-		private Bitmap RotateImage(Bitmap Image, int angle)
-		{
-			var pi2 = Math.PI / 2;//ПИ на два
-			int oldWidth = Image.Width;
-			int oldHeigth = Image.Height;
-			var theta = angle * Math.PI / 180.0;//перевод в радианы
-			var locked_theta = theta;
-			if (locked_theta < 0.0) locked_theta += 2 * Math.PI;
-			double newWidth, newHeigth;
-			int nWidth, nHeigth;
-			double adjacentTop, oppositeTop;
-			double adjacentBottom, oppositeBottom;
-			#region Вычисление новой ширины и высоты
-			double SINUS = Math.Abs(Math.Sin(locked_theta));
-			double COSINUS = Math.Abs(Math.Cos(locked_theta));
-			if ((locked_theta >= 0.0 && locked_theta < pi2) || (locked_theta >= Math.PI && locked_theta < (Math.PI + pi2)))
-			{// Угол (>= 0 и < Pi/2) или (>= ПИ и < ПИ + Пи/2)
-				adjacentTop = COSINUS * oldWidth;
-				oppositeTop = SINUS * oldWidth;
-				adjacentBottom = COSINUS * oldHeigth;
-				oppositeBottom = SINUS * oldHeigth;
-			}
-			else
-			{
-				adjacentTop = SINUS * oldHeigth;
-				oppositeTop = COSINUS * oldHeigth;
-				adjacentBottom = SINUS * oldWidth;
-				oppositeBottom = COSINUS * oldWidth;
-			}
-			newWidth = adjacentTop + oppositeBottom;
-			newHeigth = adjacentBottom + oppositeTop;
-			nWidth = (int)(Math.Ceiling(newWidth));//округление до целых вверх
-			nHeigth = (int)(Math.Ceiling(newHeigth));
-			#endregion Вычисление новой ширины и высоты
-			Bitmap rotatedBmp = new Bitmap(nWidth, nHeigth);
-			Graphics g = Graphics.FromImage(rotatedBmp);
-			Point[] points = new Point[3];//массив из 3 структур типа Point, которые определяют параллелограмм
-										  //Три точки обозначают: верхний левый, верхний правый, нижний левый углы параллелограмма.
-										  //Четвёртая точка экстраполируется из первых трёх
-										  //точка отсчёта (0,0) - левый верхний угол
-			if (locked_theta >= 0.0 && locked_theta < pi2) //90
-			{
-				points[0] = new Point((int)oppositeBottom, 0);
-				points[1] = new Point(nWidth, (int)(oppositeTop));
-				points[2] = new Point(0, (int)(adjacentBottom));
-			}
-			else if (locked_theta >= pi2 && locked_theta < Math.PI) //90-180
-			{
-				points[0] = new Point(nWidth, (int)(oppositeTop));
-				points[1] = new Point((int)(adjacentTop), nHeigth);
-				points[2] = new Point((int)(oppositeBottom), 0);
-			}
-			else if (locked_theta >= Math.PI && locked_theta < (Math.PI + pi2))//180-270
-			{
-				points[0] = new Point((int)(adjacentTop), nHeigth);
-				points[1] = new Point(0, (int)(adjacentBottom));
-				points[2] = new Point(nWidth, (int)(oppositeTop));
-			}
-			else
-			{
-				points[0] = new Point(0, (int)(adjacentBottom));
-				points[1] = new Point((int)(oppositeBottom), 0);
-				points[2] = new Point((int)(adjacentTop), nHeigth);
-			}
-			g.DrawImage(Image, points);
-			//g.DrawRectangle(new Pen(Color.Red, 0.1f), new Rectangle(0, 0, nWidth / 2, nHeigth / 2));
-			//g.DrawRectangle(new Pen(Color.Red, 0.1f), new Rectangle(nWidth / 2, nHeigth / 2, nWidth / 2 - 1, nHeigth / 2 - 1));
-			g.Dispose();
-			Image.Dispose();
-			return rotatedBmp;
-		}
 		private void timerPaint_Tick(object sender, EventArgs e)
 		{
 			Invalidate();
@@ -308,9 +227,12 @@ namespace client
 			if (Start)
 			{
 				Point cursorPoint = PlayingField.PointToClient(Cursor.Position);
+				model.MouseCoord = cursorPoint;
 				cursorPoint.X = cursorPoint.X - 300 + model.ThisUser.userLocation.X;
 				cursorPoint.Y = cursorPoint.Y - 300 + model.ThisUser.userLocation.Y;
 				MouseLocatinEvent(cursorPoint);
+				string st = "" + RotatateEvent();
+				label1.Text = st;
 			}
 
 		}
@@ -322,9 +244,9 @@ namespace client
 
 		private void PlayingField_MouseMove(object sender, MouseEventArgs e)
 		{
-			model.MouseCoord = e.Location;
-			string st = "" + RotatateEvent();
-			label1.Text = st;
+			//model.MouseCoord = e.Location;
+			//string st = "" + RotatateEvent();
+			//label1.Text = st;
 		}
 
 		private void PlayingField_Click(object sender, EventArgs e)
