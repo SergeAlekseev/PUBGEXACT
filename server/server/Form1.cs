@@ -35,20 +35,21 @@ namespace server
 			StopServerEvent += controller.StopServer;
 			StartServerEvent += controller.start;
 			StartGameEvent += controller.StartGame;
+
+			controller.StopServerEvent += writeStatus;
+			controller.StartServerEvent += writeStatus; 
+			controller.StartGameEvent += writeStatus; 
+
 		}
 
 		private void start_Click(object sender, EventArgs e)
 		{
 			StartServerEvent();
-
-			status.Text = "Сервер включен";
 		}
 
 		private void stop_Click(object sender, EventArgs e)
 		{
 			StopServerEvent();
-			
-			status.Text = "Сервер отключен";
 		}
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -58,8 +59,14 @@ namespace server
 		private void startGame_Click(object sender, EventArgs e)
 		{
 			StartGameEvent();
+		}
 
-			status.Text = "Идёт игра";
+		private void writeStatus(string text)
+		{
+			BeginInvoke(new MethodInvoker(delegate
+			{
+				status.Text = text;
+			}));
 		}
 	}
 }
