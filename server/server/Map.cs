@@ -11,9 +11,11 @@ namespace server
 	{
 		List<Box> listBox = new List<Box>();
 		List<Bush> listBush = new List<Bush>();
-		Rectangle mapBorders = new Rectangle(0, 0, 600, 600);
+		static public Rectangle mapBorders = new Rectangle(0, 0, 600, 600);
 		Zone nextZone = new Zone();
 		Zone prevZone;
+		public bool[,] bordersForUsers = new bool[mapBorders.Width,mapBorders.Height];
+		public bool[,] bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
 
 		public List<Box> ListBox
 		{
