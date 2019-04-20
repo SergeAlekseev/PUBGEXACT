@@ -195,6 +195,17 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
+					case 12:
+						{
+							string tmpString = Reading(nStream);
+							model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString);
+							break;
+						}
+					case 13:
+						{
+
+							break;
+						}
 						//case 10 и 11 	уже зарезервированы	
 				}
 
@@ -261,7 +272,7 @@ namespace client
 		public double mouseMove()
 		{
 			Point start1 = new Point { X = 300, Y = 300 };
-			Point end1 = new Point { X = 300, Y = 500 };
+			Point end1 = new Point { X = 300, Y = 600 };
 			Vector vector1 = Vector.FromPoints(start1, end1);
 
 			Point start2 = new Point { X = 300, Y = 300 };

@@ -25,6 +25,15 @@ namespace server
 		TcpListener PublicHost, PublicHost2, PublicHost3;
 		System.Timers.Timer timerZone, timerUsersInZone;
 
+		public delegate void StartServerD(string text);
+		public event StartServerD StartServerEvent;
+
+		public delegate void StartGameD(string text);
+		public event StartGameD StartGameEvent;
+
+		public delegate void StopServerD(string text);
+		public event StopServerD StopServerEvent;
+
 		public void StartGame()
 		{
 			if (!workingGame && workingServer)
@@ -48,6 +57,7 @@ namespace server
 				timerUsersInZone.Interval = 1000;
 				timerUsersInZone.Elapsed += (x, y) => { timerUsersInZone_Tick(); };
 				timerUsersInZone.Start();
+				StartGameEvent("Игра идёт");
 			}
 		}
 
@@ -65,10 +75,10 @@ namespace server
 			}
 			if (workingGame && model.ListUsers[num] != null)
 			{
-				if (model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1 && (moveUp)) model.ListUsers[num].userLocation.Y -= speed; //Вниз
-				if (model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1 && (moveDown)) model.ListUsers[num].userLocation.Y += speed; //Вверх
-				if (model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1 && (moveLeft)) model.ListUsers[num].userLocation.X -= speed; //Влево
-				if (model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1 && (moveRight)) model.ListUsers[num].userLocation.X += speed;// Вправо	
+				if ((moveUp) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed] && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+				if ((moveDown) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed] && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1) model.ListUsers[num].userLocation.Y += speed; //Вверх
+				if ((moveLeft) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y] && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1) model.ListUsers[num].userLocation.X -= speed; //Влево
+				if ((moveRight) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y] && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1) model.ListUsers[num].userLocation.X += speed;// Вправо	
 			}
 		}
 
@@ -133,12 +143,10 @@ namespace server
 		public void StartServer(object tmpObject)//Controller
 		{
 
-			if (!workingServer&&!workingGame)
+			if (!workingServer && !workingGame)
 			{
-				workingServer = true;
-
 				Random random = new Random();
-
+				RandomBushs();
 				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
 
@@ -154,12 +162,16 @@ namespace server
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
 				menuConnecting.Start(host3);
 
-				RandomBushs();
+
+				RandomBox();
+
 
 				PublicHost = host;
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
 
+				workingServer = true;
+				StartServerEvent("Сервер запущен");
 				while (workingServer)
 				{
 					TcpClient tc = null;
@@ -231,6 +243,7 @@ namespace server
 				model.Remove();
 				workingGame = false;
 				Thread.Sleep(1000);
+				StopServerEvent("Сервер отключен");
 			}
 		}
 
@@ -240,6 +253,44 @@ namespace server
 			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 10000; i++)
 			{
 				model.Map.ListBush.Add(new Bush(random.Next(model.Map.MapBorders.Width), random.Next(model.Map.MapBorders.Height)));
+			}
+		}
+
+		public void RandomBox()
+		{
+			bool flag = true;
+			Random random = new Random();
+			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 20000;)
+			{
+				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
+				foreach (Box b in model.Map.ListBox)
+				{
+					if (Math.Abs(b.Location.X - box.Location.X) < Box.size || Math.Abs(b.Location.Y - box.Location.Y) < Box.size)
+					{
+						flag = false;
+						break;
+					}
+				}
+				if (flag)
+				{
+					model.Map.ListBox.Add(box);
+					for (int k = box.Location.X - 10; k < box.Location.X + 10; k++)
+					{
+						for (int j = box.Location.Y - 10; j < box.Location.Y + 10; j++)
+						{
+							model.Map.bordersForBullets[k, j] = true;
+						}
+					}
+					for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
+					{
+						for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
+						{
+							model.Map.bordersForUsers[k, j] = true;
+						}
+					}
+					i++;
+				}
+				flag = true;
 			}
 		}
 
@@ -410,6 +461,14 @@ namespace server
 						break;
 					}
 				}
+				try
+				{
+					if (model.Map.bordersForBullets[bulletInfo.location.X, bulletInfo.location.Y])
+					{
+						flagBreak = true;
+					}
+				}
+				catch { break; } 
 				if (flagBreak) break;
 				Thread.Sleep(20);
 			}
@@ -461,8 +520,9 @@ namespace server
 			numberUser[0] = (byte)num;
 			nStream.Write(numberUser, 0, 1);
 
-			Writing(model.Map.ListBush, 6, nStream); // Отправку инфы о кустах
+			Writing(model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
 			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			Writing(model.Map.ListBox, 12, nStream); // Отправка инфы о коробках
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 15;
@@ -612,15 +672,6 @@ namespace server
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StopServer();
-		}
-
-		public void WritingBush(List<Bush> listBush, NetworkStream ns)
-		{
-			listBush.Add(new Bush(50, 50));
-			listBush.Add(new Bush(25, 170));
-			listBush.Add(new Bush(340, 150));
-
-			Writing(listBush, 6, ns);
 		}
 
 		public void createdZone()

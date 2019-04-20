@@ -10,23 +10,17 @@ namespace server
 	class Box
 	{
 		Point location;
-		int size;
-		public Box()
+		public static int size = 20;
+		public Box(int X, int Y)
 		{
-			location = new Point();
-			size = 10;
+			location = new Point(X, Y);
 		}
-		//Мб добавить фичу, что внутри боксов будет что-то лежать
+		
 		public Point Location
 		{
 			get { return location; }
 			set { location = value; }
 		}
 
-		public int Size
-		{
-			get { return size; }
-			set { size = value; }
-		}
 	}
 }
