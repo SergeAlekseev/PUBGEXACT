@@ -16,7 +16,7 @@ namespace client
 	public partial class Login : Form
 	{
 		TcpClient client;
-		NetworkStream nStream;
+		NetworkStream nStream1, nStream2;
 
 		public Login()
 		{
@@ -30,7 +30,7 @@ namespace client
 				TcpClient client = new TcpClient(ip.Text, 3337);
 				if (correctData())
 				{
-					NetworkStream nStream = client.GetStream();
+					nStream1 = client.GetStream();
 					MyMenu form = new MyMenu(tName.Text, Pass.Text, ip.Text);
 					form.Show();
 					this.Hide();
@@ -49,7 +49,7 @@ namespace client
 		private bool correctData()
 		{
 			client = new TcpClient(ip.Text, 2337);
-			nStream = client.GetStream();
+			nStream2 = client.GetStream();
 			GeneralInfo gi = new GeneralInfo();
 			gi.Name = tName.Text;
 			gi.Password = Pass.Text;
@@ -66,7 +66,7 @@ namespace client
 				byte[] typeCommand = new byte[1];
 				try
 				{
-					nStream.Read(typeCommand, 0, 1);
+					nStream2.Read(typeCommand, 0, 1);
 				}
 				catch
 				{
@@ -74,7 +74,7 @@ namespace client
 				}
 				if (typeCommand[0] == 10|| typeCommand[0] == 12)
 				{
-					string tmpString = Reading(nStream);
+					string tmpString = Reading(nStream2);
 					GInfo = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
 					flag = true;
 					return true;
@@ -137,9 +137,9 @@ namespace client
 			byte[] typeComand = new byte[1];
 			typeComand[0] = numComand;
 
-			nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-			nStream.Write(massByts, 0, massByts.Count());
+			nStream2.Write(typeComand, 0, 1);//Отпраляет тип команды
+			nStream2.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+			nStream2.Write(massByts, 0, massByts.Count());
 		}
 
 		private void Ip_Click(object sender, EventArgs e)

@@ -145,6 +145,7 @@ namespace server
 
 			if (!workingServer && !workingGame)
 			{
+				workingServer = true;
 				Random random = new Random();
 				RandomBushs();
 				number = -1;
@@ -170,7 +171,7 @@ namespace server
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
 
-				workingServer = true;
+				
 				StartServerEvent("Сервер запущен");
 				while (workingServer)
 				{
