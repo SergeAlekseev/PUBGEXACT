@@ -269,18 +269,6 @@ namespace client
 			return false;
 		}
 
-		//public double Rotate(Vector A, Vector B)
-		//{
-		//	Vector C = new Vector();
-		//	C.startPoint.X = B.startPoint.X - A.startPoint.X;
-		//	C.endPoint.X = B.endPoint.X - A.endPoint.X;
-
-		//	C.startPoint.Y = B.startPoint.Y - A.startPoint.Y;
-		//	C.endPoint.Y = B.endPoint.Y - A.endPoint.Y;
-
-		//	return (180/Math.PI)*Math.Atan2(C.endPoint.X - C.startPoint.X, C.endPoint.Y - C.startPoint.Y);
-		//}
-
 		public double mouseMove()
 		{
 			Point start1 = new Point { X = 300, Y = 300 };
@@ -295,7 +283,11 @@ namespace client
 
 			double angleDegree = angleRad / Math.PI * 180;
 			if (model.MouseCoord.X >= 300) angleDegree = 360 - angleDegree;
-			model.Rotate = angleDegree;
+			model.ThisUser.Rotate = angleDegree;
+
+			if(threadStart)
+			Writing(model.ThisUser.Rotate,13);
+
 			return angleDegree;
 		}
 	}

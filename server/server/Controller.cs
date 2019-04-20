@@ -213,6 +213,8 @@ namespace server
 		{
 			if (workingServer)
 			{
+				PlayerSave(model.ListGInfo);
+
 				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
@@ -225,13 +227,16 @@ namespace server
 				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in model.ListNs)
 				{
-					numberUser[0] = 5;
-					try
+					if (ns != null)
 					{
-						ns.Write(numberUser, 0, 1);
-						ns.Close();
+						numberUser[0] = 5;
+						try
+						{
+							ns.Write(numberUser, 0, 1);
+							ns.Close();
+						}
+						catch { }
 					}
-					catch { }
 				}
 				workingServer = false;
 				workingThread = false;
@@ -451,6 +456,7 @@ namespace server
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
 							model.ListNs[j].Write(flagDie, 0, 1);
+							//model.ListGInfo[j-1].Dies += 1;  _______________пока без глобальной инфы
 						}
 						break;
 					}
@@ -597,6 +603,12 @@ namespace server
 								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
 								break;
 							}
+						case 13:
+							{
+								string tmpString = Reading(nStream);
+								model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);					
+								break;
+							}
 					}
 				}
 				catch (System.IO.IOException)
@@ -669,16 +681,6 @@ namespace server
 			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
 		}
 
-		public void PlayerSave(List<GeneralInfo> listUsers) //Пока что положу сюда UserInfo, но нужно будет потом выделить отдельный класс под инфу об игроке для логина
-		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
-			{//пока что будет косталь с постоянным адресом
-				formatter.Serialize(fs, listUsers);
-			}
-		}
-
-
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
 			if (listUser != null)
@@ -722,6 +724,15 @@ namespace server
 				}
 				PlayerSave(newList);
 				return newList;
+			}
+		}
+
+		public void PlayerSave(List<GeneralInfo> listUsers)
+		{
+			BinaryFormatter formatter = new BinaryFormatter();
+			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
+			{
+				formatter.Serialize(fs, listUsers);
 			}
 		}
 	}

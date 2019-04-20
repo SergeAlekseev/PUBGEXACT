@@ -139,7 +139,15 @@ namespace client
 					{
 						if (user != null && user.userLocation != model.ThisUser.userLocation)
 						{
-							bufferedGraphics.Graphics.FillEllipse(Brushes.Red, user.userLocation.X + PlayingField.Width / 2 - 3 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 3 - model.ThisUser.userLocation.Y, 6, 6);
+							Bitmap background = new Bitmap(model.Images[2]);
+
+							Graphics g = Graphics.FromImage(background);
+							g.TranslateTransform(10, 10);
+							g.RotateTransform((float)user.Rotate);
+							g.TranslateTransform(-10, -10);
+							g.DrawImage(model.Images[0], 0, 0, 23, 23);
+
+							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + model.Map.MapBorders.Width / 2 - 11 - model.ThisUser.userLocation.X, user.userLocation.Y + model.Map.MapBorders.Height / 2 - 11 - model.ThisUser.userLocation.Y, 23, 23);
 						}
 					}
 					if (model.ListUsers.Count > 0)
@@ -149,7 +157,7 @@ namespace client
 
 						Graphics g = Graphics.FromImage(background);
 						g.TranslateTransform(10, 10);
-						g.RotateTransform((float)model.Rotate);
+						g.RotateTransform((float)model.ThisUser.Rotate);
 						g.TranslateTransform(-10, -10);
 						g.DrawImage(model.Images[0], 0, 0, 23, 23);
 
@@ -247,16 +255,5 @@ namespace client
 			Application.Exit();
 		}
 
-		private void PlayingField_MouseMove(object sender, MouseEventArgs e)
-		{
-			//model.MouseCoord = e.Location;
-			//string st = "" + RotatateEvent();
-			//label1.Text = st;
-		}
-
-		private void PlayingField_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }
