@@ -55,7 +55,7 @@ namespace client
 			gi.Password = Pass.Text;
 			Writing(gi, 10);
 			if (ReadingStream(gi)) return true;
-			else return false;
+			else return false; 
 		}
 
 		private bool ReadingStream(GeneralInfo GInfo)
