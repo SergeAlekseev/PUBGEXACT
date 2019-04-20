@@ -18,6 +18,8 @@ namespace server
 		public Point mouseLocation;
 		public double Rotate;
 
+		public string Name;
+
 		public UserInfo(Point userLocation)
 		{
 			this.userLocation = userLocation;

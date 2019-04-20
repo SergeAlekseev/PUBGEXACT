@@ -290,5 +290,9 @@ namespace client
 
 			return angleDegree;
 		}
+		public void setName(string Name)
+		{
+			Writing(Name,14);
+		}
 	}
 }

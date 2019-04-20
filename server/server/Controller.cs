@@ -260,7 +260,7 @@ namespace server
 		{
 			bool flag = true;
 			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 20000;)
+			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 120000;)
 			{
 				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
 				foreach (Box b in model.Map.ListBox)
@@ -456,7 +456,12 @@ namespace server
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
 							model.ListNs[j].Write(flagDie, 0, 1);
-							//model.ListGInfo[j-1].Dies += 1;  _______________пока без глобальной инфы
+
+							foreach (GeneralInfo g in model.ListGInfo)
+							{
+								if (g.Name == model.ListUsers[j].Name)
+									g.Dies += 1;
+							}
 						}
 						break;
 					}
@@ -607,6 +612,12 @@ namespace server
 							{
 								string tmpString = Reading(nStream);
 								model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);					
+								break;
+							}
+						case 14: //Да это уже рофл какой-то
+							{
+								string tmpString = Reading(nStream);
+								model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString);
 								break;
 							}
 					}
