@@ -40,6 +40,8 @@
 			this.InfoWins = new System.Windows.Forms.Label();
 			this.InfoKills = new System.Windows.Forms.Label();
 			this.InfoName = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.dies = new System.Windows.Forms.Label();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -47,7 +49,7 @@
 			// 
 			this.bPlay.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.bPlay.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.bPlay.Location = new System.Drawing.Point(70, 136);
+			this.bPlay.Location = new System.Drawing.Point(70, 178);
 			this.bPlay.Name = "bPlay";
 			this.bPlay.Size = new System.Drawing.Size(173, 39);
 			this.bPlay.TabIndex = 0;
@@ -59,7 +61,7 @@
 			// 
 			this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.button2.Location = new System.Drawing.Point(88, 223);
+			this.button2.Location = new System.Drawing.Point(88, 265);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(135, 36);
 			this.button2.TabIndex = 1;
@@ -70,7 +72,7 @@
 			// 
 			this.button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.button3.Location = new System.Drawing.Point(88, 181);
+			this.button3.Location = new System.Drawing.Point(88, 223);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(135, 36);
 			this.button3.TabIndex = 2;
@@ -80,6 +82,8 @@
 			// panel1
 			// 
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.label5);
+			this.panel1.Controls.Add(this.dies);
 			this.panel1.Controls.Add(this.label4);
 			this.panel1.Controls.Add(this.label3);
 			this.panel1.Controls.Add(this.label2);
@@ -91,7 +95,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(322, 130);
+			this.panel1.Size = new System.Drawing.Size(322, 157);
 			this.panel1.TabIndex = 3;
 			// 
 			// label4
@@ -166,11 +170,29 @@
 			this.InfoName.TabIndex = 0;
 			this.InfoName.Text = "Панель с информацией о игроке";
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(3, 127);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(86, 13);
+			this.label5.TabIndex = 9;
+			this.label5.Text = "Всего смертей:";
+			// 
+			// dies
+			// 
+			this.dies.AutoSize = true;
+			this.dies.Location = new System.Drawing.Point(95, 127);
+			this.dies.Name = "dies";
+			this.dies.Size = new System.Drawing.Size(174, 13);
+			this.dies.TabIndex = 8;
+			this.dies.Text = "Панель с информацией о игроке";
+			// 
 			// MyMenu
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(322, 271);
+			this.ClientSize = new System.Drawing.Size(322, 313);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.button2);
@@ -199,5 +221,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label dies;
 	}
 }

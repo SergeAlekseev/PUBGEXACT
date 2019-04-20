@@ -59,6 +59,7 @@ namespace client
 				InfoName.Text = model.GInfo.Name;
 				InfoKills.Text = "" + model.GInfo.Kills;
 				InfoWins.Text = "" + model.GInfo.Wins;
+				dies.Text = "" + model.GInfo.Dies;
 				if (Controller.flagGame)
 				{
 					MessageBox.Show("Подождите, игра идёт");

@@ -16,6 +16,7 @@ namespace client
 		public bool flagWaitShoting;
 		public bool flagZone;
 		public Point mouseLocation;
+		public double Rotate;
 
 		public UserInfo(Point userLocation)
 		{

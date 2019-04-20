@@ -23,7 +23,7 @@ namespace client
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		public bool Start = false;
 		Point mouseCoord = new Point();
-		double rotate;
+	//	double rotate;
 		public Model()
 		{
 			listUsers = new List<UserInfo>();
@@ -46,6 +46,6 @@ namespace client
 		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
-		public double Rotate { get { return rotate; } set { rotate = value; } }
+	//	public double Rotate { get { return rotate; } set { rotate = value; } }
 	}
 }

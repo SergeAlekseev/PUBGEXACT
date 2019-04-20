@@ -8,7 +8,7 @@ using System.Drawing;
 namespace server
 {
 	class UserInfo
-	{
+	{		
 		public short hp = 100;
 		public short userNumber;
 		public Point userLocation;
@@ -16,6 +16,7 @@ namespace server
 		public bool flagWaitShoting;
 		public bool flagZone;
 		public Point mouseLocation;
+		public double Rotate;
 
 		public UserInfo(Point userLocation)
 		{
