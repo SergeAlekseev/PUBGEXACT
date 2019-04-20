@@ -189,7 +189,10 @@ namespace server
 					}
 					number++;
 
-					UserInfo userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+					UserInfo userInfoTmp;
+					do
+						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+					while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.X]);
 					userInfoTmp.userNumber = number;
 
 					lock (model.ListUsers)
