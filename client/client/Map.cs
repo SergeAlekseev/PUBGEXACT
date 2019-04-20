@@ -11,7 +11,7 @@ namespace client
 	{
 		List<Box> listBox = new List<Box>();
 		List<Bush> listBush = new List<Bush>();
-		Rectangle mapBorders = new Rectangle(0, 0, 600, 600);
+		Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200);
 		Zone nextZone = new Zone();
 		Zone prevZone = new Zone();
 

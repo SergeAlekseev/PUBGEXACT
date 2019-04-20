@@ -72,6 +72,7 @@ namespace client
 			controller.JoinUser(Name, Pass);
 
 			InfoName.Text = model.GInfo.Name;
+			model.ThisUser.Name = model.GInfo.Name; //Предаю имя игрока для будущей проверки
 
 			ActionEvent += controller.PressKey;
 			ConnectEvent += controller.Connect;
@@ -86,6 +87,7 @@ namespace client
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			Start = true;
+			controller.setName(model.GInfo.Name);
 		}
 
 		public void ErrorConnect()
@@ -127,7 +129,7 @@ namespace client
 					{
 						TextureBrush grass = new TextureBrush(model.Images[1]);
 						grass.TranslateTransform(-model.ThisUser.userLocation.X, -model.ThisUser.userLocation.Y);
-						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, PlayingField.Width + 3, PlayingField.Height + 3);
+						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y,model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
 					}
 
 					foreach (Box box in model.Map.ListBox)
@@ -147,7 +149,7 @@ namespace client
 							g.TranslateTransform(-10, -10);
 							g.DrawImage(model.Images[0], 0, 0, 23, 23);
 
-							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + model.Map.MapBorders.Width / 2 - 11 - model.ThisUser.userLocation.X, user.userLocation.Y + model.Map.MapBorders.Height / 2 - 11 - model.ThisUser.userLocation.Y, 23, 23);
+							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 11 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 11 - model.ThisUser.userLocation.Y, 23, 23);
 						}
 					}
 					if (model.ListUsers.Count > 0)
@@ -178,7 +180,7 @@ namespace client
 						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, PlayingField.Width + 3, PlayingField.Height + 3);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
 					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
 					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
 
