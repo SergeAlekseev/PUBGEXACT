@@ -45,7 +45,10 @@ namespace server
 				for (int i = 0; i < model.ListNs.Count; i++)
 				{
 					if (model.ListUsers[i] != null)
+					{ 
 						Writing(model.Map.NextZone, 9, model.ListNs[i]); // Инфа  о стартовой зоне
+						Writing(model.Map.PrevZone, 10, model.ListNs[i]);
+					}
 				}
 
 				timerZone = new System.Timers.Timer();
@@ -75,10 +78,10 @@ namespace server
 			}
 			if (workingGame && model.ListUsers[num] != null)
 			{
-				if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed] ) model.ListUsers[num].userLocation.Y -= speed; //Вниз
-				if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
-				if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X -= speed; //Влево
-				if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1  && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X += speed;// Вправо	
+				if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed] ) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+				if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
+				if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X -= speed; //Влево
+				if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2  && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X += speed;// Вправо	
 			}
 		}
 
@@ -90,6 +93,33 @@ namespace server
 			}
 			else
 			{
+				timerZone.Stop();
+				double x = model.Map.PrevZone.ZoneCenterCoordinates.X, y = model.Map.PrevZone.ZoneCenterCoordinates.Y, radius = model.Map.PrevZone.ZoneRadius; ;
+				double koef = Math.Sqrt(Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2)
+										+ Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.Y - model.Map.NextZone.ZoneCenterCoordinates.Y, 2))/1500;
+				double k = Math.Sqrt(Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2)
+										+ Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.Y - model.Map.NextZone.ZoneCenterCoordinates.Y, 2)) / koef;
+				double speedX = (model.Map.PrevZone.ZoneCenterCoordinates.X - model.Map.NextZone.ZoneCenterCoordinates.X) / k;
+				double speedY = (model.Map.PrevZone.ZoneCenterCoordinates.Y - model.Map.NextZone.ZoneCenterCoordinates.Y) / k;
+
+				double speedRadius = (double)(model.Map.PrevZone.ZoneRadius - model.Map.NextZone.ZoneRadius) / 1500;
+				while (model.Map.PrevZone.ZoneRadius > model.Map.NextZone.ZoneRadius)
+				{
+					x -= speedX;
+					model.Map.PrevZone.ZoneCenterCoordinateX = (int)x;
+					y -= speedY;
+					model.Map.PrevZone.ZoneCenterCoordinateY = (int)y;
+					radius -= speedRadius;
+					model.Map.PrevZone.ZoneRadius = (int)radius;
+					for (int i = 0; i < model.ListNs.Count; i++)
+					{
+						if (model.ListUsers[i] != null)
+						{
+							Writing(model.Map.PrevZone, 10, model.ListNs[i]);
+						}
+					}
+					Thread.Sleep(20);
+				}
 				model.Map.PrevZone = model.Map.NextZone;
 				model.Map.NextZone = new Zone();
 				model.Map.NextZone.ZoneRadius = (int)model.Map.PrevZone.ZoneRadius / 2;
@@ -100,6 +130,7 @@ namespace server
 						Writing(model.Map.NextZone, 9, model.ListNs[i]);
 				}
 				model.Map.NextZone.TimeTocompression = 60;
+				timerZone.Start();
 			}
 		}
 
@@ -699,8 +730,11 @@ namespace server
 		public void createdZone()
 		{
 			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
-			model.Map.NextZone.TimeTocompression = 120;
+			model.Map.NextZone.TimeTocompression = 10;
 			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
+
+			model.Map.PrevZone.ZoneCenterCoordinates = new Point(model.Map.MapBorders.Width / 2, model.Map.MapBorders.Height / 2);//Создаст зону внутри игровой области
+			model.Map.PrevZone.ZoneRadius = (int)model.Map.MapBorders.Height/4*3;
 		}
 
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
