@@ -75,10 +75,10 @@ namespace server
 			}
 			if (workingGame && model.ListUsers[num] != null)
 			{
-				if ((moveUp) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed] && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1) model.ListUsers[num].userLocation.Y -= speed; //Вниз
-				if ((moveDown) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed] && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1) model.ListUsers[num].userLocation.Y += speed; //Вверх
-				if ((moveLeft) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y] && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1) model.ListUsers[num].userLocation.X -= speed; //Влево
-				if ((moveRight) && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y] && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1) model.ListUsers[num].userLocation.X += speed;// Вправо	
+				if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed] ) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+				if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
+				if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 1 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X -= speed; //Влево
+				if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -1  && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y] ) model.ListUsers[num].userLocation.X += speed;// Вправо	
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace server
 				host.Start();
 				model.ListUsers = new List<UserInfo>();
 
-				
+
 				StartServerEvent("Сервер запущен");
 				while (workingServer)
 				{
@@ -192,7 +192,7 @@ namespace server
 					UserInfo userInfoTmp;
 					do
 						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.X]);
+					while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.Y]);
 					userInfoTmp.userNumber = number;
 
 					lock (model.ListUsers)
@@ -264,7 +264,7 @@ namespace server
 		{
 			bool flag = true;
 			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 120000;)
+			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 50000;)
 			{
 				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
 				foreach (Box b in model.Map.ListBox)
@@ -477,7 +477,7 @@ namespace server
 						flagBreak = true;
 					}
 				}
-				catch { break; } 
+				catch { break; }
 				if (flagBreak) break;
 				Thread.Sleep(20);
 			}
@@ -538,7 +538,7 @@ namespace server
 			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, shift, num); };
 			timerMove.Start();
 
-			while (workingThread && PrivateWorkingThread)
+			while (workingServer && workingThread && PrivateWorkingThread)
 			{
 				try
 				{
@@ -615,7 +615,7 @@ namespace server
 						case 13:
 							{
 								string tmpString = Reading(nStream);
-								model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);					
+								model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);
 								break;
 							}
 						case 14: //Да это уже рофл какой-то
@@ -647,20 +647,27 @@ namespace server
 		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
-			NetworkStream nStream = tcp.GetStream();
-			bool PrivateWorkingThread = true;
-			while (workingThread && PrivateWorkingThread)
+			try
 			{
-				try
+				NetworkStream nStream = tcp.GetStream();
+				bool PrivateWorkingThread = true;
+				while (workingThread && PrivateWorkingThread)
 				{
-					Writing(model.ListUsers, 1, nStream);
-					Writing(model.ListBullet, 3, nStream);
-					Thread.Sleep(20);
+					try
+					{
+						Writing(model.ListUsers, 1, nStream);
+						Writing(model.ListBullet, 3, nStream);
+						Thread.Sleep(20);
+					}
+					catch (System.IO.IOException)
+					{
+						PrivateWorkingThread = false;
+					}
 				}
-				catch (System.IO.IOException)
-				{
-					PrivateWorkingThread = false;
-				}
+			}
+			catch
+			{
+
 			}
 		}
 

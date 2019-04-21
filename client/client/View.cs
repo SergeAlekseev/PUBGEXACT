@@ -144,12 +144,12 @@ namespace client
 							Bitmap background = new Bitmap(model.Images[2]);
 
 							Graphics g = Graphics.FromImage(background);
-							g.TranslateTransform(10, 10);
+							g.TranslateTransform(12, 12);
 							g.RotateTransform((float)user.Rotate);
-							g.TranslateTransform(-10, -10);
+							g.TranslateTransform(-12, -12);
 							g.DrawImage(model.Images[0], 0, 0, 23, 23);
 
-							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 11 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 11 - model.ThisUser.userLocation.Y, 23, 23);
+							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 12 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 12 - model.ThisUser.userLocation.Y, 23, 23);
 						}
 					}
 					if (model.ListUsers.Count > 0)
@@ -158,12 +158,12 @@ namespace client
 						Bitmap background = new Bitmap(model.Images[2]);
 
 						Graphics g = Graphics.FromImage(background);
-						g.TranslateTransform(10, 10);
+						g.TranslateTransform(12, 12);
 						g.RotateTransform((float)model.ThisUser.Rotate);
-						g.TranslateTransform(-10, -10);
+						g.TranslateTransform(-12, -12);
 						g.DrawImage(model.Images[0], 0, 0, 23, 23);
 
-						bufferedGraphics.Graphics.DrawImage(background, 288, 288, 23, 23);
+						bufferedGraphics.Graphics.DrawImage(background, 289, 289, 23, 23);
 
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
