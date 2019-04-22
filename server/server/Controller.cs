@@ -700,7 +700,7 @@ namespace server
 		{
 			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
 			model.Map.NextZone.TimeTocompression = 120;
-			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
+			model.Map.NextZone.ZoneRadius = (int)100;
 		}
 
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)

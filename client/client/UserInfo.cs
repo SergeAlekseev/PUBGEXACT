@@ -17,12 +17,17 @@ namespace client
 		public bool flagZone;
 		public Point mouseLocation;
 		public double Rotate;
-
+		private double angelToZone;
 		public string Name;
 
 		public UserInfo(Point userLocation)
 		{
 			this.userLocation = userLocation;
+		}
+		public double AngelToZone
+		{
+			get { return angelToZone; }
+			set { angelToZone = value; }
 		}
 	}
 }

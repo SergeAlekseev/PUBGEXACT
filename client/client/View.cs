@@ -56,6 +56,7 @@ namespace client
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(20,20,null, IntPtr.Zero);
 
 
 			timerPaint.Interval = 10;
@@ -88,6 +89,10 @@ namespace client
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			Start = true;
 			controller.setName(model.GInfo.Name);
+
+			System.Windows.Forms.Timer timerMove = new System.Windows.Forms.Timer();
+			timerMove.Interval = 100;
+			timerMove.Start();
 		}
 
 		public void ErrorConnect()
@@ -147,8 +152,7 @@ namespace client
 							g.TranslateTransform(12, 12);
 							g.RotateTransform((float)user.Rotate);
 							g.TranslateTransform(-12, -12);
-							g.DrawImage(model.Images[0], 0, 0, 23, 23);
-
+							g.DrawImage(model.Images[0], 0, 0, 23, 23);					
 							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 12 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 12 - model.ThisUser.userLocation.Y, 23, 23);
 						}
 					}
@@ -164,9 +168,25 @@ namespace client
 						g.DrawImage(model.Images[0], 0, 0, 23, 23);
 
 						bufferedGraphics.Graphics.DrawImage(background, 289, 289, 23, 23);
-
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
-						if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
+						///////////
+						if (model.ThisUser.flagZone)
+						{
+							Bitmap background1 = new Bitmap(model.Images[2]);
+
+							Graphics g1 = Graphics.FromImage(background1);
+							g1.TranslateTransform(10, 10);
+
+							g1.RotateTransform((float)Convert.ToDouble(label2.Text)+90); // <---- заменить вычисление угла угол к зоне
+
+							g1.TranslateTransform(-10, -10);
+							g1.DrawImage(model.Images[4], 0, 0, 20, 20);
+
+							bufferedGraphics.Graphics.DrawImage(background1, 300, 300, 20, 20);
+						}
+						//////////
+
+				//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
 					}
 					foreach (BulletInfo bullet in model.ListBullet)
 					{
@@ -190,7 +210,6 @@ namespace client
 				{
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
-
 				}
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
@@ -248,6 +267,7 @@ namespace client
 				MouseLocatinEvent(cursorPoint);
 				string st = "" + RotatateEvent();
 				label1.Text = st;
+				label2.Text = ""+model.ThisUser.AngelToZone;
 			}
 
 		}
@@ -256,6 +276,5 @@ namespace client
 		{
 			Application.Exit();
 		}
-
 	}
 }

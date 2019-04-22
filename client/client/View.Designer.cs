@@ -35,6 +35,7 @@
 			this.timerMouseLocation = new System.Windows.Forms.Timer(this.components);
 			this.InfoName = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -75,11 +76,21 @@
 			this.label1.TabIndex = 3;
 			this.label1.Text = "label1";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(463, 8);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(35, 13);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "label2";
+			// 
 			// Client
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(624, 639);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.InfoName);
 			this.Controls.Add(this.PlayingField);
@@ -104,6 +115,7 @@
 		private System.Windows.Forms.Timer timerMouseLocation;
 		private System.Windows.Forms.Label InfoName;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
 	}
 }
 

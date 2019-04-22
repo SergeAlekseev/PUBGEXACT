@@ -35,7 +35,6 @@ namespace client
 		bool threadStart = false;
 
 		System.Timers.Timer timerPing = new System.Timers.Timer();
-
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
@@ -270,29 +269,57 @@ namespace client
 		}
 
 		public double mouseMove()
+		{		
+			double angleDegree = defineAngle(model.MouseCoord,new Point(300,600));
+			model.ThisUser.Rotate = angleDegree;
+
+			double angeltoZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
+			model.ThisUser.AngelToZone = angeltoZone;
+
+			if (threadStart)
+			Writing(model.ThisUser.Rotate,13);
+
+			return angleDegree;
+		}
+
+		public void setName(string Name)
+		{
+			Writing(Name,14);
+		}
+		public double defineAngle(Point onePoint, Point twoPoint)
 		{
 			Point start1 = new Point { X = 300, Y = 300 };
-			Point end1 = new Point { X = 300, Y = 600 };
+			Point end1 = new Point { X = twoPoint.X, Y = twoPoint.Y };
 			Vector vector1 = Vector.FromPoints(start1, end1);
 
 			Point start2 = new Point { X = 300, Y = 300 };
-			Point end2 = new Point { X = model.MouseCoord.X, Y = model.MouseCoord.Y };
+			Point end2 = new Point { X = onePoint.X, Y = onePoint.Y };
 			Vector vector2 = Vector.FromPoints(start2, end2);
 
 			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
 
 			double angleDegree = angleRad / Math.PI * 180;
-			if (model.MouseCoord.X >= 300) angleDegree = 360 - angleDegree;
-			model.ThisUser.Rotate = angleDegree;
-
-			if(threadStart)
-			Writing(model.ThisUser.Rotate,13);
+			if (onePoint.X >= 300) angleDegree = 360 - angleDegree;
 
 			return angleDegree;
 		}
-		public void setName(string Name)
+
+		public double defineAngleZone(Point onePoint, Point twoPoint)
 		{
-			Writing(Name,14);
-		}
+			Point start1 = new Point { X = onePoint.X, Y = onePoint.Y };
+			Point end1 = new Point { X = twoPoint.X, Y = twoPoint.Y };
+			Vector vector1 = Vector.FromPoints(start1, end1);
+
+			Point start2 = new Point { X = onePoint.X, Y = onePoint.Y };
+			Point end2 = new Point { X = onePoint.X, Y = onePoint.Y+200 };
+			Vector vector2 = Vector.FromPoints(start2, end2);
+
+			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
+
+			double angleDegree = angleRad / Math.PI * 180;
+			if (onePoint.X < twoPoint.X) angleDegree = 360 - angleDegree;
+
+			return angleDegree;
+		}	
 	}
 }
