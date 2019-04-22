@@ -194,6 +194,12 @@ namespace client
 							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
 							break;
 						}
+					case 10:
+						{
+							string tmpString = Reading(nStream);
+							model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+							break;
+						}
 					case 12:
 						{
 							string tmpString = Reading(nStream);

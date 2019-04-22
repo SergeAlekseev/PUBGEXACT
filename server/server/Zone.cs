@@ -25,6 +25,15 @@ namespace server
 			set { zoneRadius = value; }
 		}
 
+		public int ZoneCenterCoordinateX
+		{
+			set { zoneCenterCoordinates.X = value; }
+		}
+
+		public int ZoneCenterCoordinateY
+		{
+			set { zoneCenterCoordinates.Y = value; }
+		}
 		public Point ZoneCenterCoordinates
 		{
 			get { return zoneCenterCoordinates; }
