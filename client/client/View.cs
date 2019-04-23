@@ -56,7 +56,7 @@ namespace client
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
-			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(20,20,null, IntPtr.Zero);
+			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(10,6,null, IntPtr.Zero);
 			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
 
 
@@ -181,7 +181,7 @@ namespace client
 							g1.RotateTransform((float)model.AngelToZone + 90); // <---- заменить вычисление угла угол к зоне
 
 							g1.TranslateTransform(-50, -50);
-							g1.DrawImage(model.Images[4], 0, 40, 20, 20);
+							g1.DrawImage(model.Images[4], 0, 48, 10, 6);
 
 							bufferedGraphics.Graphics.DrawImage(background1, 250, 250, 100, 100);
 						}
