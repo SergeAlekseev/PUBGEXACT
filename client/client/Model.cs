@@ -23,21 +23,22 @@ namespace client
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		public bool Start = false;
 		Point mouseCoord = new Point();
-	//	double rotate;
+		double angelToZone;
+		//	double rotate;
 		public Model()
 		{
 			listUsers = new List<UserInfo>();
 			action = new Action();
 			ping = -1;
 			thisUser = new UserInfo(new Point(300, 300));
-			if (thisUser!=null)
-			Start = true;
+			if (thisUser != null)
+				Start = true;
 		}
-
+		public double AngelToZone{get { return angelToZone; } set { angelToZone = value; }}
 		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }
 		public short Lifes { get { return lifes; } set { lifes = value; } }
-		public List<BulletInfo> ListBullet {get { return listBullet; }set { listBullet = value; }}
+		public List<BulletInfo> ListBullet { get { return listBullet; } set { listBullet = value; } }
 		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; } }
 		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; } }
 		public Action Action { get { return action; } set { action = value; } }
@@ -46,6 +47,6 @@ namespace client
 		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
-	//	public double Rotate { get { return rotate; } set { rotate = value; } }
+		//	public double Rotate { get { return rotate; } set { rotate = value; } }
 	}
 }

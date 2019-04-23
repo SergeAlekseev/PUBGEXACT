@@ -714,12 +714,16 @@ namespace server
 			byte[] typeComand = new byte[1];
 			typeComand[0] = numComand;
 
-			lock (nStream)
+			try
 			{
-				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-				nStream.Write(massByts, 0, massByts.Count());
+				lock (nStream)
+				{
+					nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+					nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+					nStream.Write(massByts, 0, massByts.Count());
+				}
 			}
+			catch { }
 		}
 
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)

@@ -57,6 +57,7 @@ namespace client
 			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(20,20,null, IntPtr.Zero);
+			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
 
 
 			timerPaint.Interval = 10;
@@ -172,17 +173,17 @@ namespace client
 						///////////
 						if (model.ThisUser.flagZone)
 						{
-							Bitmap background1 = new Bitmap(model.Images[2]);
+							Bitmap background1 = new Bitmap(model.Images[5]);
 
 							Graphics g1 = Graphics.FromImage(background1);
-							g1.TranslateTransform(10, 10);
+							g1.TranslateTransform(50, 50);
 
-							g1.RotateTransform((float)Convert.ToDouble(label2.Text)+90); // <---- заменить вычисление угла угол к зоне
+							g1.RotateTransform((float)model.AngelToZone + 90); // <---- заменить вычисление угла угол к зоне
 
-							g1.TranslateTransform(-10, -10);
-							g1.DrawImage(model.Images[4], 0, 0, 20, 20);
+							g1.TranslateTransform(-50, -50);
+							g1.DrawImage(model.Images[4], 0, 40, 20, 20);
 
-							bufferedGraphics.Graphics.DrawImage(background1, 300, 300, 20, 20);
+							bufferedGraphics.Graphics.DrawImage(background1, 250, 250, 100, 100);
 						}
 						//////////
 
@@ -267,7 +268,6 @@ namespace client
 				MouseLocatinEvent(cursorPoint);
 				string st = "" + RotatateEvent();
 				label1.Text = st;
-				label2.Text = ""+model.ThisUser.AngelToZone;
 			}
 
 		}

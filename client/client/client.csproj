@@ -142,6 +142,7 @@
   <ItemGroup>
     <Content Include="Picture\box.jpg" />
     <None Include="Picture\clear.png" />
+    <None Include="Picture\clear100.png" />
     <Content Include="Picture\grass.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

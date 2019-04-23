@@ -141,6 +141,7 @@ namespace client
 							model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
 							model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
 							model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
+							model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
 							break;
 						}
 					case 2:
@@ -278,9 +279,6 @@ namespace client
 		{		
 			double angleDegree = defineAngle(model.MouseCoord,new Point(300,600));
 			model.ThisUser.Rotate = angleDegree;
-
-			double angeltoZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
-			model.ThisUser.AngelToZone = angeltoZone;
 
 			if (threadStart)
 			Writing(model.ThisUser.Rotate,13);

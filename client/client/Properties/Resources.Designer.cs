@@ -113,6 +113,16 @@ namespace client.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap clear100 {
+            get {
+                object obj = ResourceManager.GetObject("clear100", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap grass {
             get {
                 object obj = ResourceManager.GetObject("grass", resourceCulture);
@@ -169,17 +179,15 @@ namespace client.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-		/// <summary>
-		///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-		/// </summary>
-		internal static System.Drawing.Bitmap strelka
-		{
-			get
-			{
-				object obj = ResourceManager.GetObject("strelka", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
-			}
-		}
-	}
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap strelka {
+            get {
+                object obj = ResourceManager.GetObject("strelka", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+    }
 }
