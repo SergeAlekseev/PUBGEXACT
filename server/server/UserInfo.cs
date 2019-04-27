@@ -17,6 +17,7 @@ namespace server
 		public bool flagZone;
 		public Point mouseLocation;
 		public double Rotate;
+		public int kills = 0;
 
 		public string Name;
 

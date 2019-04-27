@@ -54,11 +54,12 @@ namespace client
 
 			model.Images[0] = client.Properties.Resources.Bush.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
-			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(25, 25, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
-			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(10,6,null, IntPtr.Zero);
+			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(10, 6, null, IntPtr.Zero);
 			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
-
+			model.Images[6] = client.Properties.Resources.thisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
+			model.Images[7] = client.Properties.Resources.notThisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -129,13 +130,13 @@ namespace client
 		{
 			if (model.ListUsers != null && Start)
 			{
-				if (!model.Die)
+				if (!model.Die && !model.Win)
 				{
 					if (model.Images[1] != null)
 					{
 						TextureBrush grass = new TextureBrush(model.Images[1]);
 						grass.TranslateTransform(-model.ThisUser.userLocation.X, -model.ThisUser.userLocation.Y);
-						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y,model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
 					}
 
 					foreach (Box box in model.Map.ListBox)
@@ -150,11 +151,11 @@ namespace client
 							Bitmap background = new Bitmap(model.Images[2]);
 
 							Graphics g = Graphics.FromImage(background);
-							g.TranslateTransform(12, 12);
+							g.TranslateTransform(13, 13);
 							g.RotateTransform((float)user.Rotate);
-							g.TranslateTransform(-12, -12);
-							g.DrawImage(model.Images[0], 0, 0, 23, 23);					
-							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 12 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 12 - model.ThisUser.userLocation.Y, 23, 23);
+							g.TranslateTransform(-13, -13);
+							g.DrawImage(model.Images[7], 5, 5);
+							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 13 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 13 - model.ThisUser.userLocation.Y);
 						}
 					}
 					if (model.ListUsers.Count > 0)
@@ -163,12 +164,12 @@ namespace client
 						Bitmap background = new Bitmap(model.Images[2]);
 
 						Graphics g = Graphics.FromImage(background);
-						g.TranslateTransform(12, 12);
+						g.TranslateTransform(13, 13);
 						g.RotateTransform((float)model.ThisUser.Rotate);
-						g.TranslateTransform(-12, -12);
-						g.DrawImage(model.Images[0], 0, 0, 23, 23);
+						g.TranslateTransform(-13, -13);
+						g.DrawImage(model.Images[6], 5, 5);
 
-						bufferedGraphics.Graphics.DrawImage(background, 289, 289, 23, 23);
+						bufferedGraphics.Graphics.DrawImage(background, 288, 288);
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
 						///////////
 						if (model.ThisUser.flagZone)
@@ -187,14 +188,29 @@ namespace client
 						}
 						//////////
 
-				//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
+						//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
 					}
 					foreach (BulletInfo bullet in model.ListBullet)
 					{
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 					}
 					bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
-					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 20, 2);
+
+					if (model.ArrayKills[2] != null)
+						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n" +
+															 model.ArrayKills[1].dead + " killed " + model.ArrayKills[1].killer + "\n" +
+															 model.ArrayKills[2].dead + " killed " + model.ArrayKills[2].killer, new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+					else if (model.ArrayKills[1] != null)
+						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n" +
+															 model.ArrayKills[1].dead + " killed " + model.ArrayKills[1].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+					else if (model.ArrayKills[0] != null)
+						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Blue, 20, 2);
+
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Red, 200, 2);
+
+					bufferedGraphics.Graphics.DrawString(model.CountGamers + " gamers", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.DarkBlue, 300, 2);
 
 					foreach (Bush bush in model.Map.ListBush)
 					{
@@ -207,10 +223,18 @@ namespace client
 
 
 				}
-				else
+				else if (model.Die)
 				{
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
+					bufferedGraphics.Graphics.DrawString("You killed " + model.Killer, new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 340);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 375);
+				}
+				else
+				{
+					bufferedGraphics.Graphics.FillRectangle(Brushes.White, 0, 0, PlayingField.Width, PlayingField.Height);
+					bufferedGraphics.Graphics.DrawString("You win!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Green, 150, 275);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Green, 150, 340);
 				}
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);

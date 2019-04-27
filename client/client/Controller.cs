@@ -175,6 +175,8 @@ namespace client
 					case 7:
 						{
 							model.Die = true;
+							string tmpString = Reading(nStream);
+							model.Killer = JsonConvert.DeserializeObject<string>(tmpString);
 							nStream.Close();
 							threadStart = false;
 							client.Close();
@@ -210,6 +212,33 @@ namespace client
 					case 13:
 						{
 
+							break;
+						}
+					case 20:
+						{
+							string tmpString = Reading(nStream);
+							Kill[] arrayKills = new Kill[3];
+							arrayKills[2] = model.ArrayKills[1];
+							arrayKills[1] = model.ArrayKills[0];
+							arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString);
+							model.ArrayKills = arrayKills;
+							break;
+						}
+					case 21:
+						{
+							string tmpString = Reading(nStream);
+							model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString);
+							break;
+						}
+					case 33:
+						{
+							model.Win = true;
+							string tmpString = Reading(nStream);
+							nStream.Close();
+							threadStart = false;
+							client.Close();
+							timerPing.Stop();
+							threadReading.Abort();
 							break;
 						}
 						//case 10 и 11 	уже зарезервированы	

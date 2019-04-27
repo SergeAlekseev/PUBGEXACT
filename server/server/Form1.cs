@@ -63,10 +63,17 @@ namespace server
 
 		private void writeStatus(string text)
 		{
-			BeginInvoke(new MethodInvoker(delegate
+			try
 			{
-				status.Text = text;
-			}));
+				BeginInvoke(new MethodInvoker(delegate
+				{
+					status.Text = text;
+				}));
+			}
+			catch
+			{
+
+			}
 		}
 	}
 }

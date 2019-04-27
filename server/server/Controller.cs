@@ -42,7 +42,7 @@ namespace server
 
 				createdZone();
 
-				for (int i = 0; i < model.ListNs.Count; i++)
+				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
 					if (model.ListUsers[i] != null)
 					{
@@ -76,12 +76,19 @@ namespace server
 			{
 				speed *= 2;
 			}
-			if (workingGame && model.ListUsers[num] != null)
+			try
 			{
-				if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed]) model.ListUsers[num].userLocation.Y -= speed; //Вниз
-				if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
-				if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X -= speed; //Влево
-				if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X += speed;// Вправо	
+				if (workingGame && model.ListUsers[num] != null)
+				{
+					if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed]) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+					if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
+					if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X -= speed; //Влево
+					if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X += speed;// Вправо	
+				}
+			}
+			catch
+			{
+
 			}
 		}
 
@@ -124,7 +131,7 @@ namespace server
 				model.Map.NextZone = new Zone();
 				model.Map.NextZone.ZoneRadius = (int)model.Map.PrevZone.ZoneRadius / 2;
 				model.Map.NextZone.NewCenterZone(model.Map.MapBorders, model.Map.PrevZone.ZoneCenterCoordinates, model.Map.PrevZone.ZoneRadius);//не страдает ли тут MVC?
-				for (int i = 0; i < model.ListNs.Count; i++)
+				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
 					if (model.ListUsers[i] != null)
 						Writing(model.Map.NextZone, 9, model.ListNs[i]);
@@ -151,9 +158,13 @@ namespace server
 						model.ListUsers[i].hp -= 2;
 						if (model.ListUsers[i].hp <= 0)
 						{
-							byte[] flagDie = new byte[1];
-							flagDie[0] = 7;
-							model.ListNs[i].Write(flagDie, 0, 1);
+							Writing("ZONA", 7, model.ListNs[i]);
+							
+							foreach (GeneralInfo g in model.ListGInfo)
+							{
+								if (g.Name == model.ListUsers[i].Name)
+									g.Dies += 1;
+							}
 						}
 					}
 
@@ -219,7 +230,7 @@ namespace server
 						break;
 					}
 					number++;
-
+					
 					UserInfo userInfoTmp;
 					do
 						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
@@ -230,9 +241,14 @@ namespace server
 					{
 						model.ListUsers.Add(userInfoTmp);
 					}
+
+					
+
 					model.ListNs.Add(tc.GetStream());
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
+
+					
 
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Start(tc);
@@ -441,10 +457,10 @@ namespace server
 				{
 					BulletInfo bulletInfo = new BulletInfo(userInfo.userLocation);
 					double k = Math.Sqrt(Math.Pow(userInfo.mouseLocation.X - userInfo.userLocation.X, 2)
-										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 4;
+										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 6;
 					bulletInfo.speedX = (userInfo.mouseLocation.X - userInfo.userLocation.X) / k;
 					bulletInfo.speedY = (userInfo.mouseLocation.Y - userInfo.userLocation.Y) / k;
-
+					bulletInfo.owner = userInfo.Name;
 
 					if (userInfo.flagShoting)
 					{
@@ -468,9 +484,9 @@ namespace server
 			bool flagBreak = false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += bulletInfo.speedX;
+			X += 2 * bulletInfo.speedX;
 			bulletInfo.location.X = (int)X;
-			Y += bulletInfo.speedY;
+			Y += 2 * bulletInfo.speedY;
 			bulletInfo.location.Y = (int)Y;
 			for (int i = 0; i < 150; i++)
 			{
@@ -480,7 +496,7 @@ namespace server
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 3 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 3)
+					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9)
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
@@ -490,13 +506,30 @@ namespace server
 						{
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
-							model.ListNs[j].Write(flagDie, 0, 1);
+							Writing(bulletInfo.owner, 7, model.ListNs[j]);
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
 								if (g.Name == model.ListUsers[j].Name)
 									g.Dies += 1;
+								if (g.Name == bulletInfo.owner)
+									g.Kills += 1;
 							}
+
+							Kill kill = new Kill();
+							kill.killer = bulletInfo.owner;
+							kill.dead = model.ListUsers[j].Name;
+
+							for (int k = 0; k < model.ListUsers.Count; k++)
+							{
+								if (model.ListUsers[k] != null)
+								{
+									if (model.ListUsers[k].Name == bulletInfo.owner)
+										model.ListUsers[k].kills += 1;
+									Writing(kill, 20, model.ListNs[k]); // Инфа  о стартовой зоне
+								}
+							}
+
 						}
 						break;
 					}
@@ -561,8 +594,14 @@ namespace server
 			nStream.Write(numberUser, 0, 1);
 
 			Writing(model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
+			Thread.Sleep(100);
 			Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			Thread.Sleep(100);
 			Writing(model.Map.ListBox, 12, nStream); // Отправка инфы о коробках
+
+
+			model.CountGamers += 1;
+			writingCountGames();
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 15;
@@ -668,9 +707,15 @@ namespace server
 							model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
 						}
 					}
+					model.CountGamers -= 1;
+					writingCountGames();
 					PrivateWorkingThread = false;
 					timerMove.Stop();
 					Shoting.Abort();
+				}
+				catch
+				{
+
 				}
 			}
 		}
@@ -747,6 +792,37 @@ namespace server
 			model.Map.PrevZone.ZoneRadius = (int)model.Map.MapBorders.Height / 4 * 3;
 		}
 
+		public void writingCountGames()
+		{
+			for (int i = 0; i < model.ListUsers.Count; i++)
+			{
+				if (model.ListUsers[i] != null)
+				{
+					Writing(model.CountGamers, 21, model.ListNs[i]);
+				}
+			}
+			if (model.CountGamers == 1 && workingGame)
+			{
+				for (int i = 0; i < model.ListUsers.Count; i++)
+				{
+					if (model.ListUsers[i] != null)
+					{
+						Writing("", 33, model.ListNs[i]);
+						foreach (GeneralInfo g in model.ListGInfo)
+						{
+							if (g.Name == model.ListUsers[i].Name)
+								g.Wins += 1;
+						}
+						break;
+					}
+				}
+				Thread.Sleep(2000);
+				StopServer();
+				Thread.Sleep(2000);
+				start();
+			}
+		}
+
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
 			if (listUser != null)
@@ -784,14 +860,16 @@ namespace server
 				else
 				{
 					GeneralInfo g = new GeneralInfo();
-					g.Name = "kek";
-					g.Password = "-1";
+					g.Name = "admin";
+					g.Password = "admin";
 					newList.Add(g);
 				}
 				PlayerSave(newList);
 				return newList;
 			}
 		}
+
+
 
 		public void PlayerSave(List<GeneralInfo> listUsers)
 		{
