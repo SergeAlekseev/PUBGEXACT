@@ -17,14 +17,23 @@ namespace client
 		List<BulletInfo> listBullet = new List<BulletInfo>();
 		Map map = new Map();
 		short lifes;
-		bool die;
-		Image[] images = new Image[9];
+		bool die,win;
+		Image[] images = new Image[20];
 		GeneralInfo gInfo = new GeneralInfo();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		public bool Start = false;
 		Point mouseCoord = new Point();
 		double angelToZone;
-		//	double rotate;
+		string killer;
+		Kill[] arrayKills = new Kill[3];
+		int countGamers = 0;
+
+		public int CountGamers
+		{
+			get { return countGamers; }
+			set { countGamers = value; }
+		}
+
 		public Model()
 		{
 			listUsers = new List<UserInfo>();
@@ -37,6 +46,8 @@ namespace client
 		public double AngelToZone{get { return angelToZone; } set { angelToZone = value; }}
 		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }
+		public bool Win { get { return win; } set { win = value; } }
+		public string Killer { get { return killer; } set { killer = value; } }
 		public short Lifes { get { return lifes; } set { lifes = value; } }
 		public List<BulletInfo> ListBullet { get { return listBullet; } set { listBullet = value; } }
 		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; } }
@@ -47,6 +58,8 @@ namespace client
 		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
+
+		public Kill[] ArrayKills { get { return arrayKills; } set { arrayKills = value; } }
 		//	public double Rotate { get { return rotate; } set { rotate = value; } }
 	}
 }

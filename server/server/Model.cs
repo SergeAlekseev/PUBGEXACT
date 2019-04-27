@@ -16,7 +16,13 @@ namespace server
 		Map map = new Map();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		List<Item> items = new List<Item>();
+		int countGamers = 0;
 
+		public int CountGamers
+		{
+			get { return countGamers; }
+			set { countGamers = value; }
+		}
 		public List<GeneralInfo> ListGInfo
 		{
 			get { return listGInfo; }
