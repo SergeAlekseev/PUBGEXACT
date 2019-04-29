@@ -619,36 +619,16 @@ namespace server
 					{
 						case 1:
 							{
-								string tmpString = Reading(nStream);
-								Action act = JsonConvert.DeserializeObject<Action>(tmpString);
-								switch (act.act)
-								{
-									case Action.action.moveUp: moveUp = true; break;
-									case Action.action.moveDown: moveDown = true; break;
-									case Action.action.noveLeft: moveLeft = true; break;
-									case Action.action.moveRight: moveRight = true; break;
-									case Action.action.shiftDown: shift = true; break;
-
-									case Action.action.stopUp: moveUp = false; break;
-									case Action.action.stopDown: moveDown = false; break;
-									case Action.action.stopLeft: moveLeft = false; break;
-									case Action.action.stopRight: moveRight = false; break;
-									case Action.action.shiftUp: shift = false; break;
-								}
+								PlayerMovementsInfo(ref moveUp, ref moveDown, ref moveLeft, ref moveRight, ref shift, nStream);
 
 								break;
 							}
 						case 2:
 							{
-								byte[] ping = new byte[1];
-								ping[0] = 2;
-								lock (nStream)
-								{
-									nStream.Write(ping, 0, 1);
-								}
+								PingInfo(nStream);
 								break;
 							}
-						case 3:
+						case 3://УХХХХХХ
 							{
 								string tmpString = Reading(nStream);
 								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting && workingGame)
@@ -659,7 +639,7 @@ namespace server
 								}
 								break;
 							}
-						case 4:
+						case 4:// УУ НЕ ПОНЕМАЮ, выноси их сам в методы, чтобы легче читалось ( микро-рефакторинг)
 							{
 								string tmpString = Reading(nStream);
 								if (model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting)
@@ -678,20 +658,17 @@ namespace server
 							}
 						case 5:
 							{
-								string tmpString = Reading(nStream);
-								model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
+								GetPlayersMousesLocation(nStream, num);
 								break;
 							}
 						case 13:
 							{
-								string tmpString = Reading(nStream);
-								model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);
+								GetPlayersAngels(nStream, num);
 								break;
 							}
 						case 14: //Да это уже рофл какой-то
 							{
-								string tmpString = Reading(nStream);
-								model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString);
+								GetUserName(nStream, num);
 								break;
 							}
 					}
@@ -717,6 +694,54 @@ namespace server
 				{
 
 				}
+			}
+		}
+
+		private void GetUserName(NetworkStream nStream, int num)
+		{
+			string tmpString = Reading(nStream);
+			model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString);
+		}
+
+		private void GetPlayersAngels(NetworkStream nStream, int num)
+		{
+			string tmpString = Reading(nStream);
+			model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);
+		}
+
+		private void GetPlayersMousesLocation(NetworkStream nStream, int num)
+		{
+			string tmpString = Reading(nStream);
+			model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
+		}
+
+		private static void PingInfo(NetworkStream nStream)
+		{
+			byte[] ping = new byte[1];
+			ping[0] = 2;
+			lock (nStream)
+			{
+				nStream.Write(ping, 0, 1);
+			}
+		}
+
+		private void PlayerMovementsInfo(ref bool moveUp, ref bool moveDown, ref bool moveLeft, ref bool moveRight, ref bool shift, NetworkStream nStream)
+		{
+			string tmpString = Reading(nStream);
+			Action act = JsonConvert.DeserializeObject<Action>(tmpString);
+			switch (act.act)
+			{
+				case Action.action.moveUp: moveUp = true; break;
+				case Action.action.moveDown: moveDown = true; break;
+				case Action.action.noveLeft: moveLeft = true; break;
+				case Action.action.moveRight: moveRight = true; break;
+				case Action.action.shiftDown: shift = true; break;
+
+				case Action.action.stopUp: moveUp = false; break;
+				case Action.action.stopDown: moveDown = false; break;
+				case Action.action.stopLeft: moveLeft = false; break;
+				case Action.action.stopRight: moveRight = false; break;
+				case Action.action.shiftUp: shift = false; break;
 			}
 		}
 

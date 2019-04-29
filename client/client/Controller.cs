@@ -138,9 +138,7 @@ namespace client
 					case 1:
 						{
 							string tmpString = Reading(nStream);
-							model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
-							model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
-							model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
+							GetUserInfo(tmpString);
 							model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
 							break;
 						}
@@ -152,8 +150,7 @@ namespace client
 						}
 					case 3:
 						{
-							string tmpString = Reading(nStream);
-							model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString);
+							GetBulletsInfo();
 							break;
 						}
 					case 4:
@@ -168,45 +165,32 @@ namespace client
 						}
 					case 6:
 						{
-							string tmpString = Reading(nStream);
-							model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString);
+							GetBushesInfo();
 							break;
 						}
 					case 7:
 						{
-							model.Die = true;
-							string tmpString = Reading(nStream);
-							model.Killer = JsonConvert.DeserializeObject<string>(tmpString);
-							nStream.Close();
-							threadStart = false;
-							client.Close();
-							timerPing.Stop();
-							threadReading.Abort();
+							PlayerDeath();
 							break;
 						}
 					case 8:
 						{
-							string tmpString = Reading(nStream);
-							model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString);
+							GetMapBordersInfo();
 							break;
 						}
 					case 9:
 						{
-							string tmpString = Reading(nStream);
-							model.Map.PrevZone = model.Map.NextZone;
-							model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+							GetZoneStartInfo();
 							break;
 						}
 					case 10:
 						{
-							string tmpString = Reading(nStream);
-							model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+							GetPrevZoneInfo();
 							break;
 						}
 					case 12:
 						{
-							string tmpString = Reading(nStream);
-							model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString);
+							GetBoxesInfo();
 							break;
 						}
 					case 13:
@@ -216,29 +200,17 @@ namespace client
 						}
 					case 20:
 						{
-							string tmpString = Reading(nStream);
-							Kill[] arrayKills = new Kill[3];
-							arrayKills[2] = model.ArrayKills[1];
-							arrayKills[1] = model.ArrayKills[0];
-							arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString);
-							model.ArrayKills = arrayKills;
+							GetKillsInfo();
 							break;
 						}
 					case 21:
 						{
-							string tmpString = Reading(nStream);
-							model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString);
+							GetCountGamesInfo();
 							break;
 						}
 					case 33:
 						{
-							model.Win = true;
-							string tmpString = Reading(nStream);
-							nStream.Close();
-							threadStart = false;
-							client.Close();
-							timerPing.Stop();
-							threadReading.Abort();
+							GetCountWinsInfo();
 							break;
 						}
 						//case 10 и 11 	уже зарезервированы	
@@ -247,6 +219,89 @@ namespace client
 
 			}
 
+		}
+
+		private void GetCountWinsInfo()
+		{
+			model.Win = true;
+			string tmpString = Reading(nStream);
+			nStream.Close();
+			threadStart = false;
+			client.Close();
+			timerPing.Stop();
+			threadReading.Abort();
+		}
+
+		private void GetCountGamesInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString);
+		}
+
+		private void GetKillsInfo()
+		{
+			string tmpString = Reading(nStream);
+			Kill[] arrayKills = new Kill[3];
+			arrayKills[2] = model.ArrayKills[1];
+			arrayKills[1] = model.ArrayKills[0];
+			arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString);
+			model.ArrayKills = arrayKills;
+		}
+
+		private void GetBoxesInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString);
+		}
+
+		private void GetPrevZoneInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+		}
+
+		private void GetZoneStartInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.Map.PrevZone = model.Map.NextZone;
+			model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+		}
+
+		private void GetMapBordersInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString);
+		}
+
+		private void PlayerDeath()
+		{
+			model.Die = true;
+			string tmpString = Reading(nStream);
+			model.Killer = JsonConvert.DeserializeObject<string>(tmpString);
+			nStream.Close();
+			threadStart = false;
+			client.Close();
+			timerPing.Stop();
+			threadReading.Abort();
+		}
+
+		private void GetBushesInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString);
+		}
+
+		private void GetBulletsInfo()
+		{
+			string tmpString = Reading(nStream);
+			model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString);
+		}
+
+		private void GetUserInfo(string tmpString)
+		{
+			model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+			model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
+			model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
 		}
 
 		public void PressKey()
