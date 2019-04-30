@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MapEdit
 {
+	[Serializable]
 	class Box :Items
 	{
 		Model model = Controllers.cEditor.model;
@@ -29,7 +30,23 @@ namespace MapEdit
 
 		public override void Add(Point mouseLocation)
 		{
-			model.Map.ListBox.Add(new Box(mouseLocation.X, mouseLocation.Y));
+			Box box = new Box(mouseLocation.X, mouseLocation.Y);
+			model.Map.ListBox.Add(box);
+
+			for (int k = box.Location.X - 10; k < box.Location.X + 10; k++)
+			{
+				for (int j = box.Location.Y - 10; j < box.Location.Y + 10; j++)
+				{
+					model.Map.bordersForBullets[k, j] = true;
+				}
+			}
+			for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
+			{
+				for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
+				{
+					model.Map.bordersForUsers[k, j] = true;
+				}
+			}
 		}
 	}
 }

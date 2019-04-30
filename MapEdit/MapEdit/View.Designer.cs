@@ -39,6 +39,10 @@
 			this.timerPaint = new System.Windows.Forms.Timer(this.components);
 			this.X = new System.Windows.Forms.Label();
 			this.Y = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.save = new System.Windows.Forms.Button();
+			this.load = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.map)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -58,11 +62,11 @@
 			// 
 			// bushes
 			// 
+			this.bushes.Image = global::MapEdit.Properties.Resources.Bush;
 			this.bushes.Location = new System.Drawing.Point(618, 57);
 			this.bushes.Name = "bushes";
 			this.bushes.Size = new System.Drawing.Size(46, 47);
 			this.bushes.TabIndex = 1;
-			this.bushes.Text = "Кусты";
 			this.bushes.UseVisualStyleBackColor = true;
 			this.bushes.Click += new System.EventHandler(this.bushes_Click);
 			// 
@@ -75,11 +79,11 @@
 			// 
 			// boxes
 			// 
+			this.boxes.Image = global::MapEdit.Properties.Resources.box;
 			this.boxes.Location = new System.Drawing.Point(670, 57);
 			this.boxes.Name = "boxes";
 			this.boxes.Size = new System.Drawing.Size(48, 47);
 			this.boxes.TabIndex = 3;
-			this.boxes.Text = "Ящики";
 			this.boxes.UseVisualStyleBackColor = true;
 			this.boxes.Click += new System.EventHandler(this.boxes_Click);
 			// 
@@ -125,11 +129,53 @@
 			this.Y.TabIndex = 7;
 			this.Y.Text = "label3";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(628, 258);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(35, 13);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "label3";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(629, 290);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(35, 13);
+			this.label3.TabIndex = 9;
+			this.label3.Text = "label3";
+			// 
+			// save
+			// 
+			this.save.Location = new System.Drawing.Point(618, 332);
+			this.save.Name = "save";
+			this.save.Size = new System.Drawing.Size(94, 23);
+			this.save.TabIndex = 10;
+			this.save.Text = "Сохранить";
+			this.save.UseVisualStyleBackColor = true;
+			this.save.Click += new System.EventHandler(this.save_Click);
+			// 
+			// load
+			// 
+			this.load.Location = new System.Drawing.Point(618, 370);
+			this.load.Name = "load";
+			this.load.Size = new System.Drawing.Size(94, 23);
+			this.load.TabIndex = 11;
+			this.load.Text = "Загрузить";
+			this.load.UseVisualStyleBackColor = true;
+			this.load.Click += new System.EventHandler(this.load_Click);
+			// 
 			// View
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(726, 628);
+			this.Controls.Add(this.load);
+			this.Controls.Add(this.save);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.Y);
 			this.Controls.Add(this.X);
 			this.Controls.Add(this.Start);
@@ -144,7 +190,6 @@
 			this.Text = "Редактор карт";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.View_KeyDown);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.View_KeyUp);
-			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.View_MouseMove);
 			((System.ComponentModel.ISupportInitialize)(this.map)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -162,6 +207,10 @@
 		private System.Windows.Forms.Timer timerPaint;
 		private System.Windows.Forms.Label X;
 		private System.Windows.Forms.Label Y;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Button save;
+		private System.Windows.Forms.Button load;
 	}
 }
 

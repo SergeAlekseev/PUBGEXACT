@@ -71,7 +71,7 @@ namespace MapEdit.Properties
 		/// <summary>
 		///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
 		/// </summary>
-		internal static System.Drawing.Bitmap Box
+		internal static System.Drawing.Bitmap box
 		{
 			get
 			{
