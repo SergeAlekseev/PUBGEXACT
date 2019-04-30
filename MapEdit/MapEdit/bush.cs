@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MapEdit
 {
+	[Serializable]
 	class Bush:Items
 	{
 		Model model = Controllers.cEditor.model;

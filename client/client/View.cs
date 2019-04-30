@@ -179,7 +179,7 @@ namespace client
 							Graphics g1 = Graphics.FromImage(background1);
 							g1.TranslateTransform(50, 50);
 
-							g1.RotateTransform((float)model.AngelToZone + 90); // <---- заменить вычисление угла угол к зоне
+							g1.RotateTransform((float)model.AngelToZone + 90); 
 
 							g1.TranslateTransform(-50, -50);
 							g1.DrawImage(model.Images[4], 0, 48, 10, 6);

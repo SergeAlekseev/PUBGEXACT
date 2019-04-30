@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MapEdit
 {
+	[Serializable]
 	abstract class Items
 	{
 		public abstract void Add(Point mouseLocation);

@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace MapEdit
 {
+	[Serializable]
 	class Model
 	{
 		Image[] images = new Image[30];
 		Map map = new Map();
 		Point mouseCoordFirst = new Point();
-		Point mouseCoordSecond = new Point();
+		Point mouseCoordSecond = new Point(0,0);
 		Point thisUserLocation = new Point(300,300);
 		bool moovUser = false;
 		public delegate void ItemD(Point mouseLocation);

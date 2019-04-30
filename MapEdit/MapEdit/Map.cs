@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MapEdit
 {
+	[Serializable]
 	class Map
 	{
 		List<Box> listBox = new List<Box>();
