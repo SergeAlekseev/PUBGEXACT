@@ -75,5 +75,10 @@ namespace server
 
 			}
 		}
+
+		private void maps_Click(object sender, EventArgs e)
+		{
+			controller.LoadMap();
+		}
 	}
 }

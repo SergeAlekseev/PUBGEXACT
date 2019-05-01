@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibary
 {
-	class Map
+	[Serializable]
+	public class Map
 	{
-		List<Box> listBox = new List<Box>();
-		List<Bush> listBush = new List<Bush>();
+		public List<Box> listBox = new List<Box>();
+		public List<Bush> listBush = new List<Bush>();
 		static public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200);
 		Zone nextZone = new Zone();
 		Zone prevZone = new Zone();
-		public bool[,] bordersForUsers = new bool[mapBorders.Width,mapBorders.Height];
+		public bool[,] bordersForUsers = new bool[mapBorders.Width, mapBorders.Height];
 		public bool[,] bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
 
 		public List<Box> ListBox

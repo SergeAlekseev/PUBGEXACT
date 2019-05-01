@@ -5,22 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibary
 {
-	class Box
+	[Serializable]
+	public class Bush
 	{
 		Point location;
-		public static int size = 20;
-		public Box(int X, int Y)
+
+		public Bush()
 		{
-			location = new Point(X, Y);
+			location = new Point();
 		}
-		
+		public Bush(int X,int Y)
+		{
+			location = new Point(X,Y);
+		}
 		public Point Location
 		{
 			get { return location; }
 			set { location = value; }
-		}
-
+		}	
 	}
 }

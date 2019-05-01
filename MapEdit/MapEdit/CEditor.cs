@@ -7,7 +7,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using ClassLibary;
+using System.Runtime.Serialization.Json;
 namespace MapEdit
 {
 	class CEditor
@@ -16,26 +17,29 @@ namespace MapEdit
 
 		public void Motion(Point mouseLocation)
 		{
-			if (mouseLocation.X >= 580 && mouseLocation.Y < 600)
+			if (!model.MouseOutside)
 			{
-				model.MouseCoordSecond = new Point(model.MouseCoordSecond.X+4, model.MouseCoordSecond.Y);
-				model.ThisUserLocation = new Point(model.ThisUserLocation.X+4, model.ThisUserLocation.Y);
+				if (mouseLocation.X >= 580 && mouseLocation.Y < 600)
+				{
+					model.MouseCoordSecond = new Point(model.MouseCoordSecond.X + 4, model.MouseCoordSecond.Y);
+					model.ThisUserLocation = new Point(model.ThisUserLocation.X + 4, model.ThisUserLocation.Y);
+				}
+				if (mouseLocation.X < 600 && mouseLocation.Y >= 580)
+				{
+					model.MouseCoordSecond = new Point(model.MouseCoordSecond.X, model.MouseCoordSecond.Y + 4);
+					model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y + 4);
+				}
+				if (mouseLocation.X <= 20 && mouseLocation.Y < 600)
+				{
+					model.MouseCoordSecond = new Point(model.MouseCoordSecond.X - 4, model.MouseCoordSecond.Y);
+					model.ThisUserLocation = new Point(model.ThisUserLocation.X - 4, model.ThisUserLocation.Y);
+				}
+				if (mouseLocation.X < 600 && mouseLocation.Y <= 20)
+				{
+					model.MouseCoordSecond = new Point(model.MouseCoordSecond.X, model.MouseCoordSecond.Y - 4);
+					model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y - 4);
+				}
 			}
-			if(mouseLocation.X < 600 && mouseLocation.Y >= 580)
-			{
-				model.MouseCoordSecond = new Point(model.MouseCoordSecond.X, model.MouseCoordSecond.Y + 4);
-				model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y+4);
-			}
-			if (mouseLocation.X <= 20 && mouseLocation.Y < 600)
-			{
-				model.MouseCoordSecond = new Point(model.MouseCoordSecond.X-4, model.MouseCoordSecond.Y);
-				model.ThisUserLocation = new Point(model.ThisUserLocation.X-4, model.ThisUserLocation.Y);
-			}
-			if (mouseLocation.X < 600 && mouseLocation.Y <=20)
-			{
-				model.MouseCoordSecond = new Point(model.MouseCoordSecond.X, model.MouseCoordSecond.Y - 4);
-				model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y - 4);
-			}			
 		}
 
 		public Point Sum(Point p1, Point p2)
@@ -53,7 +57,7 @@ namespace MapEdit
 			sn.DefaultExt = ".dat";
 			sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
 
-			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\bin\Debug";
+			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
 			DialogResult res = sn.ShowDialog();
 			if (res == DialogResult.Cancel)
 				return;
@@ -85,7 +89,7 @@ namespace MapEdit
 			OpenFileDialog sn = new OpenFileDialog();
 			sn.DefaultExt = ".dat";
 			sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
-			sn.InitialDirectory = @"G:\2 курс\О.О.П\Графический редактор\Графический редактор\bin\Debug\Save";
+			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
 			DialogResult res = sn.ShowDialog();
 			if (res == DialogResult.Cancel)
 				return;

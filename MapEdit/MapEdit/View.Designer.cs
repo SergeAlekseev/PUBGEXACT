@@ -58,6 +58,7 @@
 			this.map.TabStop = false;
 			this.map.Click += new System.EventHandler(this.map_Click);
 			this.map.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+			this.map.MouseLeave += new System.EventHandler(this.map_MouseLeave);
 			this.map.MouseMove += new System.Windows.Forms.MouseEventHandler(this.map_MouseMove);
 			// 
 			// bushes
@@ -188,8 +189,6 @@
 			this.KeyPreview = true;
 			this.Name = "View";
 			this.Text = "Редактор карт";
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.View_KeyDown);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.View_KeyUp);
 			((System.ComponentModel.ISupportInitialize)(this.map)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

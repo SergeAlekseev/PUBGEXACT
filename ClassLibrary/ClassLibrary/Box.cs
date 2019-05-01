@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
-namespace server
+namespace ClassLibary
 {
-	class Bush
+	[Serializable]
+	public class Box 
 	{
 		Point location;
-
-		public Bush(int X, int Y)
+		public static int size = 20;
+		public Box()
 		{
-			location = new Point(X,Y);
+			location = new Point();
 		}
-
+		public Box(int X, int Y)
+		{
+			location = new Point(X, Y);
+		}
 		public Point Location
 		{
 			get { return location; }
