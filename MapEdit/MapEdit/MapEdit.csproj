@@ -33,8 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClassLibrary">
+      <HintPath>..\..\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="system.runtime.serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,12 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Box.cs" />
-    <Compile Include="Bush.cs" />
+    <Compile Include="CBox.cs" />
+    <Compile Include="CBush.cs" />
     <Compile Include="CEditor.cs" />
     <Compile Include="Controllers.cs" />
     <Compile Include="Items.cs" />
-    <Compile Include="Map.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>

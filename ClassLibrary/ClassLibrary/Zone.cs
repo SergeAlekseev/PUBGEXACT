@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibary
 {
-	class Zone
+	[Serializable]
+	public class Zone
 	{
 		double timeTocompression;
 		int zoneRadius;

@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ClassLibary;
 namespace MapEdit
 {
 	[Serializable]
@@ -18,6 +18,13 @@ namespace MapEdit
 		bool moovUser = false;
 		public delegate void ItemD(Point mouseLocation);
 		public ItemD Item;
+		bool mouseOutside = false;
+
+		public bool MouseOutside
+		{
+			get { return mouseOutside; }
+			set { mouseOutside = value; }
+		}
 
 		public Image [] Images
 		{

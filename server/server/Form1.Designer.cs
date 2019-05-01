@@ -33,6 +33,7 @@
 			this.stop = new System.Windows.Forms.Button();
 			this.status = new System.Windows.Forms.Label();
 			this.startGame = new System.Windows.Forms.Button();
+			this.maps = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// start
@@ -78,11 +79,23 @@
 			this.startGame.UseVisualStyleBackColor = true;
 			this.startGame.Click += new System.EventHandler(this.startGame_Click);
 			// 
+			// maps
+			// 
+			this.maps.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.maps.Location = new System.Drawing.Point(197, 190);
+			this.maps.Name = "maps";
+			this.maps.Size = new System.Drawing.Size(86, 23);
+			this.maps.TabIndex = 4;
+			this.maps.Text = "Карты";
+			this.maps.UseVisualStyleBackColor = true;
+			this.maps.Click += new System.EventHandler(this.maps_Click);
+			// 
 			// Server
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(445, 238);
+			this.Controls.Add(this.maps);
 			this.Controls.Add(this.startGame);
 			this.Controls.Add(this.status);
 			this.Controls.Add(this.stop);
@@ -102,6 +115,7 @@
 		private System.Windows.Forms.Button stop;
 		private System.Windows.Forms.Label status;
 		private System.Windows.Forms.Button startGame;
+		private System.Windows.Forms.Button maps;
 	}
 }
 

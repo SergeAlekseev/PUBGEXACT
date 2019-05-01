@@ -10,6 +10,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Runtime.Serialization.Json;
+using ClassLibary;
 
 namespace server
 {
@@ -159,7 +161,7 @@ namespace server
 						if (model.ListUsers[i].hp <= 0)
 						{
 							Writing("ZONA", 7, model.ListNs[i]);
-							
+
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
 								if (g.Name == model.ListUsers[i].Name)
@@ -230,7 +232,7 @@ namespace server
 						break;
 					}
 					number++;
-					
+
 					UserInfo userInfoTmp;
 					do
 						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
@@ -242,13 +244,13 @@ namespace server
 						model.ListUsers.Add(userInfoTmp);
 					}
 
-					
+
 
 					model.ListNs.Add(tc.GetStream());
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
 
-					
+
 
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Start(tc);
@@ -902,6 +904,33 @@ namespace server
 			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
 			{
 				formatter.Serialize(fs, listUsers);
+			}
+		}
+
+		public void LoadMap()
+		{
+			BinaryFormatter formatter = new BinaryFormatter();
+			OpenFileDialog sn = new OpenFileDialog();
+			sn.DefaultExt = ".dat";
+			sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
+			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
+			DialogResult res = sn.ShowDialog();
+			if (res == DialogResult.Cancel)
+				return;
+			if (res == DialogResult.OK)
+			{
+				string NameFile = sn.FileName;
+				try
+				{
+					using (FileStream fs = new FileStream(NameFile, FileMode.Open))
+					{
+						model.Map = (Map)formatter.Deserialize(fs);
+					}
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message);
+				}
 			}
 		}
 	}

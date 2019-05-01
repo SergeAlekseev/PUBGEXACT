@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using ClassLibary;
 namespace MapEdit
 {
 	public partial class View : Form
@@ -23,8 +23,6 @@ namespace MapEdit
 		{
 			InitializeComponent();
 
-			timerPaint.Start();
-
 			model.Images[0] = Properties.Resources.Bush.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[1] = Properties.Resources.Grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = Properties.Resources.box.GetThumbnailImage(25, 25, null, IntPtr.Zero);
@@ -33,6 +31,8 @@ namespace MapEdit
 			bufferedGraphicsContext = new BufferedGraphicsContext();
 			bufferedGraphics = bufferedGraphicsContext.Allocate(graphics, new Rectangle(0, 0, map.Width, map.Height));
 			bufferedGraphics.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+			timerPaint.Start();
 		}
 
 		private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -59,39 +59,6 @@ namespace MapEdit
 			bufferedGraphics.Graphics.Clear(DefaultBackColor);
 		}
 
-		private void View_KeyDown(object sender, KeyEventArgs e)
-		{
-			model.MoovUser = true;
-			//while (model.MoovUser)
-			//{
-			//	if (e.KeyCode == Keys.W)
-			//	{
-			//		model.MouseCoord = new Point(model.MouseCoord.X, model.MouseCoord.Y + 1);
-			//		model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y + 1);
-			//	}
-			//	else if (e.KeyCode == Keys.S)
-			//	{
-			//		model.MouseCoord = new Point(model.MouseCoord.X, model.MouseCoord.Y - 1);
-			//		model.ThisUserLocation = new Point(model.ThisUserLocation.X, model.ThisUserLocation.Y - 1);
-			//	}
-			//	else if (e.KeyCode == Keys.D)
-			//	{
-			//		model.MouseCoord = new Point(model.MouseCoord.X+1, model.MouseCoord.Y);
-			//		model.ThisUserLocation = new Point(model.ThisUserLocation.X+1, model.ThisUserLocation.Y);
-			//	}
-			//	else if (e.KeyCode == Keys.A)
-			//	{
-			//		model.MouseCoord = new Point(model.MouseCoord.X -1, model.MouseCoord.Y);
-			//		model.ThisUserLocation = new Point(model.ThisUserLocation.X -1, model.ThisUserLocation.Y);
-			//	}				
-			//}
-		}
-
-		private void View_KeyUp(object sender, KeyEventArgs e)
-		{
-			model.MoovUser = false;
-		}
-
 		private void Start_Click(object sender, EventArgs e)
 		{
 			if (textBox1.Text == "") return;
@@ -115,7 +82,7 @@ namespace MapEdit
 
 		private void bushes_Click(object sender, EventArgs e)
 		{
-			Items item = new Bush();
+			Items item = new CBush();
 			model.Item = item.Add;
 		}
 
@@ -126,12 +93,13 @@ namespace MapEdit
 
 		private void boxes_Click(object sender, EventArgs e)
 		{
-			Items item = new Box();
+			Items item = new CBox();
 			model.Item = item.Add;
 		}
 
 		private void map_MouseMove(object sender, MouseEventArgs e)
 		{
+			if (model.MouseOutside == true) model.MouseOutside = false;
 			model.MouseCoordFirst = e.Location;
 		}
 
@@ -143,6 +111,11 @@ namespace MapEdit
 		private void load_Click(object sender, EventArgs e)
 		{
 			Controllers.cEditor.LoadMap();
+		}
+
+		private void map_MouseLeave(object sender, EventArgs e)
+		{
+			model.MouseOutside = true;
 		}
 	}
 }
