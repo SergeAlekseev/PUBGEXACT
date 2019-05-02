@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibrary
 {
 	[Serializable]
-	class GeneralInfo
+	public class GeneralInfo
 	{
 		public string Name;
 		public string Password;

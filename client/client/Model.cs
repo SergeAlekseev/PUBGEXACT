@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClassLibrary;
+using Action = ClassLibrary.Action;
 
 namespace client
 {

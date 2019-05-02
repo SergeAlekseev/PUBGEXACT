@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace client
+namespace ClassLibrary
 {
-	class Kill
+	public class Kill
 	{
 		public string killer, dead;
 	}

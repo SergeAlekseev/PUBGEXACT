@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClassLibary;
+using ClassLibrary;
 namespace MapEdit
 {
 	public partial class View : Form

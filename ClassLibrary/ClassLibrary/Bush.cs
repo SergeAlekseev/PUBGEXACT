@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibary
+namespace ClassLibrary
 {
 	[Serializable]
 	public class Bush
