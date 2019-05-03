@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibrary
 {
-	class Item
+	public class Grenade :Item
 	{
+		public override object Use(UserInfo obj)
+		{
+			return null;
 
+		}
 	}
 }

@@ -16,6 +16,8 @@ namespace client
 {
 	class Controller
 	{
+		JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+		
 
 		public delegate void CloseFormD(object sender, FormClosingEventArgs e);
 		public event CloseFormD CloseFormEvent;
@@ -52,7 +54,7 @@ namespace client
 
 		private void Writing(object obj, byte numComand)
 		{
-			string serialized = JsonConvert.SerializeObject(obj);
+			string serialized = JsonConvert.SerializeObject(obj, jss);
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 			byte[] countRead = BitConverter.GetBytes(massByts.Count());
 			byte[] typeComand = new byte[1];
@@ -71,6 +73,10 @@ namespace client
 
 		public Controller(Model model) // Конструктор
 		{
+			jss.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+			jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+			jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+			jss.Formatting = Newtonsoft.Json.Formatting.Indented;
 			this.model = model;
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
@@ -95,6 +101,16 @@ namespace client
 				}
 			}
 
+		}
+
+		public void ChangeItem(byte num)
+		{
+			Writing(num, 66);
+		}
+
+		public void Recharge()
+		{
+			Writing("1", 67);
 		}
 
 		public string Reading(NetworkStream nStream)
@@ -236,7 +252,7 @@ namespace client
 		private void GetCountGamesInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString);
+			model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString, jss);
 		}
 
 		private void GetKillsInfo()
@@ -245,40 +261,40 @@ namespace client
 			Kill[] arrayKills = new Kill[3];
 			arrayKills[2] = model.ArrayKills[1];
 			arrayKills[1] = model.ArrayKills[0];
-			arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString);
+			arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString, jss);
 			model.ArrayKills = arrayKills;
 		}
 
 		private void GetBoxesInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString);
+			model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString, jss);
 		}
 
 		private void GetPrevZoneInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+			model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString, jss);
 		}
 
 		private void GetZoneStartInfo()
 		{
 			string tmpString = Reading(nStream);
 			model.Map.PrevZone = model.Map.NextZone;
-			model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString);
+			model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString, jss);
 		}
 
 		private void GetMapBordersInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString);
+			model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString, jss);
 		}
 
 		private void PlayerDeath()
 		{
 			model.Die = true;
 			string tmpString = Reading(nStream);
-			model.Killer = JsonConvert.DeserializeObject<string>(tmpString);
+			model.Killer = JsonConvert.DeserializeObject<string>(tmpString, jss);
 			nStream.Close();
 			threadStart = false;
 			client.Close();
@@ -289,18 +305,18 @@ namespace client
 		private void GetBushesInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString);
+			model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString, jss);
 		}
 
 		private void GetBulletsInfo()
 		{
 			string tmpString = Reading(nStream);
-			model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString);
+			model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString, jss);
 		}
 
 		private void GetUserInfo(string tmpString)
 		{
-			model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString);
+			model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString, jss);
 			model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
 			model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
 		}

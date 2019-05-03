@@ -38,6 +38,12 @@ namespace client
 		public delegate double RotatateD();
 		public event RotatateD RotatateEvent;
 
+		public delegate void RechargeD();
+		public event RechargeD RechargeEvent;
+
+		public delegate void СhangeItemD(byte num);
+		public event СhangeItemD СhangeItemEvent;
+
 		static Model model = new Model();
 		Controller controller = new Controller(model);
 
@@ -85,6 +91,8 @@ namespace client
 			ShotEvent += controller.Shot;
 			MouseLocatinEvent += controller.WriteMouseLocation;
 			RotatateEvent += controller.mouseMove;
+			СhangeItemEvent += controller.ChangeItem;
+			RechargeEvent += controller.Recharge;
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -113,6 +121,15 @@ namespace client
 				case Keys.D: model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
 				case Keys.A: model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
 				case Keys.ShiftKey: case Keys.Shift: model.Action.actionThishUser = Action.action.shiftDown; ActionEvent(); break;
+
+				case Keys.D1: СhangeItemEvent(1); break;
+				case Keys.D2: СhangeItemEvent(2); break;
+				case Keys.D3: СhangeItemEvent(3); break;
+				case Keys.D4: СhangeItemEvent(4); break;
+				case Keys.D5: СhangeItemEvent(5); break;
+				case Keys.D6: СhangeItemEvent(6); break;
+
+				case Keys.R: RechargeEvent(); break;
 			}
 		}
 
@@ -181,7 +198,7 @@ namespace client
 							Graphics g1 = Graphics.FromImage(background1);
 							g1.TranslateTransform(50, 50);
 
-							g1.RotateTransform((float)model.AngelToZone + 90); 
+							g1.RotateTransform((float)model.AngelToZone + 90);
 
 							g1.TranslateTransform(-50, -50);
 							g1.DrawImage(model.Images[4], 0, 48, 10, 6);
@@ -196,6 +213,17 @@ namespace client
 					{
 						bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 					}
+
+					foreach (Bush bush in model.Map.ListBush)
+					{
+						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+					}
+
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
+
+
 					bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
 
 					if (model.ArrayKills[2] != null)
@@ -214,14 +242,9 @@ namespace client
 
 					bufferedGraphics.Graphics.DrawString(model.CountGamers + " gamers", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.DarkBlue, 300, 2);
 
-					foreach (Bush bush in model.Map.ListBush)
-					{
-						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
-					}
+					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
+						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 300, 580);
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
 
 
 				}
