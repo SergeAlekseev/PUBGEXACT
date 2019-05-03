@@ -18,5 +18,7 @@ namespace server
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new Server());
 		}
+
+
 	}
 }

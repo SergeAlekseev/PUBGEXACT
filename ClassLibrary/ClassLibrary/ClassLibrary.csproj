@@ -43,14 +43,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="Armor.cs" />
     <Compile Include="Box.cs" />
     <Compile Include="BulletInfo.cs" />
     <Compile Include="Bush.cs" />
     <Compile Include="GeneralInfo.cs" />
+    <Compile Include="Grenade.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Kill.cs" />
+    <Compile Include="LinearWeapons.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Kit.cs" />
+    <Compile Include="NormalGun.cs" />
+    <Compile Include="NormalShotgun.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shotgun.cs" />
     <Compile Include="UserInfo.cs" />
+    <Compile Include="Weapon.cs" />
     <Compile Include="Zone.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

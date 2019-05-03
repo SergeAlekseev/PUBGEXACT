@@ -12,6 +12,8 @@ namespace ClassLibrary
 		public double speedX, speedY;
 		public Point location;
 		public string owner;
+		public short damage,speed;
+		public int timeLife;
 		public BulletInfo(Point loc)
 		{
 			this.location = loc;

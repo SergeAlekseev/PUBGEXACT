@@ -18,7 +18,7 @@ namespace server
 {
 	class Controller
 	{
-
+		JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 		bool workingGame;
 		bool workingThread;
 		bool workingServer;
@@ -36,6 +36,7 @@ namespace server
 
 		public delegate void StopServerD(string text);
 		public event StopServerD StopServerEvent;
+
 
 		public void StartGame()
 		{
@@ -69,6 +70,10 @@ namespace server
 
 		public Controller(Model model)
 		{
+			jss.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+			jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+			jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+			jss.Formatting = Newtonsoft.Json.Formatting.Indented;
 			this.model = model;
 		}
 
@@ -113,7 +118,7 @@ namespace server
 				double speedY = (model.Map.PrevZone.ZoneCenterCoordinates.Y - model.Map.NextZone.ZoneCenterCoordinates.Y) / k;
 
 				double speedRadius = (double)(model.Map.PrevZone.ZoneRadius - model.Map.NextZone.ZoneRadius) / 750;
-				while (model.Map.PrevZone.ZoneRadius > model.Map.NextZone.ZoneRadius)
+				while (model.Map.PrevZone.ZoneRadius > model.Map.NextZone.ZoneRadius && workingGame)
 				{
 					x -= speedX;
 					model.Map.PrevZone.ZoneCenterCoordinateX = (int)x;
@@ -453,29 +458,37 @@ namespace server
 		public void ShotUser(object ui)//Controller
 		{
 			UserInfo userInfo = (UserInfo)ui;
-
+			Object obj = null;
 			while (userInfo.flagShoting)
 			{
-				if (userInfo.userLocation != userInfo.mouseLocation)
+				obj = (userInfo.Items[userInfo.thisItem] as Item).Use(userInfo);
+				if (obj != null)
 				{
-					BulletInfo bulletInfo = new BulletInfo(userInfo.userLocation);
-					double k = Math.Sqrt(Math.Pow(userInfo.mouseLocation.X - userInfo.userLocation.X, 2)
-										+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2)) / 6;
-					bulletInfo.speedX = (userInfo.mouseLocation.X - userInfo.userLocation.X) / k;
-					bulletInfo.speedY = (userInfo.mouseLocation.Y - userInfo.userLocation.Y) / k;
-					bulletInfo.owner = userInfo.Name;
-
-					if (userInfo.flagShoting)
+					if (obj is BulletInfo)
 					{
+						BulletInfo bi = (BulletInfo)obj;
 						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
-						thread.Start(bulletInfo);
+						thread.Start(bi);
 						lock (model.ListBullet)
 						{
-							model.ListBullet.Add(bulletInfo);
+							model.ListBullet.Add(bi);
 						}
-						Thread.Sleep(200);
+						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
 					}
-					else { break; }
+					else if (obj is List<BulletInfo>)
+					{
+						List<BulletInfo> bis = (List<BulletInfo>)obj;
+						foreach (BulletInfo bi in bis)
+						{
+							Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
+							thread.Start(bi);
+							lock (model.ListBullet)
+							{
+								model.ListBullet.Add(bi);
+							}
+						}
+						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
+					}
 				}
 			}
 
@@ -487,11 +500,11 @@ namespace server
 			bool flagBreak = false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += 2 * bulletInfo.speedX;
+			X += (13.0 / bulletInfo.speed) * bulletInfo.speedX;
 			bulletInfo.location.X = (int)X;
-			Y += 2 * bulletInfo.speedY;
+			Y += (13.0 / bulletInfo.speed) * bulletInfo.speedY;
 			bulletInfo.location.Y = (int)Y;
-			for (int i = 0; i < 150; i++)
+			for (int i = 0; i < bulletInfo.timeLife; i++)
 			{
 				X += bulletInfo.speedX;
 				bulletInfo.location.X = (int)X;
@@ -503,7 +516,7 @@ namespace server
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
-						model.ListUsers[j].hp -= 20;
+						model.ListUsers[j].hp -= bulletInfo.damage;
 						flagBreak = true;
 						if (model.ListUsers[j].hp <= 0)
 						{
@@ -529,7 +542,7 @@ namespace server
 								{
 									if (model.ListUsers[k].Name == bulletInfo.owner)
 										model.ListUsers[k].kills += 1;
-									Writing(kill, 20, model.ListNs[k]); // Инфа  о стартовой зоне
+									Writing(kill, 20, model.ListNs[k]);
 								}
 							}
 
@@ -611,6 +624,10 @@ namespace server
 			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, shift, num); };
 			timerMove.Start();
 
+			model.ListUsers[num].Items[1] = new NormalGun();
+			model.ListUsers[num].Items[2] = new NormalShotgun();
+
+
 			while (workingServer && workingThread && PrivateWorkingThread)
 			{
 				try
@@ -633,6 +650,7 @@ namespace server
 							}
 						case 3://УХХХХХХ
 							{
+								model.ListUsers[num].flagRecharge = false;
 								string tmpString = Reading(nStream);
 								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting && workingGame)
 								{
@@ -652,7 +670,7 @@ namespace server
 									model.ListUsers[num].flagShoting = false;
 									Thread t = new Thread(() =>
 									{
-										Thread.Sleep(200);
+										Thread.Sleep(model.ListUsers[num].Items[model.ListUsers[num].thisItem].Time);
 										model.ListUsers[num].flagWaitShoting = false;
 									});
 									t.Start();
@@ -672,6 +690,89 @@ namespace server
 						case 14: //Да это уже рофл какой-то
 							{
 								GetUserName(nStream, num);
+								break;
+							}
+						case 66:
+							{
+								string tmpString = Reading(nStream);
+								model.ListUsers[num].flagRecharge = false;
+								model.ListUsers[num].flagWaitShoting = true;
+								Shoting.Abort();
+								model.ListUsers[num].flagShoting = false;
+								Thread t = new Thread(() =>
+								{
+									Thread.Sleep(model.ListUsers[num].Items[model.ListUsers[num].thisItem].Time);
+									model.ListUsers[num].flagWaitShoting = false;
+								});
+								t.Start();
+								model.ListUsers[num].thisItem = JsonConvert.DeserializeObject<byte>(tmpString, jss);
+								break;
+							}
+						case 67:
+							{
+								string tmpString = Reading(nStream);
+								if (model.ListUsers[num].Items[model.ListUsers[num].thisItem] is Weapon)
+								{
+									model.ListUsers[num].flagRecharge = true;
+									Shoting.Abort();
+									model.ListUsers[num].flagShoting = false;
+									Thread t = new Thread(() =>
+									{
+										int time = 0;
+										while (model.ListUsers[num].flagRecharge)
+										{
+											time++;
+											Thread.Sleep(100);
+											if (time >= model.ListUsers[num].Items[model.ListUsers[num].thisItem].TimeReloading)
+											{
+												switch ((model.ListUsers[num].Items[model.ListUsers[num].thisItem] as Weapon).TypeBullets)
+												{
+													case Weapon.typeBullets.Gun:
+														{
+															model.ListUsers[num].GunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															model.ListUsers[num].GunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															if (model.ListUsers[num].GunBullets < 0)
+															{
+																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].GunBullets;
+																model.ListUsers[num].GunBullets = 0;
+															}
+															break;
+														}
+													case Weapon.typeBullets.Pistol:
+														{
+															model.ListUsers[num].PistolBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															model.ListUsers[num].PistolBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															if (model.ListUsers[num].PistolBullets < 0)
+															{
+																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].PistolBullets;
+																model.ListUsers[num].PistolBullets = 0;
+															}
+															break;
+														}
+													case Weapon.typeBullets.Shotgun:
+														{
+															model.ListUsers[num].ShotgunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															model.ListUsers[num].ShotgunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+															if (model.ListUsers[num].ShotgunBullets < 0)
+															{
+																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].ShotgunBullets;
+																model.ListUsers[num].ShotgunBullets = 0;
+															}
+															break;
+														}
+												}
+	
+												model.ListUsers[num].flagRecharge = false;
+											}
+										}
+
+
+									});
+									t.Start();
+								}
 								break;
 							}
 					}
@@ -703,19 +804,19 @@ namespace server
 		private void GetUserName(NetworkStream nStream, int num)
 		{
 			string tmpString = Reading(nStream);
-			model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString);
+			model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString, jss);
 		}
 
 		private void GetPlayersAngels(NetworkStream nStream, int num)
 		{
 			string tmpString = Reading(nStream);
-			model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString);
+			model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString, jss);
 		}
 
 		private void GetPlayersMousesLocation(NetworkStream nStream, int num)
 		{
 			string tmpString = Reading(nStream);
-			model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString);
+			model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString, jss);
 		}
 
 		private static void PingInfo(NetworkStream nStream)
@@ -751,28 +852,24 @@ namespace server
 		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
-			try
+
+			NetworkStream nStream = tcp.GetStream();
+			bool PrivateWorkingThread = true;
+			while (workingThread && PrivateWorkingThread)
 			{
-				NetworkStream nStream = tcp.GetStream();
-				bool PrivateWorkingThread = true;
-				while (workingThread && PrivateWorkingThread)
+				try
 				{
-					try
-					{
-						Writing(model.ListUsers, 1, nStream);
-						Writing(model.ListBullet, 3, nStream);
-						Thread.Sleep(20);
-					}
-					catch (System.IO.IOException)
-					{
-						PrivateWorkingThread = false;
-					}
+					Writing(model.ListUsers, 1, nStream);
+					Writing(model.ListBullet, 3, nStream);
+					Thread.Sleep(20);
+				}
+				catch (System.IO.IOException)
+				{
+					PrivateWorkingThread = false;
 				}
 			}
-			catch
-			{
 
-			}
+
 		}
 
 		private void Writing(object obj, byte numComand, NetworkStream nStream)
@@ -780,7 +877,7 @@ namespace server
 			string serialized = "";
 			lock (obj)
 			{
-				serialized = JsonConvert.SerializeObject(obj);
+				serialized = JsonConvert.SerializeObject(obj, jss);
 			}
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 			byte[] countRead = BitConverter.GetBytes(massByts.Count());
