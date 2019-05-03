@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-namespace ClassLibary
+namespace ClassLibrary
 {
 	[Serializable]
 	public class Box 
@@ -24,4 +24,5 @@ namespace ClassLibary
 			set { location = value; }
 		}
 	}
+
 }

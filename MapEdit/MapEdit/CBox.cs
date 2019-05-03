@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClassLibary;
+using ClassLibrary;
 namespace MapEdit
 {
 	class CBox : Items
@@ -20,14 +20,22 @@ namespace MapEdit
 			{
 				for (int j = box.Location.Y - 10; j < box.Location.Y + 10; j++)
 				{
-					model.Map.bordersForBullets[k, j] = true;
+					try
+					{
+						model.Map.bordersForBullets[k, j] = true;
+					}
+					catch { }
 				}
 			}
 			for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
 			{
 				for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
 				{
-					model.Map.bordersForUsers[k, j] = true;
+					try
+					{
+						model.Map.bordersForUsers[k, j] = true;
+					}
+					catch { }
 				}
 			}
 		}

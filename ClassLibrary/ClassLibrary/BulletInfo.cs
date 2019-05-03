@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace server
+namespace ClassLibrary
 {
-	class BulletInfo
+	public class BulletInfo
 	{
 		public double speedX, speedY;
 		public Point location;

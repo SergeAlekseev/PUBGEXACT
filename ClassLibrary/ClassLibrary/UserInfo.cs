@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
 
-namespace server
+namespace ClassLibrary
 {
-	class UserInfo
-	{		
+	public class UserInfo
+	{
 		public short hp = 100;
 		public short userNumber;
 		public Point userLocation;

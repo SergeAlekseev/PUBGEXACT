@@ -11,7 +11,8 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Json;
-using ClassLibary;
+using ClassLibrary;
+using Action = ClassLibrary.Action;
 
 namespace server
 {
@@ -924,12 +925,28 @@ namespace server
 				{
 					using (FileStream fs = new FileStream(NameFile, FileMode.Open))
 					{
-						model.Map = (Map)formatter.Deserialize(fs);
+						Map m = (Map)formatter.Deserialize(fs);
+						model.Map = m;
 					}
 				}
 				catch (Exception err)
 				{
 					MessageBox.Show(err.Message);
+				}
+			}
+			Random random = new Random();
+			for (int i = 0; i < model.ListUsers.Count; i++)
+			{
+				if (model.ListUsers[i] != null)
+				{
+					Writing(model.Map.ListBush, 6, model.ListNs[i]); // Отправка инфы о кустах
+					Thread.Sleep(100);
+					Writing(model.Map.MapBorders, 8, model.ListNs[i]); //Инфа о границах карты
+					Thread.Sleep(100);
+					Writing(model.Map.ListBox, 12, model.ListNs[i]); // Отправка инфы о коробках
+					do
+						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+					while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
 				}
 			}
 		}

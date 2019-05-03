@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-namespace client
+
+namespace ClassLibrary
 {
 	public class Action
 	{
-		public enum action { moveUp, moveDown, moveRight, noveLeft, stopUp, stopDown, stopLeft, stopRight , shiftDown,shiftUp};
+		public enum action { moveUp, moveDown, moveRight, noveLeft, stopUp, stopDown, stopLeft, stopRight, shiftDown, shiftUp };
 		public action act;
 		public Action()
 		{
