@@ -25,8 +25,7 @@ namespace server
 		public delegate void StopServerD();
 		public event StopServerD StopServerEvent;
 
-		static Model model = new Model();
-		Controller controller = new Controller(model);
+		Controller controller = new Controller();
 
 		public Server()
 		{
@@ -39,7 +38,6 @@ namespace server
 			controller.StopServerEvent += writeStatus;
 			controller.StartServerEvent += writeStatus; 
 			controller.StartGameEvent += writeStatus; 
-
 		}
 
 		private void start_Click(object sender, EventArgs e)
