@@ -64,7 +64,7 @@ namespace client
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(25, 25, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
-			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(10, 6, null, IntPtr.Zero);
+			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(16,16, null, IntPtr.Zero);
 			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
 			model.Images[6] = client.Properties.Resources.thisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
 			model.Images[7] = client.Properties.Resources.notThisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
@@ -201,7 +201,7 @@ namespace client
 							g1.RotateTransform((float)model.AngelToZone + 90);
 
 							g1.TranslateTransform(-50, -50);
-							g1.DrawImage(model.Images[4], 0, 48, 10, 6);
+							g1.DrawImage(model.Images[4], 0, 42, 16, 16);
 
 							bufferedGraphics.Graphics.DrawImage(background1, 250, 250, 100, 100);
 						}
@@ -211,7 +211,7 @@ namespace client
 					}
 					foreach (BulletInfo bullet in model.ListBullet)
 					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Black, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 					}
 
 					foreach (Bush bush in model.Map.ListBush)

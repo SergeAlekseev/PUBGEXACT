@@ -13,12 +13,13 @@ using System.Windows.Forms;
 using System.Runtime.Serialization.Json;
 using ClassLibrary;
 using Action = ClassLibrary.Action;
+using System.Collections.Concurrent;
+using server.Processings;
 
 namespace server
 {
 	class Controller
-	{	
-		bool workingGame;
+	{
 		bool workingThread;
 		bool workingServer;
 		short number; //Model
@@ -35,12 +36,13 @@ namespace server
 		public delegate void StopServerD(string text);
 		public event StopServerD StopServerEvent;
 
+		ConcurrentQueue<Processing> SecureQueue = new ConcurrentQueue<Processing>(); //___________________________________
 
 		public void StartGame()
 		{
-			if (!workingGame && workingServer)
+			if (!Model.workingGame && workingServer)
 			{
-				workingGame = true;
+				Model.workingGame = true;
 
 				createdZone();
 
@@ -83,7 +85,7 @@ namespace server
 			}
 			try
 			{
-				if (workingGame && Model.ListUsers[num] != null)
+				if (Model.workingGame && Model.ListUsers[num] != null)
 				{
 					if ((moveUp) && Model.ListUsers[num].userLocation.Y - Model.Map.MapBorders.Y > 2 && !Model.Map.bordersForUsers[Model.ListUsers[num].userLocation.X, Model.ListUsers[num].userLocation.Y - speed]) Model.ListUsers[num].userLocation.Y -= speed; //Вниз
 					if ((moveDown) && Model.ListUsers[num].userLocation.Y - Model.Map.MapBorders.Width < -2 && !Model.Map.bordersForUsers[Model.ListUsers[num].userLocation.X, Model.ListUsers[num].userLocation.Y + speed]) Model.ListUsers[num].userLocation.Y += speed; //Вверх
@@ -115,7 +117,7 @@ namespace server
 				double speedY = (Model.Map.PrevZone.ZoneCenterCoordinates.Y - Model.Map.NextZone.ZoneCenterCoordinates.Y) / k;
 
 				double speedRadius = (double)(Model.Map.PrevZone.ZoneRadius - Model.Map.NextZone.ZoneRadius) / 750;
-				while (Model.Map.PrevZone.ZoneRadius > Model.Map.NextZone.ZoneRadius && workingGame)
+				while (Model.Map.PrevZone.ZoneRadius > Model.Map.NextZone.ZoneRadius && Model.workingGame)
 				{
 					x -= speedX;
 					Model.Map.PrevZone.ZoneCenterCoordinateX = (int)x;
@@ -152,22 +154,22 @@ namespace server
 			{
 				if (Model.ListUsers[i] != null)
 				{
-					if (Math.Sqrt(Math.Pow(Model.ListUsers[i].userLocation.X - Model.Map.NextZone.ZoneCenterCoordinates.X, 2) + Math.Pow(Model.ListUsers[i].userLocation.Y - Model.Map.NextZone.ZoneCenterCoordinates.Y, 2)) > model.Map.NextZone.ZoneRadius)
+					if (Math.Sqrt(Math.Pow(Model.ListUsers[i].userLocation.X - Model.Map.NextZone.ZoneCenterCoordinates.X, 2) + Math.Pow(Model.ListUsers[i].userLocation.Y - Model.Map.NextZone.ZoneCenterCoordinates.Y, 2)) > Model.Map.NextZone.ZoneRadius)
 					{
-						model.ListUsers[i].flagZone = true;
+						Model.ListUsers[i].flagZone = true;
 					}
-					else model.ListUsers[i].flagZone = false;
+					else Model.ListUsers[i].flagZone = false;
 
-					if (model.Map.PrevZone != null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
+					if (Model.Map.PrevZone != null && Math.Sqrt(Math.Pow(Model.ListUsers[i].userLocation.X - Model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(Model.ListUsers[i].userLocation.Y - Model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > Model.Map.PrevZone.ZoneRadius)
 					{
-						model.ListUsers[i].hp -= 2;
-						if (model.ListUsers[i].hp <= 0)
+						Model.ListUsers[i].hp -= 2;
+						if (Model.ListUsers[i].hp <= 0)
 						{
-							CTransfers.Writing("ZONA", 7, model.ListNs[i]);
+							CTransfers.Writing("ZONA", 7, Model.ListNs[i]);
 
-							foreach (GeneralInfo g in model.ListGInfo)
+							foreach (GeneralInfo g in Model.ListGInfo)
 							{
-								if (g.Name == model.ListUsers[i].Name)
+								if (g.Name == Model.ListUsers[i].Name)
 									g.Dies += 1;
 							}
 						}
@@ -181,7 +183,7 @@ namespace server
 		{
 			if (PlayerRead(null) != null)
 			{
-				model.ListGInfo = PlayerRead(null);
+				Model.ListGInfo = PlayerRead(null);
 			}
 			Thread startThread = new Thread(new ParameterizedThreadStart(StartServer));
 			startThread.Start();
@@ -190,7 +192,7 @@ namespace server
 		public void StartServer(object tmpObject)//Controller
 		{
 
-			if (!workingServer && !workingGame)
+			if (!workingServer && !Model.workingGame)
 			{
 				workingServer = true;
 				Random random = new Random();
@@ -216,7 +218,7 @@ namespace server
 
 				PublicHost = host;
 				host.Start();
-				model.ListUsers = new List<UserInfo>();
+				Model.ListUsers = new List<UserInfo>();
 
 
 				StartServerEvent("Сервер запущен");
@@ -238,18 +240,18 @@ namespace server
 
 					UserInfo userInfoTmp;
 					do
-						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.Y]);
+						userInfoTmp = new UserInfo(new Point(random.Next(2, Model.Map.MapBorders.Width - 2), random.Next(2, Model.Map.MapBorders.Height - 2)));
+					while (Model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.Y]);
 					userInfoTmp.userNumber = number;
 
-					lock (model.ListUsers)
+					lock (Model.ListUsers)
 					{
-						model.ListUsers.Add(userInfoTmp);
+						Model.ListUsers.Add(userInfoTmp);
 					}
 
 
 
-					model.ListNs.Add(tc.GetStream());
+					Model.ListNs.Add(tc.GetStream());
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
 
@@ -259,7 +261,7 @@ namespace server
 					thread2.Start(tc);
 				}
 				Thread.Sleep(1000);
-				model.Remove();
+				Model.Remove();
 			}
 		}
 
@@ -269,19 +271,19 @@ namespace server
 		{
 			if (workingServer)
 			{
-				PlayerSave(model.ListGInfo);
+				PlayerSave(Model.ListGInfo);
 
 				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
 				PublicHost3.Stop();
-				if (workingGame)
+				if (Model.workingGame)
 				{
 					timerUsersInZone.Close();
 					timerZone.Close();
 				}
 				byte[] numberUser = new byte[1];
-				foreach (NetworkStream ns in model.ListNs)
+				foreach (NetworkStream ns in Model.ListNs)
 				{
 					if (ns != null)
 					{
@@ -296,8 +298,8 @@ namespace server
 				}
 				workingServer = false;
 				workingThread = false;
-				model.Remove();
-				workingGame = false;
+				Model.Remove();
+				Model.workingGame = false;
 				Thread.Sleep(1000);
 				StopServerEvent("Сервер отключен");
 			}
@@ -306,9 +308,9 @@ namespace server
 		public void RandomBushs()
 		{
 			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 10000; i++)
+			for (int i = 0; i < Model.Map.MapBorders.Height * Model.Map.MapBorders.Width / 10000; i++)
 			{
-				model.Map.ListBush.Add(new Bush(random.Next(model.Map.MapBorders.Width), random.Next(model.Map.MapBorders.Height)));
+				Model.Map.ListBush.Add(new Bush(random.Next(Model.Map.MapBorders.Width), random.Next(Model.Map.MapBorders.Height)));
 			}
 		}
 
@@ -316,10 +318,10 @@ namespace server
 		{
 			bool flag = true;
 			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 50000;)
+			for (int i = 0; i < Model.Map.MapBorders.Height * Model.Map.MapBorders.Width / 50000;)
 			{
-				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-				foreach (Box b in model.Map.ListBox)
+				Box box = new Box(random.Next(13, Model.Map.MapBorders.Width - 13), random.Next(13, Model.Map.MapBorders.Height - 13));
+				foreach (Box b in Model.Map.ListBox)
 				{
 					if (Math.Abs(b.Location.X - box.Location.X) < Box.size || Math.Abs(b.Location.Y - box.Location.Y) < Box.size)
 					{
@@ -329,19 +331,19 @@ namespace server
 				}
 				if (flag)
 				{
-					model.Map.ListBox.Add(box);
+					Model.Map.ListBox.Add(box);
 					for (int k = box.Location.X - 10; k < box.Location.X + 10; k++)
 					{
 						for (int j = box.Location.Y - 10; j < box.Location.Y + 10; j++)
 						{
-							model.Map.bordersForBullets[k, j] = true;
+							Model.Map.bordersForBullets[k, j] = true;
 						}
 					}
 					for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
 					{
 						for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
 						{
-							model.Map.bordersForUsers[k, j] = true;
+							Model.Map.bordersForUsers[k, j] = true;
 						}
 					}
 					i++;
@@ -396,22 +398,22 @@ namespace server
 							GeneralInfo newUser = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
 
 							GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
-							if (!workingGame)
+							if (!Model.workingGame)
 							{
-								if (tmpUser == null && model.ListGInfo.Count > 0)
+								if (tmpUser == null && Model.ListGInfo.Count > 0)
 								{
-									model.ListGInfo.Add(new GeneralInfo());
-									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
-									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+									Model.ListGInfo.Add(new GeneralInfo());
+									Model.ListGInfo[Model.ListGInfo.Count - 1].Name = newUser.Name;
+									Model.ListGInfo[Model.ListGInfo.Count - 1].Password = newUser.Password;
 
-									PlayerSave(model.ListGInfo);
-									CTransfers.Writing(model.ListGInfo[model.ListGInfo.Count - 1], 10, nStream);
+									PlayerSave(Model.ListGInfo);
+									CTransfers.Writing(Model.ListGInfo[Model.ListGInfo.Count - 1], 10, nStream);
 								}
 								else
 								{
-									if (CheckData(model.ListGInfo, newUser))
+									if (CheckData(Model.ListGInfo, newUser))
 									{
-										model.ListGInfo = PlayerRead(newUser);
+										Model.ListGInfo = PlayerRead(newUser);
 										CTransfers.Writing(tmpUser, 10, nStream);
 									}
 									else
@@ -423,20 +425,20 @@ namespace server
 							}
 							else
 							{
-								if (tmpUser == null && model.ListGInfo.Count > 0)
+								if (tmpUser == null && Model.ListGInfo.Count > 0)
 								{
-									model.ListGInfo.Add(new GeneralInfo());
-									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
-									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
+									Model.ListGInfo.Add(new GeneralInfo());
+									Model.ListGInfo[Model.ListGInfo.Count - 1].Name = newUser.Name;
+									Model.ListGInfo[Model.ListGInfo.Count - 1].Password = newUser.Password;
 
-									PlayerSave(model.ListGInfo);
-									CTransfers.Writing(model.ListGInfo[model.ListGInfo.Count - 1], 12, nStream);
+									PlayerSave(Model.ListGInfo);
+									CTransfers.Writing(Model.ListGInfo[Model.ListGInfo.Count - 1], 12, nStream);
 								}
 								else
 								{
-									if (CheckData(model.ListGInfo, newUser))
+									if (CheckData(Model.ListGInfo, newUser))
 									{
-										model.ListGInfo = PlayerRead(newUser);
+										Model.ListGInfo = PlayerRead(newUser);
 										CTransfers.Writing(tmpUser, 12, nStream);
 									}
 									else
@@ -466,9 +468,9 @@ namespace server
 						BulletInfo bi = (BulletInfo)obj;
 						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
 						thread.Start(bi);
-						lock (model.ListBullet)
+						lock (Model.ListBullet)
 						{
-							model.ListBullet.Add(bi);
+							Model.ListBullet.Add(bi);
 						}
 						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
 					}
@@ -479,9 +481,9 @@ namespace server
 						{
 							Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
 							thread.Start(bi);
-							lock (model.ListBullet)
+							lock (Model.ListBullet)
 							{
-								model.ListBullet.Add(bi);
+								Model.ListBullet.Add(bi);
 							}
 						}
 						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
@@ -507,23 +509,23 @@ namespace server
 				bulletInfo.location.X = (int)X;
 				Y += bulletInfo.speedY;
 				bulletInfo.location.Y = (int)Y;
-				for (int j = 0; j < model.ListUsers.Count; j++)
+				for (int j = 0; j < Model.ListUsers.Count; j++)
 				{
-					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9)
+					if (Model.ListUsers[j] != null && Math.Abs(Model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(Model.ListUsers[j].userLocation.Y - Y) <= 9)
 					{
 						byte[] popad = new byte[1];
 						popad[0] = 6;
-						model.ListUsers[j].hp -= bulletInfo.damage;
+						Model.ListUsers[j].hp -= bulletInfo.damage;
 						flagBreak = true;
-						if (model.ListUsers[j].hp <= 0)
+						if (Model.ListUsers[j].hp <= 0)
 						{
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
-							CTransfers.Writing(bulletInfo.owner, 7, model.ListNs[j]);
+							CTransfers.Writing(bulletInfo.owner, 7, Model.ListNs[j]);
 
-							foreach (GeneralInfo g in model.ListGInfo)
+							foreach (GeneralInfo g in Model.ListGInfo)
 							{
-								if (g.Name == model.ListUsers[j].Name)
+								if (g.Name == Model.ListUsers[j].Name)
 									g.Dies += 1;
 								if (g.Name == bulletInfo.owner)
 									g.Kills += 1;
@@ -531,15 +533,15 @@ namespace server
 
 							Kill kill = new Kill();
 							kill.killer = bulletInfo.owner;
-							kill.dead = model.ListUsers[j].Name;
+							kill.dead = Model.ListUsers[j].Name;
 
-							for (int k = 0; k < model.ListUsers.Count; k++)
+							for (int k = 0; k < Model.ListUsers.Count; k++)
 							{
-								if (model.ListUsers[k] != null)
+								if (Model.ListUsers[k] != null)
 								{
-									if (model.ListUsers[k].Name == bulletInfo.owner)
-										model.ListUsers[k].kills += 1;
-									CTransfers.Writing(kill, 20, model.ListNs[k]);
+									if (Model.ListUsers[k].Name == bulletInfo.owner)
+										Model.ListUsers[k].kills += 1;
+									CTransfers.Writing(kill, 20, Model.ListNs[k]);
 								}
 							}
 
@@ -549,7 +551,7 @@ namespace server
 				}
 				try
 				{
-					if (model.Map.bordersForBullets[bulletInfo.location.X, bulletInfo.location.Y])
+					if (Model.Map.bordersForBullets[bulletInfo.location.X, bulletInfo.location.Y])
 					{
 						flagBreak = true;
 					}
@@ -558,21 +560,22 @@ namespace server
 				if (flagBreak) break;
 				Thread.Sleep(20);
 			}
-			lock (model.ListBullet)
+			lock (Model.ListBullet)
 			{
-				model.ListBullet.Remove(bulletInfo);
+				Model.ListBullet.Remove(bulletInfo);
 			}
 		}
 
-		
+
 
 		public void PlayUser(object tc)//Controller
 		{
-			bool moveUp = false;
-			bool moveDown = false;
-			bool moveLeft = false;
-			bool moveRight = false;
-			bool shift = false;
+			MMove mmove = new MMove();
+			//bool moveUp = false;
+			//bool moveDown = false;
+			//bool moveLeft = false;
+			//bool moveRight = false;
+			//bool shift = false;
 
 			bool PrivateWorkingThread = true;
 
@@ -586,23 +589,23 @@ namespace server
 			numberUser[0] = (byte)num;
 			nStream.Write(numberUser, 0, 1);
 
-			CTransfers.Writing(model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
+			CTransfers.Writing(Model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
 			Thread.Sleep(100);
-			CTransfers.Writing(model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			CTransfers.Writing(Model.Map.MapBorders, 8, nStream); //Инфа о границах карты
 			Thread.Sleep(100);
-			CTransfers.Writing(model.Map.ListBox, 12, nStream); // Отправка инфы о коробках
+			CTransfers.Writing(Model.Map.ListBox, 12, nStream); // Отправка инфы о коробках
 
 
-			model.CountGamers += 1;
+			Model.CountGamers += 1;
 			writingCountGames();
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 15;
-			timerMove.Elapsed += (x, y) => { timerMove_Tick(moveUp, moveDown, moveLeft, moveRight, shift, num); };
+			timerMove.Elapsed += (x, y) => { timerMove_Tick(mmove.moveUp, mmove.moveDown, mmove.moveLeft, mmove.moveRight, mmove.shift, num); };
 			timerMove.Start();
 
-			model.ListUsers[num].Items[1] = new NormalGun();
-			model.ListUsers[num].Items[2] = new NormalShotgun();
+			Model.ListUsers[num].Items[1] = new NormalGun();
+			Model.ListUsers[num].Items[2] = new NormalShotgun();
 
 
 			while (workingServer && workingThread && PrivateWorkingThread)
@@ -616,7 +619,7 @@ namespace server
 					{
 						case 1:
 							{
-								PlayerMovementsInfo(ref moveUp, ref moveDown, ref moveLeft, ref moveRight, ref shift, nStream);
+								PlayerMovementsInfo(ref mmove.moveUp, ref mmove.moveDown, ref mmove.moveLeft, ref mmove.moveRight, ref mmove.shift, nStream);
 
 								break;
 							}
@@ -627,28 +630,28 @@ namespace server
 							}
 						case 3://УХХХХХХ
 							{
-								model.ListUsers[num].flagRecharge = false;
+								Model.ListUsers[num].flagRecharge = false;
 								string tmpString = CTransfers.Reading(nStream);
-								if (!model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting && workingGame)
+								if (!Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting && Model.workingGame)
 								{
-									model.ListUsers[num].flagShoting = true;
+									Model.ListUsers[num].flagShoting = true;
 									Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
-									Shoting.Start(model.ListUsers[num]);
+									Shoting.Start(Model.ListUsers[num]);
 								}
 								break;
 							}
 						case 4:// УУ НЕ ПОНЕМАЮ, выноси их сам в методы, чтобы легче читалось ( микро-рефакторинг)
 							{
 								string tmpString = CTransfers.Reading(nStream);
-								if (model.ListUsers[num].flagShoting && !model.ListUsers[num].flagWaitShoting)
+								if (Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting)
 								{
-									model.ListUsers[num].flagWaitShoting = true;
+									Model.ListUsers[num].flagWaitShoting = true;
 									Shoting.Abort();
-									model.ListUsers[num].flagShoting = false;
+									Model.ListUsers[num].flagShoting = false;
 									Thread t = new Thread(() =>
 									{
-										Thread.Sleep(model.ListUsers[num].Items[model.ListUsers[num].thisItem].Time);
-										model.ListUsers[num].flagWaitShoting = false;
+										Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
+										Model.ListUsers[num].flagWaitShoting = false;
 									});
 									t.Start();
 								}
@@ -672,77 +675,77 @@ namespace server
 						case 66:
 							{
 								string tmpString = CTransfers.Reading(nStream);
-								model.ListUsers[num].flagRecharge = false;
-								model.ListUsers[num].flagWaitShoting = true;
+								Model.ListUsers[num].flagRecharge = false;
+								Model.ListUsers[num].flagWaitShoting = true;
 								Shoting.Abort();
-								model.ListUsers[num].flagShoting = false;
+								Model.ListUsers[num].flagShoting = false;
 								Thread t = new Thread(() =>
 								{
-									Thread.Sleep(model.ListUsers[num].Items[model.ListUsers[num].thisItem].Time);
-									model.ListUsers[num].flagWaitShoting = false;
+									Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
+									Model.ListUsers[num].flagWaitShoting = false;
 								});
 								t.Start();
-								model.ListUsers[num].thisItem = JsonConvert.DeserializeObject<byte>(tmpString, CTransfers.jss);
+								Model.ListUsers[num].thisItem = JsonConvert.DeserializeObject<byte>(tmpString, CTransfers.jss);
 								break;
 							}
 						case 67:
 							{
 								string tmpString = CTransfers.Reading(nStream);
-								if (model.ListUsers[num].Items[model.ListUsers[num].thisItem] is Weapon)
+								if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon)
 								{
-									model.ListUsers[num].flagRecharge = true;
+									Model.ListUsers[num].flagRecharge = true;
 									Shoting.Abort();
-									model.ListUsers[num].flagShoting = false;
+									Model.ListUsers[num].flagShoting = false;
 									Thread t = new Thread(() =>
 									{
 										int time = 0;
-										while (model.ListUsers[num].flagRecharge)
+										while (Model.ListUsers[num].flagRecharge)
 										{
 											time++;
 											Thread.Sleep(100);
-											if (time >= model.ListUsers[num].Items[model.ListUsers[num].thisItem].TimeReloading)
+											if (time >= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].TimeReloading)
 											{
-												switch ((model.ListUsers[num].Items[model.ListUsers[num].thisItem] as Weapon).TypeBullets)
+												switch ((Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Weapon).TypeBullets)
 												{
 													case Weapon.typeBullets.Gun:
 														{
-															model.ListUsers[num].GunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
-															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															model.ListUsers[num].GunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															if (model.ListUsers[num].GunBullets < 0)
+															Model.ListUsers[num].GunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
+															Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															Model.ListUsers[num].GunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															if (Model.ListUsers[num].GunBullets < 0)
 															{
-																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].GunBullets;
-																model.ListUsers[num].GunBullets = 0;
+																Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].GunBullets;
+																Model.ListUsers[num].GunBullets = 0;
 															}
 															break;
 														}
 													case Weapon.typeBullets.Pistol:
 														{
-															model.ListUsers[num].PistolBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
-															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															model.ListUsers[num].PistolBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															if (model.ListUsers[num].PistolBullets < 0)
+															Model.ListUsers[num].PistolBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
+															Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															Model.ListUsers[num].PistolBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															if (Model.ListUsers[num].PistolBullets < 0)
 															{
-																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].PistolBullets;
-																model.ListUsers[num].PistolBullets = 0;
+																Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].PistolBullets;
+																Model.ListUsers[num].PistolBullets = 0;
 															}
 															break;
 														}
 													case Weapon.typeBullets.Shotgun:
 														{
-															model.ListUsers[num].ShotgunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
-															model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															model.ListUsers[num].ShotgunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
-															if (model.ListUsers[num].ShotgunBullets < 0)
+															Model.ListUsers[num].ShotgunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
+															Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															Model.ListUsers[num].ShotgunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
+															if (Model.ListUsers[num].ShotgunBullets < 0)
 															{
-																model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].ShotgunBullets;
-																model.ListUsers[num].ShotgunBullets = 0;
+																Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].ShotgunBullets;
+																Model.ListUsers[num].ShotgunBullets = 0;
 															}
 															break;
 														}
 												}
-	
-												model.ListUsers[num].flagRecharge = false;
+
+												Model.ListUsers[num].flagRecharge = false;
 											}
 										}
 
@@ -756,16 +759,16 @@ namespace server
 				}
 				catch (System.IO.IOException)
 				{
-					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
+					if (Model.ListUsers.Count != 0 && Model.ListUsers[num] != null)
 					{
-						model.ListUsers[num].flagShoting = false;
-						lock (model.ListUsers)
+						Model.ListUsers[num].flagShoting = false;
+						lock (Model.ListUsers)
 						{
-							model.ListUsers.RemoveAt(num);
-							model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+							Model.ListUsers.RemoveAt(num);
+							Model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
 						}
 					}
-					model.CountGamers -= 1;
+					Model.CountGamers -= 1;
 					writingCountGames();
 					PrivateWorkingThread = false;
 					timerMove.Stop();
@@ -781,19 +784,19 @@ namespace server
 		private void GetUserName(NetworkStream nStream, int num)
 		{
 			string tmpString = CTransfers.Reading(nStream);
-			model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString, CTransfers.jss);
+			Model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString, CTransfers.jss);
 		}
 
 		private void GetPlayersAngels(NetworkStream nStream, int num)
 		{
 			string tmpString = CTransfers.Reading(nStream);
-			model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString, CTransfers.jss);
+			Model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString, CTransfers.jss);
 		}
 
 		private void GetPlayersMousesLocation(NetworkStream nStream, int num)
 		{
 			string tmpString = CTransfers.Reading(nStream);
-			model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString, CTransfers.jss);
+			Model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString, CTransfers.jss);
 		}
 
 		private static void PingInfo(NetworkStream nStream)
@@ -836,8 +839,8 @@ namespace server
 			{
 				try
 				{
-					CTransfers.Writing(model.ListUsers, 1, nStream);
-					CTransfers.Writing(model.ListBullet, 3, nStream);
+					CTransfers.Writing(Model.ListUsers, 1, nStream);
+					CTransfers.Writing(Model.ListBullet, 3, nStream);
 					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException)
@@ -856,33 +859,33 @@ namespace server
 
 		public void createdZone()
 		{
-			model.Map.NextZone.startCenterZone(model.Map.MapBorders); //Создаст зону внутри игровой области
-			model.Map.NextZone.TimeTocompression = 10;
-			model.Map.NextZone.ZoneRadius = (int)model.Map.MapBorders.Height / 2;
+			Model.Map.NextZone.startCenterZone(Model.Map.MapBorders); //Создаст зону внутри игровой области
+			Model.Map.NextZone.TimeTocompression = 10;
+			Model.Map.NextZone.ZoneRadius = (int)Model.Map.MapBorders.Height / 2;
 
-			model.Map.PrevZone.ZoneCenterCoordinates = new Point(model.Map.MapBorders.Width / 2, model.Map.MapBorders.Height / 2);//Создаст зону внутри игровой области
-			model.Map.PrevZone.ZoneRadius = (int)model.Map.MapBorders.Height / 4 * 3;
+			Model.Map.PrevZone.ZoneCenterCoordinates = new Point(Model.Map.MapBorders.Width / 2, Model.Map.MapBorders.Height / 2);//Создаст зону внутри игровой области
+			Model.Map.PrevZone.ZoneRadius = (int)Model.Map.MapBorders.Height / 4 * 3;
 		}
 
 		public void writingCountGames()
 		{
-			for (int i = 0; i < model.ListUsers.Count; i++)
+			for (int i = 0; i < Model.ListUsers.Count; i++)
 			{
-				if (model.ListUsers[i] != null)
+				if (Model.ListUsers[i] != null)
 				{
-					CTransfers.Writing(model.CountGamers, 21, model.ListNs[i]);
+					CTransfers.Writing(Model.CountGamers, 21, Model.ListNs[i]);
 				}
 			}
-			if (model.CountGamers == 1 && workingGame)
+			if (Model.CountGamers == 1 && Model.workingGame)
 			{
-				for (int i = 0; i < model.ListUsers.Count; i++)
+				for (int i = 0; i < Model.ListUsers.Count; i++)
 				{
-					if (model.ListUsers[i] != null)
+					if (Model.ListUsers[i] != null)
 					{
-						CTransfers.Writing("", 33, model.ListNs[i]);
-						foreach (GeneralInfo g in model.ListGInfo)
+						CTransfers.Writing("", 33, Model.ListNs[i]);
+						foreach (GeneralInfo g in Model.ListGInfo)
 						{
-							if (g.Name == model.ListUsers[i].Name)
+							if (g.Name == Model.ListUsers[i].Name)
 								g.Wins += 1;
 						}
 						break;
@@ -970,7 +973,7 @@ namespace server
 					using (FileStream fs = new FileStream(NameFile, FileMode.Open))
 					{
 						Map m = (Map)formatter.Deserialize(fs);
-						model.Map = m;
+						Model.Map = m;
 					}
 				}
 				catch (Exception err)
@@ -979,19 +982,38 @@ namespace server
 				}
 			}
 			Random random = new Random();
-			for (int i = 0; i < model.ListUsers.Count; i++)
+			for (int i = 0; i < Model.ListUsers.Count; i++)
 			{
-				if (model.ListUsers[i] != null)
+				if (Model.ListUsers[i] != null)
 				{
-					CTransfers.Writing(model.Map.ListBush, 6, model.ListNs[i]); // Отправка инфы о кустах
+					CTransfers.Writing(Model.Map.ListBush, 6, Model.ListNs[i]); // Отправка инфы о кустах
 					Thread.Sleep(100);
-					CTransfers.Writing(model.Map.MapBorders, 8, model.ListNs[i]); //Инфа о границах карты
+					CTransfers.Writing(Model.Map.MapBorders, 8, Model.ListNs[i]); //Инфа о границах карты
 					Thread.Sleep(100);
-					CTransfers.Writing(model.Map.ListBox, 12, model.ListNs[i]); // Отправка инфы о коробках
+					CTransfers.Writing(Model.Map.ListBox, 12, Model.ListNs[i]); // Отправка инфы о коробках
 					do
-						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
+						Model.ListUsers[i] = new UserInfo(new Point(random.Next(2, Model.Map.MapBorders.Width - 2), random.Next(2, Model.Map.MapBorders.Height - 2)));
+					while (Model.Map.bordersForUsers[Model.ListUsers[i].userLocation.X, Model.ListUsers[i].userLocation.Y]);
 				}
+			}
+		}
+
+		public void Producer(int numberUser)
+		{
+			while (workingServer && workingThread)
+			{
+				string tmpString = CTransfers.Reading(Model.ListNs[numberUser]);
+				SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing>(tmpString, CTransfers.jss));
+			}
+		}
+
+		public void Consumer(int numberUser)
+		{
+			Processing processing ;
+			while (workingServer && workingThread)
+			{
+				SecureQueue.TryDequeue(out processing);
+				processing.Process(numberUser);
 			}
 		}
 	}

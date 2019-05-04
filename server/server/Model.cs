@@ -17,6 +17,15 @@ namespace server
 		static List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		static List<Item> items = new List<Item>();
 		static int countGamers = 0;
+		static List<MMove> listMove = new List<MMove>();
+
+		static public bool workingGame;
+
+		static public List<MMove> ListMove
+		{
+			get { return listMove; }
+			set { listMove = value; }
+		}
 
 		static public int CountGamers
 		{
