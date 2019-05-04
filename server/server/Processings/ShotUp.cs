@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace server.Processings
 {
-	class ShotUp : Processing
+	public class ShotUp : Processing
 	{
-		public override void Process(int num)
+		int num;
+
+		public ShotUp(int num)
 		{
-			string tmpString = CTransfers.Reading(Model.ListNs[num]);
+			this.num = num;
+		}
+		public override void Process()
+		{
 			if (Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting)
 			{
 				Model.ListUsers[num].flagWaitShoting = true;

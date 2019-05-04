@@ -15,7 +15,6 @@ using System.Windows.Forms;
 using ClassLibrary;
 using Newtonsoft.Json;
 using Action = ClassLibrary.Action;
-
 namespace client
 {
 	public partial class Client : Form
@@ -32,8 +31,11 @@ namespace client
 		public delegate void MouseLocatinD(Point MouseLocatin);
 		public event MouseLocatinD MouseLocatinEvent;
 
-		public delegate void ShotD(byte type);
-		public event ShotD ShotEvent;
+		public delegate void ShotUpD();
+		public event ShotUpD ShotUpEvent;
+
+		public delegate void ShotDownD();
+		public event ShotDownD ShotDownEvent;
 
 		public delegate double RotatateD();
 		public event RotatateD RotatateEvent;
@@ -88,7 +90,10 @@ namespace client
 			ActionEvent += controller.PressKey;
 			ConnectEvent += controller.Connect;
 			DisconnectEvent += controller.Disconnect;
-			ShotEvent += controller.Shot;
+
+			ShotUpEvent += controller.ShotUp;
+			ShotDownEvent += controller.ShotDown;
+
 			MouseLocatinEvent += controller.WriteMouseLocation;
 			RotatateEvent += controller.mouseMove;
 			СhangeItemEvent += controller.ChangeItem;
@@ -292,7 +297,7 @@ namespace client
 		{
 			if (!MouseDown)
 			{
-				ShotEvent(3);
+				ShotDownEvent();
 				MouseDown = true;
 			}
 		}
@@ -301,7 +306,7 @@ namespace client
 		{
 			if (MouseDown)
 			{
-				ShotEvent(4);
+				ShotUpEvent();
 				MouseDown = false;
 			}
 		}

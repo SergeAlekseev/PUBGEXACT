@@ -8,26 +8,33 @@ using System.Threading.Tasks;
 using ClassLibrary;
 namespace server.Processings
 {
-	class PlayerMovementsInfo:Processing
+	public class PlayerMovementsInfo:Processing
 	{
 
-		public override void Process(int numberUser)
+		int num;
+		ClassLibrary.Action action;
+		public PlayerMovementsInfo(int num, ClassLibrary.Action action )
 		{
-			string tmpString = CTransfers.Reading(Model.ListNs[numberUser]);
+			this.num = num;
+			this.action = action;
+		}
+		public override void Process()
+		{
+			string tmpString = CTransfers.Reading(Model.ListNs[num]);
 			ClassLibrary.Action act = JsonConvert.DeserializeObject<ClassLibrary.Action>(tmpString);
 			switch (act.act)
 			{
-				case ClassLibrary.Action.action.moveUp: Model.ListMove[numberUser].moveUp = true; break;
-				case ClassLibrary.Action.action.moveDown: Model.ListMove[numberUser].moveDown = true; break;
-				case ClassLibrary.Action.action.noveLeft: Model.ListMove[numberUser].moveLeft = true; break;
-				case ClassLibrary.Action.action.moveRight: Model.ListMove[numberUser].moveRight = true; break;
-				case ClassLibrary.Action.action.shiftDown: Model.ListMove[numberUser].shift = true; break;
+				case ClassLibrary.Action.action.moveUp: Model.ListMove[num].moveUp = true; break;
+				case ClassLibrary.Action.action.moveDown: Model.ListMove[num].moveDown = true; break;
+				case ClassLibrary.Action.action.noveLeft: Model.ListMove[num].moveLeft = true; break;
+				case ClassLibrary.Action.action.moveRight: Model.ListMove[num].moveRight = true; break;
+				case ClassLibrary.Action.action.shiftDown: Model.ListMove[num].shift = true; break;
 
-				case ClassLibrary.Action.action.stopUp: Model.ListMove[numberUser].moveUp = false; break;
-				case ClassLibrary.Action.action.stopDown: Model.ListMove[numberUser].moveDown = false; break;
-				case ClassLibrary.Action.action.stopLeft: Model.ListMove[numberUser].moveLeft = false; break;
-				case ClassLibrary.Action.action.stopRight: Model.ListMove[numberUser].moveRight = false; break;
-				case ClassLibrary.Action.action.shiftUp: Model.ListMove[numberUser].shift = false; break;
+				case ClassLibrary.Action.action.stopUp: Model.ListMove[num].moveUp = false; break;
+				case ClassLibrary.Action.action.stopDown: Model.ListMove[num].moveDown = false; break;
+				case ClassLibrary.Action.action.stopLeft: Model.ListMove[num].moveLeft = false; break;
+				case ClassLibrary.Action.action.stopRight: Model.ListMove[num].moveRight = false; break;
+				case ClassLibrary.Action.action.shiftUp: Model.ListMove[num].shift = false; break;
 			}
 		}
 	}

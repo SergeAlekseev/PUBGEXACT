@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 
 namespace server.Processings
 {
-	class PingInfo : Processing
+	public class PingInfo : Processing
 	{
-		public override void Process(int numberUser)
+		int num;
+		public PingInfo(int num)
+		{
+			this.num = num;
+		}
+		public override void Process()
 		{
 			byte[] ping = new byte[1];
 			ping[0] = 2;
-			lock (Model.ListNs[numberUser])
+			lock (Model.ListNs[num])
 			{
-				Model.ListNs[numberUser].Write(ping, 0, 1);
+				Model.ListNs[num].Write(ping, 0, 1);
 			}
 		}
 	}

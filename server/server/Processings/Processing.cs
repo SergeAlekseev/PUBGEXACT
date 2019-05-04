@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace server.Processings
 {
-	abstract class Processing
+	public abstract class Processing
 	{
-		public abstract void Process(int numberUser);
+		public abstract void Process();
 	}
 }

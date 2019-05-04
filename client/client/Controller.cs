@@ -44,23 +44,32 @@ namespace client
 			model.GInfo.Password = Password;
 		}
 
-		public void Shot(byte type)
+		public void ShotDown()
 		{
 			if (threadStart)
 			{
-				Writing(null, type);
+				Writing(new server.Processings.ShotDown(model.ThisUser.userNumber));
 			}
 		}
 
-		private void Writing(object obj, byte numComand)
+		public void ShotUp()
+		{
+			if (threadStart)
+			{
+				Writing(new server.Processings.ShotUp(model.ThisUser.userNumber));
+			}
+		}
+
+		private void Writing(object obj)
 		{
 			string serialized = JsonConvert.SerializeObject(obj, jss);
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 			byte[] countRead = BitConverter.GetBytes(massByts.Count());
-			byte[] typeComand = new byte[1];
-			typeComand[0] = numComand;
 
-			nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+			//byte[] typeComand = new byte[1];
+			//typeComand[0] = numComand;
+			//nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+
 			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 			nStream.Write(massByts, 0, massByts.Count());
 		}
@@ -68,7 +77,7 @@ namespace client
 		public void WriteMouseLocation(Point mouseLocation)
 		{
 			if (threadStart)
-				Writing(mouseLocation, 5);
+				Writing(new server.Processings.GetPlayersMousesLocation(mouseLocation,model.ThisUser.userNumber));
 		}
 
 		public Controller(Model model) // Конструктор
@@ -96,7 +105,7 @@ namespace client
 				{
 					PingWatch = new Stopwatch();
 					byte[] Ping = BitConverter.GetBytes((short)2);
-					nStream.Write(Ping, 0, 2);
+					Writing(new server.Processings.PingInfo(model.ThisUser.userNumber));
 					PingWatch.Start();
 				}
 			}
@@ -105,12 +114,12 @@ namespace client
 
 		public void ChangeItem(byte num)
 		{
-			Writing(num, 66);
+			Writing(new server.Processings.ChangeWeapons(model.ThisUser.userNumber,num));
 		}
 
 		public void Recharge()
 		{
-			Writing("1", 67);
+			Writing(new server.Processings.Reload(model.ThisUser.userNumber));
 		}
 
 		public string Reading(NetworkStream nStream)
@@ -325,7 +334,7 @@ namespace client
 		{
 			if (threadStart)
 			{
-				Writing(model.Action, 1);
+				Writing(new server.Processings.PlayerMovementsInfo(model.ThisUser.userNumber,model.Action));
 			}
 		}
 
@@ -382,14 +391,14 @@ namespace client
 			model.ThisUser.Rotate = angleDegree;
 
 			if (threadStart)
-			Writing(model.ThisUser.Rotate,13);
+			Writing(new server.Processings.GetPlayersAngels(model.ThisUser.userNumber,model.ThisUser.Rotate));
 
 			return angleDegree;
 		}
 
 		public void setName(string Name)
 		{
-			Writing(Name,14);
+			Writing(new server.Processings.GetUserName(model.ThisUser.userNumber,Name));
 		}
 		public double defineAngle(Point onePoint, Point twoPoint)
 		{

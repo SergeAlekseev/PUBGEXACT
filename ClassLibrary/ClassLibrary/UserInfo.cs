@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 namespace ClassLibrary
 {
 
@@ -24,9 +23,8 @@ namespace ClassLibrary
 		public Item[] Items = new Item[7];
 		public byte thisItem = 1;
 		public string Name;
-
+		public bool PrivateWorkingThread;
 		public short PistolBullets=999, GunBullets=999, ShotgunBullets=999;
-
 		public Thread Shoting;
 
 		public UserInfo(Point userLocation)

@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 using ClassLibrary;
 namespace server.Processings
 {
-	class ShotDown : Processing
+	public class ShotDown : Processing
 	{
-		public override void Process(int num)
+		int num;
+		public ShotDown(int num)
+		{
+			this.num = num;
+		}
+		public override void Process()
 		{
 			Model.ListUsers[num].flagRecharge = false;
-			string tmpString = CTransfers.Reading(Model.ListNs[num]);
 			if (!Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting && Model.workingGame)
 			{
 				Model.ListUsers[num].flagShoting = true;

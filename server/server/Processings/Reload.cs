@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 using ClassLibrary;
 namespace server.Processings
 {
-	class Reload : Processing
+	public class Reload : Processing
 	{
-
-		public override void Process(int num)
+		int num;
+		public Reload(int num)
+		{
+			this.num = num;
+		}
+		public override void Process()
 		{
 			
-			string tmpString = CTransfers.Reading(Model.ListNs[num]);
 			if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon)
 			{
 				Model.ListUsers[num].flagRecharge = true;

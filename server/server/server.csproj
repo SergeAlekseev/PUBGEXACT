@@ -63,7 +63,7 @@
     <Compile Include="MMove.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Processings\Reload.cs" />
-    <Compile Include="Processings\Comand66.cs" />
+    <Compile Include="Processings\ChangeWeapons.cs" />
     <Compile Include="Processings\GetPlayersAngels.cs" />
     <Compile Include="Processings\GetPlayersMousesLocation.cs" />
     <Compile Include="Processings\GetUserName.cs" />
