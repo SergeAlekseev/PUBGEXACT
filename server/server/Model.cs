@@ -8,58 +8,58 @@ using System.Threading.Tasks;
 using ClassLibrary;
 namespace server
 {
-	class Model
+	static class Model
 	{
-		List<BulletInfo> listBullet = new List<BulletInfo>();
-		List<UserInfo> listUsers = new List<UserInfo>();
-		List<NetworkStream> listNs = new List<NetworkStream>();
-		Map map = new Map();
-		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
-		List<Item> items = new List<Item>();
-		int countGamers = 0;
+		static List<BulletInfo> listBullet = new List<BulletInfo>();
+		static List<UserInfo> listUsers = new List<UserInfo>();
+		static List<NetworkStream> listNs = new List<NetworkStream>();
+		static Map map = new Map();
+		static List<GeneralInfo> listGInfo = new List<GeneralInfo>();
+		static List<Item> items = new List<Item>();
+		static int countGamers = 0;
 
-		public int CountGamers
+		static public int CountGamers
 		{
 			get { return countGamers; }
 			set { countGamers = value; }
 		}
-		public List<GeneralInfo> ListGInfo
+		static public List<GeneralInfo> ListGInfo
 		{
 			get { return listGInfo; }
 			set { listGInfo = value; }
 		}
 
-		public List<Item> Items
+		static public List<Item> Items
 		{
 			get { return items; }
 			set { items = value; }
 		}
 
-		public List<UserInfo> ListUsers
+		static public List<UserInfo> ListUsers
 		{
 			get { return listUsers; }
 			set { listUsers = value; }
 		}
 
-		public List<BulletInfo> ListBullet
+		static public List<BulletInfo> ListBullet
 		{
 			get { return listBullet; }
 			set { listBullet = value; }
 		}
 
-		public List<NetworkStream> ListNs
+		static public List<NetworkStream> ListNs
 		{
 			get { return listNs; }
 			set { listNs = value; }
 		}
 
-		public Map Map
+		static public Map Map
 		{
 			get { return map; }
 			set { map = value; }
 		}
 
-		public void Remove()
+		static public void Remove()
 		{
 			listBullet = new List<BulletInfo>();
 			listUsers = new List<UserInfo>();
