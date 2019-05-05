@@ -1058,7 +1058,7 @@ namespace server
 		public void Consumer(object obj)
 		{
 			Thread.Sleep(1000);
-			MessageBox.Show("ТУТ 5");
+			MessageBox.Show("Костыль №1");
 			Processing processing;
 			while (workingServer && workingThread)
 			{
