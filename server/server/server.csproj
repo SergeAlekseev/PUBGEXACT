@@ -62,7 +62,6 @@
     </Compile>
     <Compile Include="MMove.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="Processings\Reload.cs" />
     <Compile Include="Processings\ChangeWeapons.cs" />
     <Compile Include="Processings\GetPlayersAngels.cs" />
     <Compile Include="Processings\GetPlayersMousesLocation.cs" />
@@ -70,10 +69,12 @@
     <Compile Include="Processings\PingInfo.cs" />
     <Compile Include="Processings\PlayerMovementsInfo.cs" />
     <Compile Include="Processings\Processing.cs" />
+    <Compile Include="Processings\Reload.cs" />
     <Compile Include="Processings\ShotDown.cs" />
     <Compile Include="Processings\ShotUp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TmpProcessing.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

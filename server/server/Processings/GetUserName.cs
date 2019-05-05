@@ -8,18 +8,16 @@ using System.Threading.Tasks;
 namespace server.Processings
 {
 	public class GetUserName : Processing
-	{
-		int num;
-		string name;
-		public GetUserName(int num,string name)
-		{
-			this.num = num;
-			this.name = name;
-		}
+	{ 
+		public string name;
 
 		public override void Process()
 		{
-			Model.ListUsers[num].Name = name;
+			try
+			{
+				Model.ListUsers[num].Name = name;
+			}
+			catch { throw new Exception(); }
 		}
 	}
 }

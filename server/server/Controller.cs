@@ -15,11 +15,14 @@ using ClassLibrary;
 using Action = ClassLibrary.Action;
 using System.Collections.Concurrent;
 using server.Processings;
+using Newtonsoft.Json.Linq;
 
 namespace server
 {
 	class Controller
 	{
+
+
 		bool workingThread;
 		bool workingServer;
 		short number; //Model
@@ -72,7 +75,7 @@ namespace server
 		{
 			CTransfers.jss.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
 			CTransfers.jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-			CTransfers.jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+			CTransfers.jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 			CTransfers.jss.Formatting = Newtonsoft.Json.Formatting.Indented;
 		}
 
@@ -254,12 +257,15 @@ namespace server
 
 
 					Model.ListNs.Add(tc.GetStream());
+					Model.ListMove.Add(new MMove());
+					Model.ListShoting.Add(new Thread(new ParameterizedThreadStart(ShotUser)));
 					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 					thread.Start(tc);
 
 
 
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
+					thread2.Priority = ThreadPriority.Highest;
 					thread2.Start(tc);
 				}
 				Thread.Sleep(1000);
@@ -587,10 +593,8 @@ namespace server
 			NetworkStream nStream = tcp.GetStream();
 
 			int num = number;   //шанс ошибки при одновременном подключении
-			byte[] numberUser = new byte[1];
-			numberUser[0] = (byte)num;
-			nStream.Write(numberUser, 0, 1);
-
+			CTransfers.Writing(number, 44, nStream);
+			
 			CTransfers.Writing(Model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
 			Thread.Sleep(100);
 			CTransfers.Writing(Model.Map.MapBorders, 8, nStream); //Инфа о границах карты
@@ -1000,15 +1004,15 @@ namespace server
 		public void Producer(object obj)
 		{
 			int num = (int)obj;
-			MMove mmove = new MMove();
+			
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 15;
-			timerMove.Elapsed += (x, y) => { timerMove_Tick(mmove.moveUp, mmove.moveDown, mmove.moveLeft, mmove.moveRight, mmove.shift, num); };
+			timerMove.Elapsed += (x, y) => { timerMove_Tick(Model.ListMove[num].moveUp, Model.ListMove[num].moveDown, Model.ListMove[num].moveLeft, Model.ListMove[num].moveRight, Model.ListMove[num].shift, num); };
 			timerMove.Start();
 
 			try
-			{	
+			{
 				while (workingServer && workingThread)
 				{
 					string tmpString = CTransfers.Reading(Model.ListNs[num]);
@@ -1016,8 +1020,9 @@ namespace server
 				}
 
 			}
-			catch (System.IO.IOException)
+			catch
 			{
+				
 				if (Model.ListUsers.Count != 0 && Model.ListUsers[num] != null)
 				{
 					Model.ListUsers[num].flagShoting = false;
@@ -1029,14 +1034,10 @@ namespace server
 				}
 				Model.CountGamers -= 1;
 				writingCountGames();
-				Model.ListUsers[num].PrivateWorkingThread = false;
 				timerMove.Stop();
-				Model.ListUsers[num].Shoting.Abort();
-			}
-			catch
-			{
 
 			}
+
 		}
 
 		public void Consumer(object obj)
@@ -1044,8 +1045,9 @@ namespace server
 			Processing processing;
 			while (workingServer && workingThread)
 			{
-				if(SecureQueue.TryDequeue(out processing))
-				processing.Process();
+				if (SecureQueue.TryDequeue(out processing))
+					if (processing != null)
+						processing.Process();
 			}
 		}
 	}

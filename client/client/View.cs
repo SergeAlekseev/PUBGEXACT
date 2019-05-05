@@ -105,7 +105,7 @@ namespace client
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			Start = true;
-			controller.setName(model.GInfo.Name);
+			
 
 			System.Windows.Forms.Timer timerMove = new System.Windows.Forms.Timer();
 			timerMove.Interval = 100;
@@ -329,6 +329,11 @@ namespace client
 		private void Client_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void PlayingField_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

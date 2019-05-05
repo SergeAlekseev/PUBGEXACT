@@ -8,11 +8,7 @@ namespace server.Processings
 {
 	public class PingInfo : Processing
 	{
-		int num;
-		public PingInfo(int num)
-		{
-			this.num = num;
-		}
+		
 		public override void Process()
 		{
 			byte[] ping = new byte[1];

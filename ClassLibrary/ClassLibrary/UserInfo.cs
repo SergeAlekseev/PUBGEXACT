@@ -11,7 +11,7 @@ namespace ClassLibrary
 	public class UserInfo
 	{
 		public short hp = 100, armor = 0;
-		public short userNumber;
+		public int userNumber;
 		public Point userLocation;
 		public bool flagShoting;
 		public bool flagWaitShoting;
@@ -25,7 +25,7 @@ namespace ClassLibrary
 		public string Name;
 		public bool PrivateWorkingThread;
 		public short PistolBullets=999, GunBullets=999, ShotgunBullets=999;
-		public Thread Shoting;
+		
 
 		public UserInfo(Point userLocation)
 		{

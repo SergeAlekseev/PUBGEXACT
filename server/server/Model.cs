@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary;
+using System.Threading;
+
 namespace server
 {
 	static class Model
@@ -18,9 +20,15 @@ namespace server
 		static List<Item> items = new List<Item>();
 		static int countGamers = 0;
 		static List<MMove> listMove = new List<MMove>();
-
+		static List<Thread> listShoting = new List<Thread>();
+		
 		static public bool workingGame;
 
+		static public List<Thread> ListShoting
+		{
+			get { return listShoting; }
+			set { listShoting = value; }
+		}
 		static public List<MMove> ListMove
 		{
 			get { return listMove; }

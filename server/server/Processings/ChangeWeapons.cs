@@ -10,19 +10,14 @@ namespace server.Processings
 {
 	public class ChangeWeapons : Processing
 	{
-		int num;
-		byte numItems;
-		public ChangeWeapons(int num, byte numItems)
-		{
-			this.num = num;
-			this.numItems = numItems;
-		}
+		public byte numItems;
+		
 
 		public override void Process()
 		{
 			Model.ListUsers[num].flagRecharge = false;
 			Model.ListUsers[num].flagWaitShoting = true;
-			Model.ListUsers[num].Shoting.Abort();
+			Model.ListShoting[num].Abort();
 			Model.ListUsers[num].flagShoting = false;
 			Thread t = new Thread(() =>
 			{

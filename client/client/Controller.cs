@@ -11,9 +11,39 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using ClassLibrary;
+using Newtonsoft.Json.Linq;
+using server.Processings;
 
 namespace client
 {
+	public class FooConverter : JsonConverter
+	{
+		public override bool CanConvert(Type objectType)
+		{
+			return (objectType == typeof(Processing));
+		}
+
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+		{
+			JObject jo = JObject.Load(reader);
+			if (jo["type"].Value<string>() == "PlayerMovementsInfo")
+				return jo.Value<PlayerMovementsInfo>(serializer);
+
+			if (jo["type"].Value<string>() == "GetPlayersAngels")
+				return jo.ToObject<GetPlayersAngels>();
+
+			return null;
+		}
+		public override bool CanWrite
+		{
+			get { return false; }
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			throw new NotImplementedException();
+		}
+	}
 	class Controller
 	{
 		JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
@@ -48,7 +78,9 @@ namespace client
 		{
 			if (threadStart)
 			{
-				Writing(new server.Processings.ShotDown(model.ThisUser.userNumber));
+				ShotDown sd = new ShotDown();
+				sd.num = model.ThisUser.userNumber;
+				Writing(sd);
 			}
 		}
 
@@ -56,7 +88,9 @@ namespace client
 		{
 			if (threadStart)
 			{
-				Writing(new server.Processings.ShotUp(model.ThisUser.userNumber));
+				ShotUp su = new ShotUp();
+				su.num = model.ThisUser.userNumber;
+				Writing(su);
 			}
 		}
 
@@ -77,15 +111,22 @@ namespace client
 		public void WriteMouseLocation(Point mouseLocation)
 		{
 			if (threadStart)
-				Writing(new server.Processings.GetPlayersMousesLocation(mouseLocation,model.ThisUser.userNumber));
+			{
+				GetPlayersMousesLocation gpml = new GetPlayersMousesLocation();
+				gpml.num = model.ThisUser.userNumber;
+				gpml.mouse = mouseLocation;
+				Writing(gpml);
+			}
 		}
 
 		public Controller(Model model) // Конструктор
 		{
 			jss.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
+			jss.Converters.Add(new FooConverter());
 			jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-			jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
+			jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 			jss.Formatting = Newtonsoft.Json.Formatting.Indented;
+
 			this.model = model;
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
@@ -104,8 +145,9 @@ namespace client
 				else
 				{
 					PingWatch = new Stopwatch();
-					byte[] Ping = BitConverter.GetBytes((short)2);
-					Writing(new server.Processings.PingInfo(model.ThisUser.userNumber));
+					PingInfo pi = new PingInfo();
+					pi.num = model.ThisUser.userNumber;
+					Writing(pi);
 					PingWatch.Start();
 				}
 			}
@@ -114,12 +156,17 @@ namespace client
 
 		public void ChangeItem(byte num)
 		{
-			Writing(new server.Processings.ChangeWeapons(model.ThisUser.userNumber,num));
+			ChangeWeapons cw = new ChangeWeapons();
+			cw.num = model.ThisUser.userNumber;
+			cw.numItems = num;
+			Writing(cw);
 		}
 
 		public void Recharge()
 		{
-			Writing(new server.Processings.Reload(model.ThisUser.userNumber));
+			Reload r = new Reload();
+			r.num = model.ThisUser.userNumber;
+			Writing(r);
 		}
 
 		public string Reading(NetworkStream nStream)
@@ -239,12 +286,25 @@ namespace client
 							GetCountWinsInfo();
 							break;
 						}
+					case 44:
+						{
+							GetNumber();
+							break;
+						}
 						//case 10 и 11 	уже зарезервированы	
 				}
 
 
 			}
 
+		}
+
+		private void GetNumber()
+		{
+			string tmpString = Reading(nStream);
+			model.ThisUser.userNumber = JsonConvert.DeserializeObject<int>(tmpString, jss);
+
+			setName(model.GInfo.Name);
 		}
 
 		private void GetCountWinsInfo()
@@ -334,7 +394,10 @@ namespace client
 		{
 			if (threadStart)
 			{
-				Writing(new server.Processings.PlayerMovementsInfo(model.ThisUser.userNumber,model.Action));
+				PlayerMovementsInfo pmi = new PlayerMovementsInfo();
+				pmi.num = model.ThisUser.userNumber;
+				pmi.action = model.Action;
+				Writing(pmi);
 			}
 		}
 
@@ -366,9 +429,6 @@ namespace client
 						threadStart = true;
 						threadReading = new Thread(ReadingStream);
 						threadReading.Start();
-						byte[] number = new byte[1];
-						nStream.Read(number, 0, 1);
-						model.ThisUser.userNumber = number[0];
 						return true;
 					}
 					catch
@@ -391,14 +451,23 @@ namespace client
 			model.ThisUser.Rotate = angleDegree;
 
 			if (threadStart)
-			Writing(new server.Processings.GetPlayersAngels(model.ThisUser.userNumber,model.ThisUser.Rotate));
+			{
+				GetPlayersAngels gpa = new GetPlayersAngels();
+				gpa.num = model.ThisUser.userNumber;
+				gpa.angels = model.ThisUser.Rotate;
+				Writing(gpa);
+			}
+			
 
 			return angleDegree;
 		}
 
 		public void setName(string Name)
 		{
-			Writing(new server.Processings.GetUserName(model.ThisUser.userNumber,Name));
+			GetUserName gun = new GetUserName();
+			gun.num = model.ThisUser.userNumber;
+			gun.name = Name;
+			Writing(gun);
 		}
 		public double defineAngle(Point onePoint, Point twoPoint)
 		{

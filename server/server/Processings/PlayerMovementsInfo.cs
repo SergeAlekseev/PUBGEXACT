@@ -10,19 +10,11 @@ namespace server.Processings
 {
 	public class PlayerMovementsInfo:Processing
 	{
-
-		int num;
-		ClassLibrary.Action action;
-		public PlayerMovementsInfo(int num, ClassLibrary.Action action )
-		{
-			this.num = num;
-			this.action = action;
-		}
+		public ClassLibrary.Action action;
+	
 		public override void Process()
 		{
-			string tmpString = CTransfers.Reading(Model.ListNs[num]);
-			ClassLibrary.Action act = JsonConvert.DeserializeObject<ClassLibrary.Action>(tmpString);
-			switch (act.act)
+			switch (action.act)
 			{
 				case ClassLibrary.Action.action.moveUp: Model.ListMove[num].moveUp = true; break;
 				case ClassLibrary.Action.action.moveDown: Model.ListMove[num].moveDown = true; break;

@@ -9,18 +9,13 @@ namespace server.Processings
 {
 	public class ShotUp : Processing
 	{
-		int num;
-
-		public ShotUp(int num)
-		{
-			this.num = num;
-		}
+		
 		public override void Process()
 		{
 			if (Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting)
 			{
 				Model.ListUsers[num].flagWaitShoting = true;
-				Model.ListUsers[num].Shoting.Abort();
+				Model.ListShoting[num].Abort();
 				Model.ListUsers[num].flagShoting = false;
 				Thread t = new Thread(() =>
 				{

@@ -10,15 +10,7 @@ namespace server.Processings
 {
 	public class GetPlayersAngels : Processing
 	{
-		double angels;
-		int num;
-
-		public GetPlayersAngels(int num,double angels)
-		{
-			this.num = num;
-			this.angels = angels;
-		}
-			
+		public double angels;
 		public override void Process()
 		{
 			Model.ListUsers[num].Rotate = angels;

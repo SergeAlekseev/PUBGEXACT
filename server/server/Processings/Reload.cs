@@ -9,18 +9,14 @@ namespace server.Processings
 {
 	public class Reload : Processing
 	{
-		int num;
-		public Reload(int num)
-		{
-			this.num = num;
-		}
+		
 		public override void Process()
 		{
 			
 			if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon)
 			{
 				Model.ListUsers[num].flagRecharge = true;
-				Model.ListUsers[num].Shoting.Abort();
+				Model.ListShoting[num].Abort();
 				Model.ListUsers[num].flagShoting = false;
 				Thread t = new Thread(() =>
 				{

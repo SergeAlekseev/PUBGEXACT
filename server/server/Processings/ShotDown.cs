@@ -9,19 +9,15 @@ namespace server.Processings
 {
 	public class ShotDown : Processing
 	{
-		int num;
-		public ShotDown(int num)
-		{
-			this.num = num;
-		}
+		
 		public override void Process()
 		{
 			Model.ListUsers[num].flagRecharge = false;
 			if (!Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting && Model.workingGame)
 			{
 				Model.ListUsers[num].flagShoting = true;
-				Model.ListUsers[num].Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
-				Model.ListUsers[num].Shoting.Start(Model.ListUsers[num]);
+				Model.ListShoting[num] = new Thread(new ParameterizedThreadStart(ShotUser));
+				Model.ListShoting[num].Start(Model.ListUsers[num]);
 			}
 		}
 

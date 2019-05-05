@@ -11,12 +11,6 @@ namespace server.Processings
 	public class GetPlayersMousesLocation : Processing
 	{
 		public Point mouse;
-		public int num;
-		public GetPlayersMousesLocation(Point mouse,int num)
-		{
-			this.mouse = mouse;
-			this.num = num;
-		}
 
 		public override void Process()
 		{
