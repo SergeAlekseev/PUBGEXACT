@@ -38,7 +38,7 @@ namespace server
 
 		public delegate void StopServerD(string text);
 		public event StopServerD StopServerEvent;
-
+		Thread ConsumerThread;
 		ConcurrentQueue<Processing> SecureQueue = new ConcurrentQueue<Processing>(); //___________________________________
 
 		public void StartGame()
@@ -137,17 +137,20 @@ namespace server
 					}
 					Thread.Sleep(40);
 				}
-				Model.Map.PrevZone = Model.Map.NextZone;
-				Model.Map.NextZone = new Zone();
-				Model.Map.NextZone.ZoneRadius = (int)Model.Map.PrevZone.ZoneRadius / 2;
-				Model.Map.NextZone.NewCenterZone(Model.Map.MapBorders, Model.Map.PrevZone.ZoneCenterCoordinates, Model.Map.PrevZone.ZoneRadius);//не страдает ли тут MVC?
-				for (int i = 0; i < Model.ListUsers.Count; i++)
+				if (Model.workingGame)
 				{
-					if (Model.ListUsers[i] != null)
-						CTransfers.Writing(Model.Map.NextZone, 9, Model.ListNs[i]);
+					Model.Map.PrevZone = Model.Map.NextZone;
+					Model.Map.NextZone = new Zone();
+					Model.Map.NextZone.ZoneRadius = (int)Model.Map.PrevZone.ZoneRadius / 2;
+					Model.Map.NextZone.NewCenterZone(Model.Map.MapBorders, Model.Map.PrevZone.ZoneCenterCoordinates, Model.Map.PrevZone.ZoneRadius);//не страдает ли тут MVC?
+					for (int i = 0; i < Model.ListUsers.Count; i++)
+					{
+						if (Model.ListUsers[i] != null)
+							CTransfers.Writing(Model.Map.NextZone, 9, Model.ListNs[i]);
+					}
+					Model.Map.NextZone.TimeTocompression = 60;
+					timerZone.Start();
 				}
-				Model.Map.NextZone.TimeTocompression = 60;
-				timerZone.Start();
 			}
 		}
 
@@ -223,7 +226,8 @@ namespace server
 				host.Start();
 				Model.ListUsers = new List<UserInfo>();
 
-				Thread ConsumerThread = new Thread(new ParameterizedThreadStart(Consumer));
+
+				ConsumerThread = new Thread(new ParameterizedThreadStart(Consumer));
 				ConsumerThread.Start();
 
 				StartServerEvent("Сервер запущен");
@@ -263,7 +267,6 @@ namespace server
 					thread.Start(tc);
 
 
-
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Priority = ThreadPriority.Highest;
 					thread2.Start(tc);
@@ -287,8 +290,9 @@ namespace server
 				PublicHost3.Stop();
 				if (Model.workingGame)
 				{
-					timerUsersInZone.Close();
-					timerZone.Close();
+
+					timerZone.Stop();
+					timerUsersInZone.Stop();
 				}
 				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in Model.ListNs)
@@ -594,7 +598,7 @@ namespace server
 
 			int num = number;   //шанс ошибки при одновременном подключении
 			CTransfers.Writing(number, 44, nStream);
-			
+
 			CTransfers.Writing(Model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
 			Thread.Sleep(100);
 			CTransfers.Writing(Model.Map.MapBorders, 8, nStream); //Инфа о границах карты
@@ -1004,7 +1008,7 @@ namespace server
 		public void Producer(object obj)
 		{
 			int num = (int)obj;
-			
+
 
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			timerMove.Interval = 15;
@@ -1017,12 +1021,13 @@ namespace server
 				{
 					string tmpString = CTransfers.Reading(Model.ListNs[num]);
 					SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing>(tmpString, CTransfers.jss));
+
 				}
 
 			}
 			catch
 			{
-				
+
 				if (Model.ListUsers.Count != 0 && Model.ListUsers[num] != null)
 				{
 					Model.ListUsers[num].flagShoting = false;
@@ -1045,9 +1050,13 @@ namespace server
 			Processing processing;
 			while (workingServer && workingThread)
 			{
-				if (SecureQueue.TryDequeue(out processing))
+				if (SecureQueue.Count > 0)
+				{
+					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
 						processing.Process();
+				}
+				
 			}
 		}
 	}

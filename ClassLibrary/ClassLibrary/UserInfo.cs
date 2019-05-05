@@ -11,7 +11,7 @@ namespace ClassLibrary
 	public class UserInfo
 	{
 		public short hp = 100, armor = 0;
-		public int userNumber;
+		public int userNumber = -1;
 		public Point userLocation;
 		public bool flagShoting;
 		public bool flagWaitShoting;

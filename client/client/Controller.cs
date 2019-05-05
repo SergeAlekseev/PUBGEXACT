@@ -16,34 +16,7 @@ using server.Processings;
 
 namespace client
 {
-	public class FooConverter : JsonConverter
-	{
-		public override bool CanConvert(Type objectType)
-		{
-			return (objectType == typeof(Processing));
-		}
-
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-		{
-			JObject jo = JObject.Load(reader);
-			if (jo["type"].Value<string>() == "PlayerMovementsInfo")
-				return jo.Value<PlayerMovementsInfo>(serializer);
-
-			if (jo["type"].Value<string>() == "GetPlayersAngels")
-				return jo.ToObject<GetPlayersAngels>();
-
-			return null;
-		}
-		public override bool CanWrite
-		{
-			get { return false; }
-		}
-
-		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-		{
-			throw new NotImplementedException();
-		}
-	}
+	
 	class Controller
 	{
 		JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
@@ -66,6 +39,7 @@ namespace client
 
 		Stopwatch PingWatch = new Stopwatch();
 		bool threadStart = false;
+		bool serverStart;
 
 		System.Timers.Timer timerPing = new System.Timers.Timer();
 		public void JoinUser(string Name, string Password)
@@ -122,7 +96,6 @@ namespace client
 		public Controller(Model model) // Конструктор
 		{
 			jss.Converters.Add(new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter());
-			jss.Converters.Add(new FooConverter());
 			jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
 			jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 			jss.Formatting = Newtonsoft.Json.Formatting.Indented;
@@ -156,17 +129,23 @@ namespace client
 
 		public void ChangeItem(byte num)
 		{
-			ChangeWeapons cw = new ChangeWeapons();
-			cw.num = model.ThisUser.userNumber;
-			cw.numItems = num;
-			Writing(cw);
+			if (threadStart)
+			{
+				ChangeWeapons cw = new ChangeWeapons();
+				cw.num = model.ThisUser.userNumber;
+				cw.numItems = num;
+				Writing(cw);
+			}
 		}
 
 		public void Recharge()
 		{
-			Reload r = new Reload();
-			r.num = model.ThisUser.userNumber;
-			Writing(r);
+			if (threadStart)
+			{
+				Reload r = new Reload();
+				r.num = model.ThisUser.userNumber;
+				Writing(r);
+			}
 		}
 
 		public string Reading(NetworkStream nStream)
@@ -193,7 +172,7 @@ namespace client
 
 		private void ReadingStream()
 		{
-			while (threadStart)
+			while (serverStart)
 			{
 
 				byte[] typeCommand = new byte[1];
@@ -303,7 +282,7 @@ namespace client
 		{
 			string tmpString = Reading(nStream);
 			model.ThisUser.userNumber = JsonConvert.DeserializeObject<int>(tmpString, jss);
-
+			threadStart = true;
 			setName(model.GInfo.Name);
 		}
 
@@ -312,7 +291,7 @@ namespace client
 			model.Win = true;
 			string tmpString = Reading(nStream);
 			nStream.Close();
-			threadStart = false;
+			serverStart = false;
 			client.Close();
 			timerPing.Stop();
 			threadReading.Abort();
@@ -408,7 +387,7 @@ namespace client
 			{
 
 				nStream.Close();
-				threadStart = false;
+				serverStart = false;
 				client.Close();
 				timerPing.Stop();
 				CloseEvent();
@@ -426,7 +405,7 @@ namespace client
 					{
 						client = new TcpClient(ip, 1337);
 						nStream = client.GetStream();
-						threadStart = true;
+						serverStart = true;
 						threadReading = new Thread(ReadingStream);
 						threadReading.Start();
 						return true;
@@ -464,10 +443,14 @@ namespace client
 
 		public void setName(string Name)
 		{
-			GetUserName gun = new GetUserName();
-			gun.num = model.ThisUser.userNumber;
-			gun.name = Name;
-			Writing(gun);
+			if (threadStart)
+			{
+
+				GetUserName gun = new GetUserName();
+				gun.num = model.ThisUser.userNumber;
+				gun.name = Name;
+				Writing(gun);
+			}
 		}
 		public double defineAngle(Point onePoint, Point twoPoint)
 		{
