@@ -30,6 +30,7 @@ namespace client
 		Kill[] arrayKills = new Kill[3];
 		int countGamers = 0;
 
+		public int number;
 		public int CountGamers
 		{
 			get { return countGamers; }

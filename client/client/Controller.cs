@@ -53,7 +53,7 @@ namespace client
 			if (threadStart)
 			{
 				ShotDown sd = new ShotDown();
-				sd.num = model.ThisUser.userNumber;
+				sd.num = model.number;
 				Writing(sd);
 			}
 		}
@@ -63,7 +63,7 @@ namespace client
 			if (threadStart)
 			{
 				ShotUp su = new ShotUp();
-				su.num = model.ThisUser.userNumber;
+				su.num = model.number;
 				Writing(su);
 			}
 		}
@@ -87,9 +87,18 @@ namespace client
 			if (threadStart)
 			{
 				GetPlayersMousesLocation gpml = new GetPlayersMousesLocation();
-				gpml.num = model.ThisUser.userNumber;
+				gpml.num = model.number;
 				gpml.mouse = mouseLocation;
-				Writing(gpml);
+				try
+				{
+					string serialized = JsonConvert.SerializeObject(gpml, jss);
+					JsonConvert.DeserializeObject<Processing>(serialized, jss);
+					Writing(gpml);
+				}
+				catch
+				{
+
+				}
 			}
 		}
 
@@ -132,7 +141,7 @@ namespace client
 			if (threadStart)
 			{
 				ChangeWeapons cw = new ChangeWeapons();
-				cw.num = model.ThisUser.userNumber;
+				cw.num = model.number;
 				cw.numItems = num;
 				Writing(cw);
 			}
@@ -143,7 +152,7 @@ namespace client
 			if (threadStart)
 			{
 				Reload r = new Reload();
-				r.num = model.ThisUser.userNumber;
+				r.num = model.number;
 				Writing(r);
 			}
 		}
@@ -281,7 +290,7 @@ namespace client
 		private void GetNumber()
 		{
 			string tmpString = Reading(nStream);
-			model.ThisUser.userNumber = JsonConvert.DeserializeObject<int>(tmpString, jss);
+			model.number = JsonConvert.DeserializeObject<int>(tmpString, jss);
 			threadStart = true;
 			setName(model.GInfo.Name);
 		}
@@ -365,8 +374,7 @@ namespace client
 		private void GetUserInfo(string tmpString)
 		{
 			model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString, jss);
-			model.ListUsers[model.ThisUser.userNumber].userNumber = model.ThisUser.userNumber;
-			model.ThisUser = model.ListUsers[model.ThisUser.userNumber];
+			model.ThisUser = model.ListUsers[model.number];
 		}
 
 		public void PressKey()
@@ -374,7 +382,7 @@ namespace client
 			if (threadStart)
 			{
 				PlayerMovementsInfo pmi = new PlayerMovementsInfo();
-				pmi.num = model.ThisUser.userNumber;
+				pmi.num = model.number;
 				pmi.action = model.Action;
 				Writing(pmi);
 			}
@@ -432,8 +440,8 @@ namespace client
 			if (threadStart)
 			{
 				GetPlayersAngels gpa = new GetPlayersAngels();
-				gpa.num = model.ThisUser.userNumber;
-				gpa.angels = model.ThisUser.Rotate;
+				gpa.num = model.number;
+				gpa.angels = angleDegree;
 				Writing(gpa);
 			}
 			
@@ -447,7 +455,7 @@ namespace client
 			{
 
 				GetUserName gun = new GetUserName();
-				gun.num = model.ThisUser.userNumber;
+				gun.num = model.number;
 				gun.name = Name;
 				Writing(gun);
 			}

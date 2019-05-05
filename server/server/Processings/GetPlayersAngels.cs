@@ -13,7 +13,9 @@ namespace server.Processings
 		public double angels;
 		public override void Process()
 		{
+			
 			Model.ListUsers[num].Rotate = angels;
+		
 		}
 	}
 }

@@ -39,6 +39,7 @@ namespace server
 		public delegate void StopServerD(string text);
 		public event StopServerD StopServerEvent;
 		Thread ConsumerThread;
+		ManualResetEvent manualResetEvent;
 		ConcurrentQueue<Processing> SecureQueue = new ConcurrentQueue<Processing>(); //___________________________________
 
 		public void StartGame()
@@ -226,9 +227,9 @@ namespace server
 				host.Start();
 				Model.ListUsers = new List<UserInfo>();
 
-
+				manualResetEvent = new ManualResetEvent(true);
 				ConsumerThread = new Thread(new ParameterizedThreadStart(Consumer));
-				ConsumerThread.Start();
+				ConsumerThread.Start(manualResetEvent);
 
 				StartServerEvent("Сервер запущен");
 				while (workingServer)
@@ -267,6 +268,7 @@ namespace server
 					thread.Start(tc);
 
 
+
 					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
 					thread2.Priority = ThreadPriority.Highest;
 					thread2.Start(tc);
@@ -283,7 +285,7 @@ namespace server
 			if (workingServer)
 			{
 				PlayerSave(Model.ListGInfo);
-
+				SecureQueue = new ConcurrentQueue<Processing>();
 				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
@@ -308,6 +310,7 @@ namespace server
 						catch { }
 					}
 				}
+
 				workingServer = false;
 				workingThread = false;
 				Model.Remove();
@@ -593,17 +596,18 @@ namespace server
 
 			//Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
 
-			TcpClient tcp = (TcpClient)tc;
-			NetworkStream nStream = tcp.GetStream();
+
 
 			int num = number;   //шанс ошибки при одновременном подключении
-			CTransfers.Writing(number, 44, nStream);
 
-			CTransfers.Writing(Model.Map.ListBush, 6, nStream); // Отправка инфы о кустах
+
+			CTransfers.Writing(number, 44, Model.ListNs[num]);
+			Thread.Sleep(1000);
+			CTransfers.Writing(Model.Map.ListBush, 6, Model.ListNs[num]); // Отправка инфы о кустах
 			Thread.Sleep(100);
-			CTransfers.Writing(Model.Map.MapBorders, 8, nStream); //Инфа о границах карты
+			CTransfers.Writing(Model.Map.MapBorders, 8, Model.ListNs[num]); //Инфа о границах карты
 			Thread.Sleep(100);
-			CTransfers.Writing(Model.Map.ListBox, 12, nStream); // Отправка инфы о коробках
+			CTransfers.Writing(Model.Map.ListBox, 12, Model.ListNs[num]); // Отправка инфы о коробках
 
 
 			Model.CountGamers += 1;
@@ -614,6 +618,7 @@ namespace server
 
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
+
 
 			//while (workingServer && workingThread && PrivateWorkingThread)
 			//{
@@ -839,7 +844,7 @@ namespace server
 		public void InfoUsers(object tc)
 		{
 			TcpClient tcp = (TcpClient)tc;
-
+			Thread.Sleep(200);
 			NetworkStream nStream = tcp.GetStream();
 			bool PrivateWorkingThread = true;
 			while (workingThread && PrivateWorkingThread)
@@ -1020,12 +1025,17 @@ namespace server
 				while (workingServer && workingThread)
 				{
 					string tmpString = CTransfers.Reading(Model.ListNs[num]);
-					SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing>(tmpString, CTransfers.jss));
+					try
+					{
+						SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing>(tmpString, CTransfers.jss));
+					}
+					catch { }
+					manualResetEvent.Set();
 
 				}
 
 			}
-			catch
+			catch (System.IO.IOException)
 			{
 
 				if (Model.ListUsers.Count != 0 && Model.ListUsers[num] != null)
@@ -1034,7 +1044,7 @@ namespace server
 					lock (Model.ListUsers)
 					{
 						Model.ListUsers.RemoveAt(num);
-						Model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
+						Model.ListUsers.Insert(num, null);
 					}
 				}
 				Model.CountGamers -= 1;
@@ -1047,16 +1057,27 @@ namespace server
 
 		public void Consumer(object obj)
 		{
+			Thread.Sleep(1000);
+			MessageBox.Show("ТУТ 5");
 			Processing processing;
 			while (workingServer && workingThread)
 			{
+
+				manualResetEvent.WaitOne();
 				if (SecureQueue.Count > 0)
 				{
+					
 					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
+					{
+						
 						processing.Process();
+					}
+					
+					Thread.Yield();
 				}
-				
+				else { manualResetEvent.Reset(); }
+
 			}
 		}
 	}
