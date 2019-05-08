@@ -88,7 +88,7 @@ namespace server.Processings
 						{
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
-							CTransfers.Writing(bulletInfo.owner, 7, Model.ListNs[j]);
+							CTransfers.Writing(bulletInfo.owner, Model.ListNs[j]);
 
 							foreach (GeneralInfo g in Model.ListGInfo)
 							{
@@ -108,7 +108,7 @@ namespace server.Processings
 								{
 									if (Model.ListUsers[k].Name == bulletInfo.owner)
 										Model.ListUsers[k].kills += 1;
-									CTransfers.Writing(kill, 20, Model.ListNs[k]);
+									CTransfers.Writing(kill, Model.ListNs[k]);
 								}
 							}
 

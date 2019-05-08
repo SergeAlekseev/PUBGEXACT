@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary;
+using client.Processing;
 using Newtonsoft.Json;
 using Action = ClassLibrary.Action;
 namespace client
@@ -54,6 +55,9 @@ namespace client
 		BufferedGraphics bufferedGraphics;
 		bool Start = false;
 		bool MouseDown = false;
+
+
+		Disconnect disconect = new Disconnect(); // Ужос, я ето потом вырежу
 
 		System.Drawing.TextureBrush tb;
 
@@ -101,6 +105,8 @@ namespace client
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
+			disconect.DissEvent += AllClose; // Ужос, я ето потом вырежу
+
 			controller.ErrorConnect += ErrorConnect;
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню

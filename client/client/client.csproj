@@ -65,6 +65,31 @@
     <Compile Include="MyMenu.Designer.cs">
       <DependentUpon>MyMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProcessingsServer\ChangeWeapons.cs" />
+    <Compile Include="ProcessingsServer\GetPlayersAngels.cs" />
+    <Compile Include="ProcessingsServer\GetPlayersMousesLocation.cs" />
+    <Compile Include="ProcessingsServer\GetUserName.cs" />
+    <Compile Include="ProcessingsServer\PingInfo.cs" />
+    <Compile Include="ProcessingsServer\PlayerMovementsInfo.cs" />
+    <Compile Include="ProcessingsServer\Processing.cs" />
+    <Compile Include="ProcessingsServer\Reload.cs" />
+    <Compile Include="ProcessingsServer\ShotDown.cs" />
+    <Compile Include="ProcessingsServer\ShotUp.cs" />
+    <Compile Include="Processings\AngelToZone.cs" />
+    <Compile Include="Processings\Disconnect.cs" />
+    <Compile Include="Processings\GetBoxesInfo.cs" />
+    <Compile Include="Processings\GetBulletsInfo.cs" />
+    <Compile Include="Processings\GetBushesInfo.cs" />
+    <Compile Include="Processings\GetCountGamesInfo.cs" />
+    <Compile Include="Processings\GetCountWinsInfo.cs" />
+    <Compile Include="Processings\GetKillsInfo.cs" />
+    <Compile Include="Processings\GetMapBordersInfo.cs" />
+    <Compile Include="Processings\GetNumber.cs" />
+    <Compile Include="Processings\GetPrevZoneInfo.cs" />
+    <Compile Include="Processings\GetZoneStartInfo.cs" />
+    <Compile Include="Processings\PingInfo.cs" />
+    <Compile Include="Processings\PlayerDeath.cs" />
+    <Compile Include="Processings\Processing.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>

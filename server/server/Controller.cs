@@ -16,10 +16,10 @@ using Action = ClassLibrary.Action;
 using System.Collections.Concurrent;
 using server.Processings;
 using Newtonsoft.Json.Linq;
-
+using server.ProcessingsClient;
 namespace server
 {
-	class Controller
+	public class Controller
 	{
 
 
@@ -40,7 +40,7 @@ namespace server
 		public event StopServerD StopServerEvent;
 		Thread ConsumerThread;
 		ManualResetEvent manualResetEvent;
-		ConcurrentQueue<Processing> SecureQueue = new ConcurrentQueue<Processing>(); //___________________________________
+		ConcurrentQueue<server.Processings.Processing> SecureQueue = new ConcurrentQueue<server.Processings.Processing>(); //___________________________________
 
 		public void StartGame()
 		{
@@ -54,8 +54,13 @@ namespace server
 				{
 					if (Model.ListUsers[i] != null)
 					{
-						CTransfers.Writing(Model.Map.NextZone, 9, Model.ListNs[i]); // Инфа  о стартовой зоне
-						CTransfers.Writing(Model.Map.PrevZone, 10, Model.ListNs[i]);
+						GetZoneStartInfo nextZoneInfo = new GetZoneStartInfo();
+						nextZoneInfo.nextZone = Model.Map.NextZone;
+						GetPrevZoneInfo prevZoneInfo = new GetPrevZoneInfo();
+						prevZoneInfo.prevZone = Model.Map.PrevZone;
+
+						CTransfers.Writing(nextZoneInfo, Model.ListNs[i]); // Инфа  о стартовой зоне
+						CTransfers.Writing(prevZoneInfo, Model.ListNs[i]);
 					}
 				}
 
@@ -133,7 +138,10 @@ namespace server
 					{
 						if (Model.ListUsers[i] != null && Model.ListNs[i].CanWrite)
 						{
-							CTransfers.Writing(Model.Map.PrevZone, 10, Model.ListNs[i]);
+							GetPrevZoneInfo prevZoneInfo = new GetPrevZoneInfo();
+							prevZoneInfo.prevZone = Model.Map.PrevZone;
+
+							CTransfers.Writing(prevZoneInfo, Model.ListNs[i]);
 						}
 					}
 					Thread.Sleep(40);
@@ -147,7 +155,12 @@ namespace server
 					for (int i = 0; i < Model.ListUsers.Count; i++)
 					{
 						if (Model.ListUsers[i] != null)
-							CTransfers.Writing(Model.Map.NextZone, 9, Model.ListNs[i]);
+						{
+							GetZoneStartInfo nextZoneInfo = new GetZoneStartInfo();
+							nextZoneInfo.nextZone = Model.Map.NextZone;
+
+							CTransfers.Writing(nextZoneInfo, Model.ListNs[i]);
+						}
 					}
 					Model.Map.NextZone.TimeTocompression = 60;
 					timerZone.Start();
@@ -172,7 +185,10 @@ namespace server
 						Model.ListUsers[i].hp -= 2;
 						if (Model.ListUsers[i].hp <= 0)
 						{
-							CTransfers.Writing("ZONA", 7, Model.ListNs[i]);
+							PlayerDeath death = new PlayerDeath();
+							death.Killer = "ZONA";
+
+							CTransfers.Writing(death, Model.ListNs[i]);
 
 							foreach (GeneralInfo g in Model.ListGInfo)
 							{
@@ -285,7 +301,7 @@ namespace server
 			if (workingServer)
 			{
 				PlayerSave(Model.ListGInfo);
-				SecureQueue = new ConcurrentQueue<Processing>();
+				SecureQueue = new ConcurrentQueue<server.Processings.Processing>();
 				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
@@ -422,18 +438,20 @@ namespace server
 									Model.ListGInfo[Model.ListGInfo.Count - 1].Password = newUser.Password;
 
 									PlayerSave(Model.ListGInfo);
-									CTransfers.Writing(Model.ListGInfo[Model.ListGInfo.Count - 1], 10, nStream);
+
+
+									CTransfers.WritingInMenu(Model.ListGInfo[Model.ListGInfo.Count - 1],10, nStream);
 								}
 								else
 								{
 									if (CheckData(Model.ListGInfo, newUser))
 									{
 										Model.ListGInfo = PlayerRead(newUser);
-										CTransfers.Writing(tmpUser, 10, nStream);
+										CTransfers.WritingInMenu(tmpUser,10, nStream);
 									}
 									else
 									{
-										CTransfers.Writing("1", 11, nStream);
+										CTransfers.WritingInMenu("1",10, nStream);
 									}
 									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
 								}
@@ -447,18 +465,18 @@ namespace server
 									Model.ListGInfo[Model.ListGInfo.Count - 1].Password = newUser.Password;
 
 									PlayerSave(Model.ListGInfo);
-									CTransfers.Writing(Model.ListGInfo[Model.ListGInfo.Count - 1], 12, nStream);
+									CTransfers.WritingInMenu(Model.ListGInfo[Model.ListGInfo.Count - 1],10, nStream);
 								}
 								else
 								{
 									if (CheckData(Model.ListGInfo, newUser))
 									{
 										Model.ListGInfo = PlayerRead(newUser);
-										CTransfers.Writing(tmpUser, 12, nStream);
+										CTransfers.WritingInMenu(tmpUser,10, nStream);
 									}
 									else
 									{
-										CTransfers.Writing("1", 12, nStream);
+										CTransfers.WritingInMenu("1",10, nStream);
 									}
 								}
 							}
@@ -536,7 +554,11 @@ namespace server
 						{
 							byte[] flagDie = new byte[1];
 							flagDie[0] = 7;
-							CTransfers.Writing(bulletInfo.owner, 7, Model.ListNs[j]);
+
+							PlayerDeath death = new PlayerDeath();
+							death.Killer = bulletInfo.owner;
+
+							CTransfers.Writing(death, Model.ListNs[j]);
 
 							foreach (GeneralInfo g in Model.ListGInfo)
 							{
@@ -556,7 +578,9 @@ namespace server
 								{
 									if (Model.ListUsers[k].Name == bulletInfo.owner)
 										Model.ListUsers[k].kills += 1;
-									CTransfers.Writing(kill, 20, Model.ListNs[k]);
+									GetKillsInfo killsInfo = new GetKillsInfo();
+									killsInfo.kill = kill;
+									CTransfers.Writing(killsInfo, Model.ListNs[k]);
 								}
 							}
 
@@ -600,14 +624,22 @@ namespace server
 
 			int num = number;   //шанс ошибки при одновременном подключении
 
+			GetNumber gNumber = new GetNumber();
+			gNumber.num = number;
+			GetBushesInfo bushesInfo = new GetBushesInfo();
+			bushesInfo.listBush = Model.Map.ListBush;
+			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+			bordersInfo.rectangle = Model.Map.MapBorders;
+			GetBoxesInfo boxesInfo = new GetBoxesInfo();
+			boxesInfo.listBox = Model.Map.ListBox;
 
-			CTransfers.Writing(number, 44, Model.ListNs[num]);
+			CTransfers.Writing(gNumber, Model.ListNs[num]);
 			Thread.Sleep(1000);
-			CTransfers.Writing(Model.Map.ListBush, 6, Model.ListNs[num]); // Отправка инфы о кустах
+			CTransfers.Writing(bushesInfo, Model.ListNs[num]); // Отправка инфы о кустах
 			Thread.Sleep(100);
-			CTransfers.Writing(Model.Map.MapBorders, 8, Model.ListNs[num]); //Инфа о границах карты
+			CTransfers.Writing(bordersInfo, Model.ListNs[num]); //Инфа о границах карты
 			Thread.Sleep(100);
-			CTransfers.Writing(Model.Map.ListBox, 12, Model.ListNs[num]); // Отправка инфы о коробках
+			CTransfers.Writing(boxesInfo, Model.ListNs[num]); // Отправка инфы о коробках
 
 
 			Model.CountGamers += 1;
@@ -851,8 +883,13 @@ namespace server
 			{
 				try
 				{
-					CTransfers.Writing(Model.ListUsers, 1, nStream);
-					CTransfers.Writing(Model.ListBullet, 3, nStream);
+					AngelToZone angel = new AngelToZone();
+					angel.listUserInfo = Model.ListUsers;
+					GetBulletsInfo buletsInfo = new GetBulletsInfo();
+					buletsInfo.listBulets = Model.ListBullet;
+
+					CTransfers.Writing(angel, nStream);
+					CTransfers.Writing(buletsInfo, nStream);
 					Thread.Sleep(20);
 				}
 				catch (System.IO.IOException)
@@ -885,7 +922,10 @@ namespace server
 			{
 				if (Model.ListUsers[i] != null)
 				{
-					CTransfers.Writing(Model.CountGamers, 21, Model.ListNs[i]);
+					GetCountGamesInfo gamesInfo = new GetCountGamesInfo();
+					gamesInfo.count = Model.CountGamers;
+
+					CTransfers.Writing(gamesInfo, Model.ListNs[i]);
 				}
 			}
 			if (Model.CountGamers == 1 && Model.workingGame)
@@ -894,7 +934,7 @@ namespace server
 				{
 					if (Model.ListUsers[i] != null)
 					{
-						CTransfers.Writing("", 33, Model.ListNs[i]);
+						CTransfers.Writing(new GetCountWinsInfo(), Model.ListNs[i]);
 						foreach (GeneralInfo g in Model.ListGInfo)
 						{
 							if (g.Name == Model.ListUsers[i].Name)
@@ -998,11 +1038,18 @@ namespace server
 			{
 				if (Model.ListUsers[i] != null)
 				{
-					CTransfers.Writing(Model.Map.ListBush, 6, Model.ListNs[i]); // Отправка инфы о кустах
+					GetBushesInfo bushesInfo = new GetBushesInfo();
+					bushesInfo.listBush = Model.Map.ListBush;
+					GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+					bordersInfo.rectangle = Model.Map.MapBorders;
+					GetBoxesInfo boxesInfo = new GetBoxesInfo();
+					boxesInfo.listBox = Model.Map.ListBox;
+
+					CTransfers.Writing(bushesInfo, Model.ListNs[i]); // Отправка инфы о кустах
 					Thread.Sleep(100);
-					CTransfers.Writing(Model.Map.MapBorders, 8, Model.ListNs[i]); //Инфа о границах карты
+					CTransfers.Writing(bordersInfo, Model.ListNs[i]); //Инфа о границах карты
 					Thread.Sleep(100);
-					CTransfers.Writing(Model.Map.ListBox, 12, Model.ListNs[i]); // Отправка инфы о коробках
+					CTransfers.Writing(boxesInfo, Model.ListNs[i]); // Отправка инфы о коробках
 					do
 						Model.ListUsers[i] = new UserInfo(new Point(random.Next(2, Model.Map.MapBorders.Width - 2), random.Next(2, Model.Map.MapBorders.Height - 2)));
 					while (Model.Map.bordersForUsers[Model.ListUsers[i].userLocation.X, Model.ListUsers[i].userLocation.Y]);
@@ -1027,7 +1074,7 @@ namespace server
 					string tmpString = CTransfers.Reading(Model.ListNs[num]);
 					try
 					{
-						SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing>(tmpString, CTransfers.jss));
+						SecureQueue.Enqueue(JsonConvert.DeserializeObject<server.Processings.Processing>(tmpString, CTransfers.jss));
 					}
 					catch { }
 					manualResetEvent.Set();
@@ -1059,21 +1106,21 @@ namespace server
 		{
 			Thread.Sleep(1000);
 			MessageBox.Show("Костыль №1");
-			Processing processing;
+			server.Processings.Processing processing;
 			while (workingServer && workingThread)
 			{
 
 				manualResetEvent.WaitOne();
 				if (SecureQueue.Count > 0)
 				{
-					
+
 					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
 					{
-						
+
 						processing.Process();
 					}
-					
+
 					Thread.Yield();
 				}
 				else { manualResetEvent.Reset(); }

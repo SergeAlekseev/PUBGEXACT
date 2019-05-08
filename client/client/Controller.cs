@@ -12,15 +12,16 @@ using System.Timers;
 using System.Windows.Forms;
 using ClassLibrary;
 using Newtonsoft.Json.Linq;
-using server.Processings;
-
+using System.Collections.Concurrent;
+using client.ProcessingsServer;
 namespace client
 {
-	
-	class Controller
+
+	public class Controller
 	{
 		JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-		
+		ConcurrentQueue<Processing.Processing> SecureQueue = new ConcurrentQueue<Processing.Processing>();
+		ManualResetEvent manualResetEvent;
 
 		public delegate void CloseFormD(object sender, FormClosingEventArgs e);
 		public event CloseFormD CloseFormEvent;
@@ -31,17 +32,17 @@ namespace client
 		public delegate void ErrorConnectD();
 		public event ErrorConnectD ErrorConnect;
 
-		Model model;
+		public Model model;
 
-		TcpClient client;// 25.46.244.0 
-		NetworkStream nStream;
-		Thread threadReading;
+		public TcpClient client;// 25.46.244.0 
+		public NetworkStream nStream;
+		public Thread threadReading;
 
-		Stopwatch PingWatch = new Stopwatch();
-		bool threadStart = false;
-		bool serverStart;
+		public Stopwatch PingWatch = new Stopwatch();
+		public bool threadStart = false;
+		public bool serverStart;
 
-		System.Timers.Timer timerPing = new System.Timers.Timer();
+		public System.Timers.Timer timerPing = new System.Timers.Timer();
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
@@ -92,7 +93,7 @@ namespace client
 				try
 				{
 					string serialized = JsonConvert.SerializeObject(gpml, jss);
-					JsonConvert.DeserializeObject<Processing>(serialized, jss);
+					JsonConvert.DeserializeObject<server.Processings.Processing>(serialized, jss);
 					Writing(gpml);
 				}
 				catch
@@ -115,7 +116,7 @@ namespace client
 			timerPing.Start();
 		}
 
-		private void timerPing_Tick(object sender, EventArgs e)
+		public void timerPing_Tick(object sender, EventArgs e)
 		{
 			if (threadStart)
 			{
@@ -179,113 +180,113 @@ namespace client
 			return tmpString;
 		}
 
-		private void ReadingStream()
-		{
-			while (serverStart)
-			{
+		//private void ReadingStream()
+		//{
+		//	while (serverStart)
+		//	{
 
-				byte[] typeCommand = new byte[1];
-				try
-				{
-					nStream.Read(typeCommand, 0, 1);
-				}
-				catch
-				{
-					break;
-				}
+		//		byte[] typeCommand = new byte[1];
+		//		try
+		//		{
+		//			nStream.Read(typeCommand, 0, 1);
+		//		}
+		//		catch
+		//		{
+		//			break;
+		//		}
 
-				switch (typeCommand[0])
-				{
-					case 1:
-						{
-							string tmpString = Reading(nStream);
-							GetUserInfo(tmpString);
-							model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
-							break;
-						}
-					case 2:
-						{
-							PingWatch.Stop();
-							model.Ping = (int)PingWatch.ElapsedMilliseconds;
-							break;
-						}
-					case 3:
-						{
-							GetBulletsInfo();
-							break;
-						}
-					case 4:
-						{
+		//		switch (typeCommand[0])
+		//		{
+		//			case 1:
+		//				{
+		//					string tmpString = Reading(nStream);
+		//					GetUserInfo(tmpString);
+		//					model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
+		//					break;
+		//				}
+		//			case 2:
+		//				{
+		//					PingWatch.Stop();
+		//					model.Ping = (int)PingWatch.ElapsedMilliseconds;
+		//					break;
+		//				}
+		//			case 3:
+		//				{
+		//					GetBulletsInfo();
+		//					break;
+		//				}
+		//			case 4:
+		//				{
 
-							break;
-						}
-					case 5:
-						{
-							Disconnect();
-							break;
-						}
-					case 6:
-						{
-							GetBushesInfo();
-							break;
-						}
-					case 7:
-						{
-							PlayerDeath();
-							break;
-						}
-					case 8:
-						{
-							GetMapBordersInfo();
-							break;
-						}
-					case 9:
-						{
-							GetZoneStartInfo();
-							break;
-						}
-					case 10:
-						{
-							GetPrevZoneInfo();
-							break;
-						}
-					case 12:
-						{
-							GetBoxesInfo();
-							break;
-						}
-					case 13:
-						{
+		//					break;
+		//				}
+		//			case 5:
+		//				{
+		//					Disconnect();
+		//					break;
+		//				}
+		//			case 6:
+		//				{
+		//					GetBushesInfo();
+		//					break;
+		//				}
+		//			case 7:
+		//				{
+		//					PlayerDeath();
+		//					break;
+		//				}
+		//			case 8:
+		//				{
+		//					GetMapBordersInfo();
+		//					break;
+		//				}
+		//			case 9:
+		//				{
+		//					GetZoneStartInfo();
+		//					break;
+		//				}
+		//			case 10:
+		//				{
+		//					GetPrevZoneInfo();
+		//					break;
+		//				}
+		//			case 12:
+		//				{
+		//					GetBoxesInfo();
+		//					break;
+		//				}
+		//			case 13:
+		//				{
 
-							break;
-						}
-					case 20:
-						{
-							GetKillsInfo();
-							break;
-						}
-					case 21:
-						{
-							GetCountGamesInfo();
-							break;
-						}
-					case 33:
-						{
-							GetCountWinsInfo();
-							break;
-						}
-					case 44:
-						{
-							GetNumber();
-							break;
-						}
-						//case 10 и 11 	уже зарезервированы	
-				}
+		//					break;
+		//				}
+		//			case 20:
+		//				{
+		//					GetKillsInfo();
+		//					break;
+		//				}
+		//			case 21:
+		//				{
+		//					GetCountGamesInfo();
+		//					break;
+		//				}
+		//			case 33:
+		//				{
+		//					GetCountWinsInfo();
+		//					break;
+		//				}
+		//			case 44:
+		//				{
+		//					GetNumber();
+		//					break;
+		//				}
+		//				//case 10 и 11 	уже зарезервированы	
+		//		}
 
 
-			}
+		//	}
 
-		}
+		//}
 
 		private void GetNumber()
 		{
@@ -295,10 +296,10 @@ namespace client
 			setName(model.GInfo.Name);
 		}
 
-		private void GetCountWinsInfo()
+		public void GetCountWinsInfo()
 		{
 			model.Win = true;
-			string tmpString = Reading(nStream);
+			// string tmpString = Reading(nStream);
 			nStream.Close();
 			serverStart = false;
 			client.Close();
@@ -347,11 +348,17 @@ namespace client
 			model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString, jss);
 		}
 
-		private void PlayerDeath()
+		private void PlayerDeath() //
 		{
 			model.Die = true;
 			string tmpString = Reading(nStream);
 			model.Killer = JsonConvert.DeserializeObject<string>(tmpString, jss);
+
+			DeathPlayer();
+		}
+
+		public void DeathPlayer()
+		{
 			nStream.Close();
 			threadStart = false;
 			client.Close();
@@ -393,7 +400,6 @@ namespace client
 
 			if (threadStart)
 			{
-
 				nStream.Close();
 				serverStart = false;
 				client.Close();
@@ -411,15 +417,22 @@ namespace client
 				{
 					try
 					{
+						manualResetEvent = new ManualResetEvent(true);
 						client = new TcpClient(ip, 1337);
 						nStream = client.GetStream();
 						serverStart = true;
-						threadReading = new Thread(ReadingStream);
+
+						//threadReading = new Thread(ReadingStream);
+						threadReading = new Thread(Producer);
+						Thread threadConsumer = new Thread(Consumer);
+						//Вот тут вставить продусюре и консамера
 						threadReading.Start();
+						threadConsumer.Start();
 						return true;
 					}
-					catch
+					catch (Exception err)
 					{
+						MessageBox.Show(err.Message);
 						ErrorConnect();
 						return false;
 					}
@@ -433,8 +446,8 @@ namespace client
 		}
 
 		public double mouseMove()
-		{		
-			double angleDegree = defineAngle(model.MouseCoord,new Point(300,600));
+		{
+			double angleDegree = defineAngle(model.MouseCoord, new Point(300, 600));
 			model.ThisUser.Rotate = angleDegree;
 
 			if (threadStart)
@@ -444,7 +457,7 @@ namespace client
 				gpa.angels = angleDegree;
 				Writing(gpa);
 			}
-			
+
 
 			return angleDegree;
 		}
@@ -485,7 +498,7 @@ namespace client
 			Vector vector1 = Vector.FromPoints(start1, end1);
 
 			Point start2 = new Point { X = onePoint.X, Y = onePoint.Y };
-			Point end2 = new Point { X = onePoint.X, Y = onePoint.Y+200 };
+			Point end2 = new Point { X = onePoint.X, Y = onePoint.Y + 200 };
 			Vector vector2 = Vector.FromPoints(start2, end2);
 
 			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
@@ -494,6 +507,52 @@ namespace client
 			if (onePoint.X < twoPoint.X) angleDegree = 360 - angleDegree;
 
 			return angleDegree;
-		}	
+		}
+
+		public void Producer()
+		{
+			while (serverStart)
+			{
+				string tmpString = Reading(nStream);
+				try
+				{
+					SecureQueue.Enqueue(JsonConvert.DeserializeObject<Processing.Processing>(tmpString, server.CTransfers.jss));
+
+				}
+				catch (Exception err)
+				{
+					MessageBox.Show(err.Message);
+					break;
+				}
+				manualResetEvent.Set();
+
+			}
+
+		}
+
+		public void Consumer()
+		{
+			Thread.Sleep(1000);
+			//MessageBox.Show("Костыль №1");
+			Processing.Processing processing;
+			while (serverStart)
+			{
+
+				manualResetEvent.WaitOne();
+				if (SecureQueue.Count > 0)
+				{
+
+					SecureQueue.TryDequeue(out processing);
+					if (processing != null)
+					{
+
+						processing.Process(this);
+					}
+
+					Thread.Yield();
+				}
+				else { manualResetEvent.Reset(); }
+			}
+		}
 	}
 }

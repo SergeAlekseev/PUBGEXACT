@@ -62,6 +62,21 @@
     </Compile>
     <Compile Include="MMove.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="ProcessingsClient\AngelToZone.cs" />
+    <Compile Include="ProcessingsClient\Disconnect.cs" />
+    <Compile Include="ProcessingsClient\GetBoxesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetBulletsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetBushesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetCountGamesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetCountWinsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetKillsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetMapBordersInfo.cs" />
+    <Compile Include="ProcessingsClient\GetNumber.cs" />
+    <Compile Include="ProcessingsClient\GetPrevZoneInfo.cs" />
+    <Compile Include="ProcessingsClient\GetZoneStartInfo.cs" />
+    <Compile Include="ProcessingsClient\PingInfo.cs" />
+    <Compile Include="ProcessingsClient\PlayerDeath.cs" />
+    <Compile Include="ProcessingsClient\Processing.cs" />
     <Compile Include="Processings\ChangeWeapons.cs" />
     <Compile Include="Processings\GetPlayersAngels.cs" />
     <Compile Include="Processings\GetPlayersMousesLocation.cs" />
@@ -106,10 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ClassLibrary\ClassLibrary\ClassLibrary.csproj">
-      <Project>{013ac4c5-74d5-44d7-a4db-4d4289fae6b7}</Project>
+      <Project>{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}</Project>
       <Name>ClassLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

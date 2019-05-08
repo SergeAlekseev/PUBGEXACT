@@ -8,9 +8,13 @@ using System.Threading.Tasks;
 
 namespace server
 {
-	static class CTransfers
+	public static class CTransfers
 	{
-		public static JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+		public static JsonSerializerSettings jss = new JsonSerializerSettings {
+			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+			//TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto,
+		//	Formatting = Newtonsoft.Json.Formatting.Indented,
+	};
 
 		static public string Reading(NetworkStream nStream)
 		{
@@ -34,7 +38,37 @@ namespace server
 			return tmpString;
 		}
 
-		static public void Writing(object obj, byte numComand, NetworkStream nStream)
+		static public void Writing(object obj, NetworkStream nStream)
+		{
+			string serialized = "";
+			lock (obj)
+			{
+				serialized = JsonConvert.SerializeObject(obj, jss);
+			}
+			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+			byte[] countRead = BitConverter.GetBytes(massByts.Count());
+			//byte[] typeComand = new byte[1];
+			//typeComand[0] = numComand;
+
+
+			lock (nStream)
+			{
+				try
+				{
+					//nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+					nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+					nStream.Write(massByts, 0, massByts.Count());
+				}
+				catch
+				{
+
+				}
+			}
+
+
+		}
+
+		static public void WritingInMenu(object obj,byte numComand, NetworkStream nStream)
 		{
 			string serialized = "";
 			lock (obj)

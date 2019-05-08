@@ -8,7 +8,7 @@ using ClassLibrary;
 
 namespace client
 {
-	class Map
+	public class Map
 	{
 		List<Box> listBox = new List<Box>();
 		List<Bush> listBush = new List<Bush>();

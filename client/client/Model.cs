@@ -10,7 +10,7 @@ using Action = ClassLibrary.Action;
 
 namespace client
 {
-	class Model
+	public class Model
 	{
 		List<UserInfo> listUsers = new List<UserInfo>();
 		Action action = new Action();
@@ -19,7 +19,7 @@ namespace client
 		List<BulletInfo> listBullet = new List<BulletInfo>();
 		Map map = new Map();
 		short lifes;
-		bool die,win;
+		bool die, win;
 		Image[] images = new Image[20];
 		GeneralInfo gInfo = new GeneralInfo();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
@@ -46,7 +46,7 @@ namespace client
 			if (thisUser != null)
 				Start = true;
 		}
-		public double AngelToZone{get { return angelToZone; } set { angelToZone = value; }}
+		public double AngelToZone { get { return angelToZone; } set { angelToZone = value; } }
 		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }
 		public bool Win { get { return win; } set { win = value; } }
