@@ -100,6 +100,7 @@
 			this.Text = "Client";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Client_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Client_FormClosed);
+			this.Load += new System.EventHandler(this.Client_Load);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);

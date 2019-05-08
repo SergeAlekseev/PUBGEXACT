@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Net;
 using Newtonsoft.Json;
+using ClassLibrary;
 
 namespace server
 {
@@ -25,11 +26,15 @@ namespace server
 		public delegate void StopServerD();
 		public event StopServerD StopServerEvent;
 
-		Controller controller = new Controller();
+		ModelServer model = new ModelServer();
+		ControllerServer controller;
 
 		public Server()
 		{
+
 			InitializeComponent();
+
+			controller = new ControllerServer(model);
 
 			StopServerEvent += controller.StopServer;
 			StartServerEvent += controller.start;

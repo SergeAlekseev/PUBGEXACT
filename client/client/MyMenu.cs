@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ namespace client
 {
 	public partial class MyMenu : Form
 	{
-		Model model = new Model();
+		ModelClient model = new ModelClient();
 		CMyMenu Controller;
 
 		public MyMenu(string Name, string Pass, string ip)

@@ -52,26 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller.cs" />
-    <Compile Include="CTransfers.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="MMove.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="Processings\ChangeWeapons.cs" />
-    <Compile Include="Processings\GetPlayersAngels.cs" />
-    <Compile Include="Processings\GetPlayersMousesLocation.cs" />
-    <Compile Include="Processings\GetUserName.cs" />
-    <Compile Include="Processings\PingInfo.cs" />
-    <Compile Include="Processings\PlayerMovementsInfo.cs" />
-    <Compile Include="Processings\Processing.cs" />
-    <Compile Include="Processings\Reload.cs" />
-    <Compile Include="Processings\ShotDown.cs" />
-    <Compile Include="Processings\ShotUp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TmpProcessing.cs" />
@@ -106,10 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ClassLibrary\ClassLibrary\ClassLibrary.csproj">
-      <Project>{013ac4c5-74d5-44d7-a4db-4d4289fae6b7}</Project>
+      <Project>{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}</Project>
       <Name>ClassLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

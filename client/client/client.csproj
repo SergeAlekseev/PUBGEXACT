@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMyMenu.cs" />
-    <Compile Include="Controller.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
@@ -65,14 +64,12 @@
     <Compile Include="MyMenu.Designer.cs">
       <DependentUpon>MyMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Vector.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Login.resx">
@@ -144,10 +141,6 @@
     <ProjectReference Include="..\..\ClassLibrary\ClassLibrary\ClassLibrary.csproj">
       <Project>{013ac4c5-74d5-44d7-a4db-4d4289fae6b7}</Project>
       <Name>ClassLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\server\server\server.csproj">
-      <Project>{90261f6a-04e2-4d80-9792-9f00de78be4e}</Project>
-      <Name>server</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

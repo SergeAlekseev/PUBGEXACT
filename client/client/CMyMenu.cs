@@ -14,14 +14,14 @@ namespace client
 	{
 		TcpClient client;// 25.46.244.0 
 		NetworkStream nStream;
-		Model model = new Model();
+		ModelClient model = new ModelClient();
 		public bool flagGame = false;
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
 			model.GInfo.Password = Password;
 		}
-		public CMyMenu(Model model)
+		public CMyMenu(ModelClient model)
 		{
 			this.model = model;
 		}

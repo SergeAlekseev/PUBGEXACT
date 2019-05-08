@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary;
+
 using Newtonsoft.Json;
 using Action = ClassLibrary.Action;
 namespace client
@@ -46,14 +47,15 @@ namespace client
 		public delegate void СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
-		static Model model = new Model();
-		Controller controller = new Controller(model);
+		static ModelClient model = new ModelClient();
+		ControllerClient controller = new ControllerClient(model);
 
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
 		BufferedGraphics bufferedGraphics;
 		bool Start = false;
 		bool MouseDown = false;
+
 
 		System.Drawing.TextureBrush tb;
 
@@ -101,6 +103,7 @@ namespace client
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
+
 			controller.ErrorConnect += ErrorConnect;
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
@@ -332,6 +335,11 @@ namespace client
 		}
 
 		private void PlayingField_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void Client_Load(object sender, EventArgs e)
 		{
 
 		}
