@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary;
-using client.Processing;
+
 using Newtonsoft.Json;
 using Action = ClassLibrary.Action;
 namespace client
@@ -47,8 +47,8 @@ namespace client
 		public delegate void СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
-		static Model model = new Model();
-		Controller controller = new Controller(model);
+		static ModelClient model = new ModelClient();
+		ControllerClient controller = new ControllerClient(model);
 
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
@@ -56,8 +56,6 @@ namespace client
 		bool Start = false;
 		bool MouseDown = false;
 
-
-		Disconnect disconect = new Disconnect(); // Ужос, я ето потом вырежу
 
 		System.Drawing.TextureBrush tb;
 
@@ -105,7 +103,6 @@ namespace client
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
-			disconect.DissEvent += AllClose; // Ужос, я ето потом вырежу
 
 			controller.ErrorConnect += ErrorConnect;
 
@@ -338,6 +335,11 @@ namespace client
 		}
 
 		private void PlayingField_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void Client_Load(object sender, EventArgs e)
 		{
 
 		}
