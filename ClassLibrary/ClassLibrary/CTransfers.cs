@@ -10,6 +10,9 @@ namespace ClassLibrary
 {
 	public static class CTransfers
 	{
+		public delegate void ErrorD(string Error);
+		public static event ErrorD ErrorEvent;
+
 		public static JsonSerializerSettings jss = new JsonSerializerSettings
 		{
 			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
@@ -42,24 +45,29 @@ namespace ClassLibrary
 		static public void Writing(object obj, NetworkStream nStream)
 		{
 			string serialized = "";
-			lock (obj)
+			try
 			{
-				serialized = JsonConvert.SerializeObject(obj, jss);
-			}
-
-			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes(massByts.Count());
-
-
-			lock (nStream)
-			{
-				try
+				lock (obj)
 				{
-					nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-					nStream.Write(massByts, 0, massByts.Count());
+					serialized = JsonConvert.SerializeObject(obj, jss);
 				}
-				catch (Exception err) { Console.Write(err.Message + " Ошибка в CTransfer, метод Writing"); }
+
+
+				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+				byte[] countRead = BitConverter.GetBytes(massByts.Count());
+
+
+				lock (nStream)
+				{
+					try
+					{
+						nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+						nStream.Write(massByts, 0, massByts.Count());
+					}
+					catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в CTransfers, методе Writing"); }
+				}
 			}
+			catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в CTransfers, методе Writing"); }
 		}
 
 		static public void WritingInMenu(object obj, byte numComand, NetworkStream nStream)

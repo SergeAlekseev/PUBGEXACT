@@ -11,7 +11,7 @@ namespace ClassLibrary
 	{
 		public NormalGun()
 		{
-			this.Name = "NormalGun";
+			this.Name = "Normal Gun";
 			this.Damage = 20;
 			this.Count = 30;
 			this.MaxCount = 30;

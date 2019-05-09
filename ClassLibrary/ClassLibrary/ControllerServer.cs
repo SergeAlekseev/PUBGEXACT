@@ -94,21 +94,31 @@ namespace ClassLibrary
 
 		private void timerMove_Tick(bool moveUp, bool moveDown, bool moveLeft, bool moveRight, bool shift, int num) //Здесь будет выполняться перемещение игрока
 		{
-			byte speed = 1;
-			if (shift)
+			try
 			{
-				speed *= 2;
-			}
-			
-				if (model.workingGame && model.ListUsers[num] != null)
+				if (model.workingGame)
 				{
-					if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed]) model.ListUsers[num].userLocation.Y -= speed; //Вниз
-					if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
-					if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X -= speed; //Влево
-					if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X += speed;// Вправо	
+					byte speed = 1;
+					if (shift)
+					{
+						speed *= 2;
+					}
+
+					if (model.workingGame && model.ListUsers[num] != null)
+					{
+						if ((moveUp) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Y > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y - speed]) model.ListUsers[num].userLocation.Y -= speed; //Вниз
+						if ((moveDown) && model.ListUsers[num].userLocation.Y - model.Map.MapBorders.Width < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X, model.ListUsers[num].userLocation.Y + speed]) model.ListUsers[num].userLocation.Y += speed; //Вверх
+						if ((moveLeft) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.X > 2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X - speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X -= speed; //Влево
+						if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X += speed;// Вправо	
+					}
 				}
-			
-			
+				
+			}
+			catch
+			{
+				ErrorEvent("Ложный вызов движения");
+			}
+
 		}
 
 		private void timerZone_Tick()
@@ -221,6 +231,7 @@ namespace ClassLibrary
 			if (!workingServer && !model.workingGame)
 			{
 				workingServer = true;
+				model.ListMove = new List<MMove>();
 				Random random = new Random();
 				RandomBushs();
 				number = -1;
@@ -258,6 +269,33 @@ namespace ClassLibrary
 					try
 					{
 						tc = host.AcceptTcpClient();
+
+						number++;
+
+						UserInfo userInfoTmp;
+						do
+							userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+						while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.Y]);
+						userInfoTmp.userNumber = number;
+
+						lock (model.ListUsers)
+						{
+							model.ListUsers.Add(userInfoTmp);
+						}
+
+
+
+						model.ListNs.Add(tc.GetStream());
+						model.ListMove.Add(new MMove());
+						model.ListShoting.Add(new Thread(new ParameterizedThreadStart(ShotUser)));
+						Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
+						thread.Start(tc);
+
+
+
+						Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
+						thread2.Priority = ThreadPriority.Highest;
+						thread2.Start(tc);
 					}
 					catch
 					{
@@ -265,32 +303,6 @@ namespace ClassLibrary
 							tc.Close();
 						break;
 					}
-					number++;
-
-					UserInfo userInfoTmp;
-					do
-						userInfoTmp = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[userInfoTmp.userLocation.X, userInfoTmp.userLocation.Y]);
-					userInfoTmp.userNumber = number;
-
-					lock (model.ListUsers)
-					{
-						model.ListUsers.Add(userInfoTmp);
-					}
-
-
-
-					model.ListNs.Add(tc.GetStream());
-					model.ListMove.Add(new MMove());
-					model.ListShoting.Add(new Thread(new ParameterizedThreadStart(ShotUser)));
-					Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
-					thread.Start(tc);
-
-
-
-					Thread thread2 = new Thread(new ParameterizedThreadStart(InfoUsers));
-					thread2.Priority = ThreadPriority.Highest;
-					thread2.Start(tc);
 				}
 				Thread.Sleep(1000);
 				model.Remove();
@@ -315,18 +327,16 @@ namespace ClassLibrary
 					timerZone.Stop();
 					timerUsersInZone.Stop();
 				}
-				byte[] numberUser = new byte[1];
 				foreach (NetworkStream ns in model.ListNs)
 				{
 					if (ns != null)
 					{
-						numberUser[0] = 5;
+						Disconnect d = new Disconnect();
 						try
 						{
-							ns.Write(numberUser, 0, 1);
-							ns.Close();
+							CTransfers.Writing(d, ns);
 						}
-						catch(Exception err) { ErrorEvent(err.Message+ " |Ошибка в ControllerServer, методе StopServer"); }
+						catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
 					}
 				}
 
@@ -395,7 +405,7 @@ namespace ClassLibrary
 				{
 					(tc as TcpListener).AcceptTcpClient();
 				}
-				catch(Exception err)
+				catch (Exception err)
 				{
 					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе MenuConnecting");
 					break;
@@ -445,18 +455,18 @@ namespace ClassLibrary
 									PlayerSave(model.ListGInfo);
 
 
-									CTransfers.WritingInMenu(model.ListGInfo[model.ListGInfo.Count - 1],10, nStream);
+									CTransfers.WritingInMenu(model.ListGInfo[model.ListGInfo.Count - 1], 10, nStream);
 								}
 								else
 								{
 									if (CheckData(model.ListGInfo, newUser))
 									{
 										model.ListGInfo = PlayerRead(newUser);
-										CTransfers.WritingInMenu(tmpUser,10, nStream);
+										CTransfers.WritingInMenu(tmpUser, 10, nStream);
 									}
 									else
 									{
-										CTransfers.WritingInMenu("1",11, nStream);
+										CTransfers.WritingInMenu("1", 11, nStream);
 									}
 									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
 								}
@@ -470,18 +480,18 @@ namespace ClassLibrary
 									model.ListGInfo[model.ListGInfo.Count - 1].Password = newUser.Password;
 
 									PlayerSave(model.ListGInfo);
-									CTransfers.WritingInMenu(model.ListGInfo[model.ListGInfo.Count - 1],10, nStream);
+									CTransfers.WritingInMenu(model.ListGInfo[model.ListGInfo.Count - 1], 12, nStream);
 								}
 								else
 								{
 									if (CheckData(model.ListGInfo, newUser))
 									{
 										model.ListGInfo = PlayerRead(newUser);
-										CTransfers.WritingInMenu(tmpUser,10, nStream);
+										CTransfers.WritingInMenu(tmpUser, 12, nStream);
 									}
 									else
 									{
-										CTransfers.WritingInMenu("1",11, nStream);
+										CTransfers.WritingInMenu("1", 12, nStream);
 									}
 								}
 							}
@@ -557,8 +567,6 @@ namespace ClassLibrary
 						flagBreak = true;
 						if (model.ListUsers[j].hp <= 0)
 						{
-							byte[] flagDie = new byte[1];
-							flagDie[0] = 7;
 
 							PlayerDeath death = new PlayerDeath();
 							death.Killer = bulletInfo.owner;
@@ -639,6 +647,10 @@ namespace ClassLibrary
 
 			model.ListUsers[num].Items[1] = new NormalGun();
 			model.ListUsers[num].Items[2] = new NormalShotgun();
+			model.ListUsers[num].Items[3] = new Item();
+			model.ListUsers[num].Items[4] = new Item();
+			model.ListUsers[num].Items[5] = new Item();
+			model.ListUsers[num].Items[6] = new Item();
 
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
@@ -658,7 +670,8 @@ namespace ClassLibrary
 					AngelToZone angel = new AngelToZone();
 					angel.listUserInfo = model.ListUsers;
 					GetBulletsInfo buletsInfo = new GetBulletsInfo();
-					buletsInfo.listBulets = model.ListBullet;
+					lock (model.ListBullet)
+						buletsInfo.listBulets = model.ListBullet;
 
 					CTransfers.Writing(angel, nStream);
 					CTransfers.Writing(buletsInfo, nStream);
@@ -703,23 +716,24 @@ namespace ClassLibrary
 			}
 			if (model.CountGamers == 1 && model.workingGame)
 			{
+
+
+
 				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
 					if (model.ListUsers[i] != null)
 					{
-						CTransfers.Writing(new GetCountWinsInfo(), model.ListNs[i]);
+
 						foreach (GeneralInfo g in model.ListGInfo)
 						{
 							if (g.Name == model.ListUsers[i].Name)
 								g.Wins += 1;
 						}
+						CTransfers.Writing(new GetCountWinsInfo(), model.ListNs[i]);
 						break;
 					}
 				}
-				Thread.Sleep(2000);
 				StopServer();
-				Thread.Sleep(2000);
-				start();
 			}
 		}
 
@@ -834,43 +848,50 @@ namespace ClassLibrary
 		public void Producer(object obj)
 		{
 			int num = (int)obj;
-
-
 			System.Timers.Timer timerMove = new System.Timers.Timer();
-			timerMove.Interval = 15;
-			timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
-			timerMove.Start();
+
 
 			try
 			{
-				while (workingServer && workingThread)
-				{
-					string tmpString = CTransfers.Reading(model.ListNs[num]);
-					
-						SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
-					
-					
-					manualResetEvent.Set();
+				timerMove.Interval = 15;
+				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
+				timerMove.Start();
 
-				}
-
-			}
-			catch (System.IO.IOException)
-			{
-				ErrorEvent("Отключение игрока в Producer");
-				if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
+				try
 				{
-					model.ListUsers[num].flagShoting = false;
-					lock (model.ListUsers)
+					while (workingServer && workingThread)
 					{
-						model.ListUsers.RemoveAt(num);
-						model.ListUsers.Insert(num, null);
-					}
-				}
-				model.CountGamers -= 1;
-				writingCountGames();
-				timerMove.Stop();
+						string tmpString = CTransfers.Reading(model.ListNs[num]);
 
+						SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
+
+
+						manualResetEvent.Set();
+
+					}timerMove.Stop();
+
+				}
+				catch (System.IO.IOException)
+				{
+					ErrorEvent("Отключение игрока в Producer");
+					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
+					{
+						model.ListUsers[num].flagShoting = false;
+						lock (model.ListUsers)
+						{
+							model.ListUsers.RemoveAt(num);
+							model.ListUsers.Insert(num, null);
+						}
+					}
+					model.CountGamers -= 1;
+					writingCountGames();
+					timerMove.Stop();
+
+				}
+			}
+			catch
+			{
+				ErrorEvent("Ложный вызов продюсера");
 			}
 
 		}
@@ -889,8 +910,14 @@ namespace ClassLibrary
 					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
 					{
-
-						processing.Process(model);
+						try
+						{
+							processing.Process(model);
+						}
+						catch
+						{
+							ErrorEvent("Не прошла команда от отключенного игрока " + processing.num);
+						}
 					}
 
 					Thread.Yield();
@@ -898,6 +925,6 @@ namespace ClassLibrary
 				else { manualResetEvent.Reset(); }
 
 			}
-		}	
+		}
 	}
 }

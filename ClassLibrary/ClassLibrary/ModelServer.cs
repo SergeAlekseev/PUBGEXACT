@@ -79,6 +79,10 @@ namespace ClassLibrary
 
 		public void Remove()
 		{
+			countGamers = 0;
+			workingGame = false;
+			//listMove = new List<MMove>();
+			listShoting = new List<Thread>();
 			listBullet = new List<BulletInfo>();
 			listUsers = new List<UserInfo>();
 			listNs = new List<NetworkStream>();

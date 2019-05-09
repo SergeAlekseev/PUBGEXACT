@@ -11,6 +11,8 @@ namespace ClassLibrary.ProcessingsClient
 		public string Killer;
 		public override void Process(ControllerClient controller)
 		{
+			controller.threadStart = false;
+			controller.manualResetEvent.Set();
 			controller.model.Die = true;
 			controller.model.Killer = Killer;
 			controller.nStream.Close();

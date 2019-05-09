@@ -10,6 +10,8 @@ namespace ClassLibrary.ProcessingsClient
 	{
 		public override void Process(ControllerClient controller)
 		{
+			controller.threadStart = false;
+			controller.manualResetEvent.Set();
 			controller.model.Win = true;
 			controller.nStream.Close();
 			controller.serverStart = false;

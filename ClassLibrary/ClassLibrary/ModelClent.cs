@@ -28,7 +28,7 @@ namespace ClassLibrary
 		Point mouseCoord = new Point();
 		double angelToZone;
 		string killer;
-		Kill[] arrayKills = new Kill[3];
+		public Kill[] arrayKills = new Kill[3];
 		
 		public int number;
 		public int CountGamers

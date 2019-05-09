@@ -143,13 +143,6 @@ namespace ClassLibrary
 			}
 		}
 
-		private void GetNumber()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.number = JsonConvert.DeserializeObject<int>(tmpString, CTransfers.jss);
-			threadStart = true;
-			setName(model.GInfo.Name);
-		}
 
 		public void GetCountWinsInfo()
 		{
@@ -162,55 +155,7 @@ namespace ClassLibrary
 			threadReading.Abort();
 		}
 
-		private void GetCountGamesInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.CountGamers = JsonConvert.DeserializeObject<int>(tmpString, CTransfers.jss);
-		}
-
-		private void GetKillsInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			Kill[] arrayKills = new Kill[3];
-			arrayKills[2] = model.ArrayKills[1];
-			arrayKills[1] = model.ArrayKills[0];
-			arrayKills[0] = JsonConvert.DeserializeObject<Kill>(tmpString, CTransfers.jss);
-			model.ArrayKills = arrayKills;
-		}
-
-		private void GetBoxesInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.Map.ListBox = JsonConvert.DeserializeObject<List<Box>>(tmpString, CTransfers.jss);
-		}
-
-		private void GetPrevZoneInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.Map.PrevZone = JsonConvert.DeserializeObject<Zone>(tmpString, CTransfers.jss);
-		}
-
-		private void GetZoneStartInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.Map.PrevZone = model.Map.NextZone;
-			model.Map.NextZone = JsonConvert.DeserializeObject<Zone>(tmpString, CTransfers.jss);
-		}
-
-		private void GetMapBordersInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.Map.MapBorders = JsonConvert.DeserializeObject<Rectangle>(tmpString, CTransfers.jss);
-		}
-
-		private void PlayerDeath() //
-		{
-			model.Die = true;
-			string tmpString = CTransfers.Reading(nStream);
-			model.Killer = JsonConvert.DeserializeObject<string>(tmpString, CTransfers.jss);
-
-			DeathPlayer();
-		}
+		
 
 		public void DeathPlayer()
 		{
@@ -221,23 +166,6 @@ namespace ClassLibrary
 			threadReading.Abort();
 		}
 
-		private void GetBushesInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.Map.ListBush = JsonConvert.DeserializeObject<List<Bush>>(tmpString, CTransfers.jss);
-		}
-
-		private void GetBulletsInfo()
-		{
-			string tmpString = CTransfers.Reading(nStream);
-			model.ListBullet = JsonConvert.DeserializeObject<List<BulletInfo>>(tmpString, CTransfers.jss);
-		}
-
-		private void GetUserInfo(string tmpString)
-		{
-			model.ListUsers = JsonConvert.DeserializeObject<List<UserInfo>>(tmpString, CTransfers.jss);
-			model.ThisUser = model.ListUsers[model.number];
-		}
 
 		public void PressKey()
 		{
@@ -370,9 +298,14 @@ namespace ClassLibrary
 			while (serverStart)
 			{
 				string tmpString = CTransfers.Reading(nStream);
-
-				SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
-
+				try
+				{
+					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
+				}
+				catch
+				{
+					
+				}
 
 
 				manualResetEvent.Set();

@@ -249,16 +249,7 @@ namespace client
 
 					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
 					{
-						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 80, 520);
-						switch (model.ThisUser.thisItem)
-						{
-							case 1: bufferedGraphics.Graphics.DrawString("Автомат", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-							case 2: bufferedGraphics.Graphics.DrawString("Дробовик", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-							case 3: bufferedGraphics.Graphics.DrawString("*", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-							case 4: bufferedGraphics.Graphics.DrawString("*", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-							case 5: bufferedGraphics.Graphics.DrawString("*", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-							case 6: bufferedGraphics.Graphics.DrawString("*", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520); break;
-						}
+						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name+" : "+ model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
 					}
 					#endregion
 
@@ -365,6 +356,11 @@ namespace client
 		private void Client_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void Client_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

@@ -53,6 +53,8 @@ namespace server
 			StartServerEvent += controller.start;
 			StartGameEvent += controller.StartGame;
 
+			CTransfers.ErrorEvent += AddError;
+
 			controller.ErrorEvent += AddError;
 			controller.StopServerEvent += writeStatus;
 			controller.StartServerEvent += writeStatus;
@@ -69,7 +71,7 @@ namespace server
 			localListBox.Size = new Size(300, 200);
 			localListBox.Location = new Point(0, 0);
 			localListBox.Dock = DockStyle.Fill;
-			localListBox.Items.AddRange( listBox.Items);
+			
 
 			listBoxForm.Controls.Add(localListBox);
 
@@ -118,6 +120,11 @@ namespace server
 		private void maps_Click(object sender, EventArgs e)
 		{
 			controller.LoadMap();
+		}
+
+		private void Server_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

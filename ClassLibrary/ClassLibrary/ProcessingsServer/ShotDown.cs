@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary;
+using ClassLibrary.ProcessingsClient;
+
 namespace ClassLibrary.ProcessingsServer
 {
 	public class ShotDown : ProcessingServer
@@ -88,9 +90,10 @@ namespace ClassLibrary.ProcessingsServer
 						flagBreak = true;
 						if (model.ListUsers[j].hp <= 0)
 						{
-							byte[] flagDie = new byte[1];
-							flagDie[0] = 7;
-							CTransfers.Writing(bulletInfo.owner, model.ListNs[j]);
+
+							PlayerDeath pd = new PlayerDeath();
+							pd.Killer = bulletInfo.owner;
+							CTransfers.Writing(pd, model.ListNs[j]);
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
@@ -100,9 +103,9 @@ namespace ClassLibrary.ProcessingsServer
 									g.Kills += 1;
 							}
 
-							Kill kill = new Kill();
-							kill.killer = bulletInfo.owner;
-							kill.dead = model.ListUsers[j].Name;
+							GetKillsInfo kill = new GetKillsInfo();
+							kill.kill.killer = bulletInfo.owner;
+							kill.kill.dead = model.ListUsers[j].Name;
 
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{

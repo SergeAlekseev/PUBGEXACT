@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
-	public abstract class Item
+	public  class Item
 	{
+		public string Name;
 		public short Count, MaxCount, Time, TimeReloading;
 		public Point Location;
 		public void SetLocation(Point loc)
 		{
 			Location = loc;
 		}
-		public abstract object Use(UserInfo obj);
+		public virtual object Use(UserInfo obj) { return null; }
  	}
 }

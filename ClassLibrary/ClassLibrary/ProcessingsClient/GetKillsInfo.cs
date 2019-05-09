@@ -8,7 +8,7 @@ namespace ClassLibrary.ProcessingsClient
 {
 	public class GetKillsInfo : ProcessingClient
 	{
-		public Kill kill;
+		public Kill kill=new Kill();
 		public override void Process(ControllerClient controller)
 		{
 			Kill[] arrayKills = new Kill[3];
