@@ -11,7 +11,6 @@ namespace ClassLibrary.ProcessingsServer
 	public class ChangeWeapons : ProcessingServer
 	{
 		public byte numItems;
-
 		ModelServer Model;
 		public override void Process(ModelServer Model)
 		{

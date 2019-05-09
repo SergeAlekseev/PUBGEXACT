@@ -23,8 +23,6 @@ namespace ClassLibrary
 {
 	public class ControllerServer
 	{
-
-
 		bool workingThread;
 		bool workingServer;
 		short number; //Model
@@ -42,6 +40,10 @@ namespace ClassLibrary
 
 		public delegate void StopServerD(string text);
 		public event StopServerD StopServerEvent;
+
+		public delegate void ErrorD(string Error);
+		public event ErrorD ErrorEvent;
+
 		Thread ConsumerThread;
 		ManualResetEvent manualResetEvent;
 		ConcurrentQueue<ProcessingServer> SecureQueue = new ConcurrentQueue<ProcessingServer>(); //___________________________________
@@ -324,7 +326,7 @@ namespace ClassLibrary
 							ns.Write(numberUser, 0, 1);
 							ns.Close();
 						}
-						catch { }
+						catch(Exception err) { ErrorEvent(err.Message+ " |Ошибка в ControllerServer, методе StopServer"); }
 					}
 				}
 
@@ -332,7 +334,8 @@ namespace ClassLibrary
 				workingThread = false;
 				model.Remove();
 				model.workingGame = false;
-				Thread.Sleep(1000);
+				manualResetEvent.Set();
+				Thread.Sleep(100);
 				StopServerEvent("Сервер отключен");
 			}
 		}
@@ -392,8 +395,9 @@ namespace ClassLibrary
 				{
 					(tc as TcpListener).AcceptTcpClient();
 				}
-				catch
+				catch(Exception err)
 				{
+					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе MenuConnecting");
 					break;
 				}
 			}
@@ -452,7 +456,7 @@ namespace ClassLibrary
 									}
 									else
 									{
-										CTransfers.WritingInMenu("1",10, nStream);
+										CTransfers.WritingInMenu("1",11, nStream);
 									}
 									//Если такой игрок уже есть , то при правильном пароле выдать всю инфу об игроке
 								}
@@ -477,7 +481,7 @@ namespace ClassLibrary
 									}
 									else
 									{
-										CTransfers.WritingInMenu("1",10, nStream);
+										CTransfers.WritingInMenu("1",11, nStream);
 									}
 								}
 							}
@@ -610,19 +614,6 @@ namespace ClassLibrary
 
 		public void PlayUser(object tc)//Controller
 		{
-			//MMove mmove = new MMove();
-			//bool moveUp = false;
-			//bool moveDown = false;
-			//bool moveLeft = false;
-			//bool moveRight = false;
-			//bool shift = false;
-
-			//bool PrivateWorkingThread = true;
-
-			//Thread Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
-
-
-
 			int num = number;   //шанс ошибки при одновременном подключении
 
 			GetNumber gNumber = new GetNumber();
@@ -652,227 +643,7 @@ namespace ClassLibrary
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
 
-
-			//while (workingServer && workingThread && PrivateWorkingThread)
-			//{
-			//	try
-			//	{
-			//		byte[] typeCommand = new byte[1];
-			//		nStream.Read(typeCommand, 0, 1);
-
-			//		switch (typeCommand[0])
-			//		{
-			//			case 1:
-			//				{
-			//					PlayerMovementsInfo(ref mmove.moveUp, ref mmove.moveDown, ref mmove.moveLeft, ref mmove.moveRight, ref mmove.shift, nStream);
-
-			//					break;
-			//				}
-			//			case 2:
-			//				{
-			//					PingInfo(nStream);
-			//					break;
-			//				}
-			//			case 3://УХХХХХХ
-			//				{
-			//					Model.ListUsers[num].flagRecharge = false;
-			//					string tmpString = CTransfers.Reading(nStream);
-			//					if (!Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting && Model.workingGame)
-			//					{
-			//						Model.ListUsers[num].flagShoting = true;
-			//						Shoting = new Thread(new ParameterizedThreadStart(ShotUser));
-			//						Shoting.Start(Model.ListUsers[num]);
-			//					}
-			//					break;
-			//				}
-			//			case 4:// УУ НЕ ПОНЕМАЮ, выноси их сам в методы, чтобы легче читалось ( микро-рефакторинг)
-			//				{
-			//					string tmpString = CTransfers.Reading(nStream);
-			//					if (Model.ListUsers[num].flagShoting && !Model.ListUsers[num].flagWaitShoting)
-			//					{
-			//						Model.ListUsers[num].flagWaitShoting = true;
-			//						Shoting.Abort();
-			//						Model.ListUsers[num].flagShoting = false;
-			//						Thread t = new Thread(() =>
-			//						{
-			//							Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
-			//							Model.ListUsers[num].flagWaitShoting = false;
-			//						});
-			//						t.Start();
-			//					}
-			//					break;
-			//				}
-			//			case 5:
-			//				{
-			//					GetPlayersMousesLocation(nStream, num);
-			//					break;
-			//				}
-			//			case 13:
-			//				{
-			//					GetPlayersAngels(nStream, num);
-			//					break;
-			//				}
-			//			case 14: //Да это уже рофл какой-то
-			//				{
-			//					GetUserName(nStream, num);
-			//					break;
-			//				}
-			//			case 66:
-			//				{
-			//					string tmpString = CTransfers.Reading(nStream);
-			//					Model.ListUsers[num].flagRecharge = false;
-			//					Model.ListUsers[num].flagWaitShoting = true;
-			//					Shoting.Abort();
-			//					Model.ListUsers[num].flagShoting = false;
-			//					Thread t = new Thread(() =>
-			//					{
-			//						Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
-			//						Model.ListUsers[num].flagWaitShoting = false;
-			//					});
-			//					t.Start();
-			//					Model.ListUsers[num].thisItem = JsonConvert.DeserializeObject<byte>(tmpString, CTransfers.jss);
-			//					break;
-			//				}
-			//			case 67:
-			//				{
-			//					string tmpString = CTransfers.Reading(nStream);
-			//					if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon)
-			//					{
-			//						Model.ListUsers[num].flagRecharge = true;
-			//						Shoting.Abort();
-			//						Model.ListUsers[num].flagShoting = false;
-			//						Thread t = new Thread(() =>
-			//						{
-			//							int time = 0;
-			//							while (Model.ListUsers[num].flagRecharge)
-			//							{
-			//								time++;
-			//								Thread.Sleep(100);
-			//								if (time >= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].TimeReloading)
-			//								{
-			//									switch ((Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Weapon).TypeBullets)
-			//									{
-			//										case Weapon.typeBullets.Gun:
-			//											{
-			//												Model.ListUsers[num].GunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-			//												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												Model.ListUsers[num].GunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												if (Model.ListUsers[num].GunBullets < 0)
-			//												{
-			//													Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].GunBullets;
-			//													Model.ListUsers[num].GunBullets = 0;
-			//												}
-			//												break;
-			//											}
-			//										case Weapon.typeBullets.Pistol:
-			//											{
-			//												Model.ListUsers[num].PistolBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-			//												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												Model.ListUsers[num].PistolBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												if (Model.ListUsers[num].PistolBullets < 0)
-			//												{
-			//													Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].PistolBullets;
-			//													Model.ListUsers[num].PistolBullets = 0;
-			//												}
-			//												break;
-			//											}
-			//										case Weapon.typeBullets.Shotgun:
-			//											{
-			//												Model.ListUsers[num].ShotgunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-			//												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												Model.ListUsers[num].ShotgunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-			//												if (Model.ListUsers[num].ShotgunBullets < 0)
-			//												{
-			//													Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].ShotgunBullets;
-			//													Model.ListUsers[num].ShotgunBullets = 0;
-			//												}
-			//												break;
-			//											}
-			//									}
-
-			//									Model.ListUsers[num].flagRecharge = false;
-			//								}
-			//							}
-
-
-			//						});
-			//						t.Start();
-			//					}
-			//					break;
-			//				}
-			//		}
-			//	}
-			//	catch (System.IO.IOException)
-			//	{
-			//		if (Model.ListUsers.Count != 0 && Model.ListUsers[num] != null)
-			//		{
-			//			Model.ListUsers[num].flagShoting = false;
-			//			lock (Model.ListUsers)
-			//			{
-			//				Model.ListUsers.RemoveAt(num);
-			//				Model.ListUsers.Insert(num, null); // <--------- Здесь костыль(вместо каждого удалённого элемента вставляется пустой)
-			//			}
-			//		}
-			//		Model.CountGamers -= 1;
-			//		writingCountGames();
-			//		PrivateWorkingThread = false;
-			//		timerMove.Stop();
-			//		Shoting.Abort();
-			//	}
-			//	catch
-			//	{
-
-			//	}
-			//}
 		}
-
-		//private void GetUserName(NetworkStream nStream, int num)
-		//{
-		//	string tmpString = CTransfers.Reading(nStream);
-		//	model.ListUsers[num].Name = JsonConvert.DeserializeObject<string>(tmpString, CTransfers.jss);
-		//}
-
-		//private void GetPlayersAngels(NetworkStream nStream, int num)
-		//{
-		//	string tmpString = CTransfers.Reading(nStream);
-		//	model.ListUsers[num].Rotate = JsonConvert.DeserializeObject<double>(tmpString, CTransfers.jss);
-		//}
-
-		//private void GetPlayersMousesLocation(NetworkStream nStream, int num)
-		//{
-		//	string tmpString = CTransfers.Reading(nStream);
-		//	model.ListUsers[num].mouseLocation = JsonConvert.DeserializeObject<Point>(tmpString, CTransfers.jss);
-		//}
-
-		//private static void PingInfo(NetworkStream nStream)
-		//{
-		//	byte[] ping = new byte[1];
-		//	ping[0] = 2;
-		//	lock (nStream)
-		//	{
-		//		nStream.Write(ping, 0, 1);
-		//	}
-		//}
-
-		//private void PlayerMovementsInfo(ref bool moveUp, ref bool moveDown, ref bool moveLeft, ref bool moveRight, ref bool shift, NetworkStream nStream)
-		//{
-		//	string tmpString = CTransfers.Reading(nStream);
-		//	Action act = JsonConvert.DeserializeObject<Action>(tmpString);
-		//	switch (act.act)
-		//	{
-		//		case Action.action.moveUp: moveUp = true; break;
-		//		case Action.action.moveDown: moveDown = true; break;
-		//		case Action.action.noveLeft: moveLeft = true; break;
-		//		case Action.action.moveRight: moveRight = true; break;
-		//		case Action.action.shiftDown: shift = true; break;
-
-		//		case Action.action.stopUp: moveUp = false; break;
-		//		case Action.action.stopDown: moveDown = false; break;
-		//		case Action.action.stopLeft: moveLeft = false; break;
-		//		case Action.action.stopRight: moveRight = false; break;
-		//		case Action.action.shiftUp: shift = false; break;
-		//	}
-		//}
 
 		public void InfoUsers(object tc)
 		{
@@ -893,8 +664,9 @@ namespace ClassLibrary
 					CTransfers.Writing(buletsInfo, nStream);
 					Thread.Sleep(20);
 				}
-				catch (System.IO.IOException)
+				catch (System.IO.IOException err)
 				{
+					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе InfoUsers");
 					PrivateWorkingThread = false;
 				}
 			}
@@ -982,6 +754,7 @@ namespace ClassLibrary
 			}
 			catch (Exception)
 			{
+				ErrorEvent("Произошло создание нового списка для зарегестрированных пользователей");
 				List<GeneralInfo> newList = new List<GeneralInfo>();
 				if (newUser != null)
 					newList.Add(newUser);
@@ -1031,7 +804,7 @@ namespace ClassLibrary
 				}
 				catch (Exception err)
 				{
-					MessageBox.Show(err.Message);
+					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе LoadMap");
 				}
 			}
 			Random random = new Random();
@@ -1084,7 +857,7 @@ namespace ClassLibrary
 			}
 			catch (System.IO.IOException)
 			{
-
+				ErrorEvent("Отключение игрока в Producer");
 				if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
 				{
 					model.ListUsers[num].flagShoting = false;
@@ -1104,12 +877,11 @@ namespace ClassLibrary
 
 		public void Consumer(object obj)
 		{
-			Thread.Sleep(1000);
-			MessageBox.Show("Костыль №1");
+			Thread.Sleep(100);
+			//MessageBox.Show("Костыль №1");
 			ProcessingServer processing;
 			while (workingServer && workingThread)
 			{
-
 				manualResetEvent.WaitOne();
 				if (SecureQueue.Count > 0)
 				{
@@ -1126,6 +898,6 @@ namespace ClassLibrary
 				else { manualResetEvent.Reset(); }
 
 			}
-		}
+		}	
 	}
 }

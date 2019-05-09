@@ -21,9 +21,9 @@ namespace ClassLibrary
 
 	public class ControllerClient
 	{
-		
+
 		ConcurrentQueue<ProcessingClient> SecureQueue = new ConcurrentQueue<ProcessingClient>();
-		ManualResetEvent manualResetEvent;
+		public ManualResetEvent manualResetEvent;
 
 		public delegate void CloseFormD(object sender, FormClosingEventArgs e);
 		public event CloseFormD CloseFormEvent;
@@ -77,10 +77,6 @@ namespace ClassLibrary
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 			byte[] countRead = BitConverter.GetBytes(massByts.Count());
 
-			//byte[] typeComand = new byte[1];
-			//typeComand[0] = numComand;
-			//nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-
 			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 			nStream.Write(massByts, 0, massByts.Count());
 		}
@@ -109,19 +105,19 @@ namespace ClassLibrary
 		{
 			if (threadStart)
 			{
-			//	if (PingWatch.ElapsedMilliseconds > 4000)
-			//	{
-			//		PingWatch.Stop();
-			//		CloseFormEvent(null, null);
-			//	}
-			//	else
-			//	{
-			//		//PingWatch = new Stopwatch();
-			//		//ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-			//		//pi.num = model.ThisUser.userNumber;
-			//		//Writing(pi);
-			//		//PingWatch.Start();
-			//	}
+				//	if (PingWatch.ElapsedMilliseconds > 4000)
+				//	{
+				//		PingWatch.Stop();
+				//		CloseFormEvent(null, null);
+				//	}
+				//	else
+				//	{
+				//		//PingWatch = new Stopwatch();
+				//		//ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+				//		//pi.num = model.ThisUser.userNumber;
+				//		//Writing(pi);
+				//		//PingWatch.Start();
+				//	}
 			}
 
 		}
@@ -146,116 +142,6 @@ namespace ClassLibrary
 				Writing(r);
 			}
 		}
-
-		
-
-		//private void ReadingStream()
-		//{
-		//	while (serverStart)
-		//	{
-
-		//		byte[] typeCommand = new byte[1];
-		//		try
-		//		{
-		//			nStream.Read(typeCommand, 0, 1);
-		//		}
-		//		catch
-		//		{
-		//			break;
-		//		}
-
-		//		switch (typeCommand[0])
-		//		{
-		//			case 1:
-		//				{
-		//					string tmpString = Reading(nStream);
-		//					GetUserInfo(tmpString);
-		//					model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates, model.ThisUser.userLocation);
-		//					break;
-		//				}
-		//			case 2:
-		//				{
-		//					PingWatch.Stop();
-		//					model.Ping = (int)PingWatch.ElapsedMilliseconds;
-		//					break;
-		//				}
-		//			case 3:
-		//				{
-		//					GetBulletsInfo();
-		//					break;
-		//				}
-		//			case 4:
-		//				{
-
-		//					break;
-		//				}
-		//			case 5:
-		//				{
-		//					Disconnect();
-		//					break;
-		//				}
-		//			case 6:
-		//				{
-		//					GetBushesInfo();
-		//					break;
-		//				}
-		//			case 7:
-		//				{
-		//					PlayerDeath();
-		//					break;
-		//				}
-		//			case 8:
-		//				{
-		//					GetMapBordersInfo();
-		//					break;
-		//				}
-		//			case 9:
-		//				{
-		//					GetZoneStartInfo();
-		//					break;
-		//				}
-		//			case 10:
-		//				{
-		//					GetPrevZoneInfo();
-		//					break;
-		//				}
-		//			case 12:
-		//				{
-		//					GetBoxesInfo();
-		//					break;
-		//				}
-		//			case 13:
-		//				{
-
-		//					break;
-		//				}
-		//			case 20:
-		//				{
-		//					GetKillsInfo();
-		//					break;
-		//				}
-		//			case 21:
-		//				{
-		//					GetCountGamesInfo();
-		//					break;
-		//				}
-		//			case 33:
-		//				{
-		//					GetCountWinsInfo();
-		//					break;
-		//				}
-		//			case 44:
-		//				{
-		//					GetNumber();
-		//					break;
-		//				}
-		//				//case 10 и 11 	уже зарезервированы	
-		//		}
-
-
-		//	}
-
-		//}
 
 		private void GetNumber()
 		{
@@ -375,6 +261,7 @@ namespace ClassLibrary
 				timerPing.Stop();
 				CloseEvent();
 				threadReading.Abort();
+				manualResetEvent.Set();
 			}
 		}
 
@@ -483,11 +370,11 @@ namespace ClassLibrary
 			while (serverStart)
 			{
 				string tmpString = CTransfers.Reading(nStream);
-				
-					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
 
-				
-				
+				SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
+
+
+
 				manualResetEvent.Set();
 
 			}
@@ -496,7 +383,7 @@ namespace ClassLibrary
 
 		public void Consumer()
 		{
-			Thread.Sleep(1000);
+			Thread.Sleep(100);
 			//MessageBox.Show("Костыль №1");
 			ProcessingClient processing;
 			while (serverStart)

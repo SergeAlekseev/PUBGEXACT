@@ -25,7 +25,6 @@ namespace ClassLibrary
 		public string Name;
 		public bool PrivateWorkingThread;
 		public short PistolBullets=999, GunBullets=999, ShotgunBullets=999;
-		
 
 		public UserInfo(Point userLocation)
 		{

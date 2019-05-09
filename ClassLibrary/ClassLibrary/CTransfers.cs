@@ -10,7 +10,8 @@ namespace ClassLibrary
 {
 	public static class CTransfers
 	{
-		public static JsonSerializerSettings jss = new JsonSerializerSettings {
+		public static JsonSerializerSettings jss = new JsonSerializerSettings
+		{
 			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 			TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All,
 			Formatting = Newtonsoft.Json.Formatting.Indented,
@@ -45,22 +46,23 @@ namespace ClassLibrary
 			{
 				serialized = JsonConvert.SerializeObject(obj, jss);
 			}
+
 			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 			byte[] countRead = BitConverter.GetBytes(massByts.Count());
 
 
 			lock (nStream)
 			{
-				
+				try
+				{
 					nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 					nStream.Write(massByts, 0, massByts.Count());
-				
+				}
+				catch (Exception err) { Console.Write(err.Message + " Ошибка в CTransfer, метод Writing"); }
 			}
-
-
 		}
 
-		static public void WritingInMenu(object obj,byte numComand, NetworkStream nStream)
+		static public void WritingInMenu(object obj, byte numComand, NetworkStream nStream)
 		{
 			string serialized = "";
 			lock (obj)
@@ -75,13 +77,12 @@ namespace ClassLibrary
 
 			lock (nStream)
 			{
-				
-					nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
-					nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-					nStream.Write(massByts, 0, massByts.Count());
-				
-			}
 
+				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
+				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(massByts, 0, massByts.Count());
+
+			}
 
 		}
 	}

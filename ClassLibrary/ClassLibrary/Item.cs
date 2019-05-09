@@ -11,7 +11,6 @@ namespace ClassLibrary
 	{
 		public short Count, MaxCount, Time, TimeReloading;
 		public Point Location;
-
 		public void SetLocation(Point loc)
 		{
 			Location = loc;

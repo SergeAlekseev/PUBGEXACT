@@ -34,6 +34,7 @@
 			this.status = new System.Windows.Forms.Label();
 			this.startGame = new System.Windows.Forms.Button();
 			this.maps = new System.Windows.Forms.Button();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.SuspendLayout();
 			// 
 			// start
@@ -62,7 +63,7 @@
 			// 
 			this.status.AutoSize = true;
 			this.status.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.status.Location = new System.Drawing.Point(12, 9);
+			this.status.Location = new System.Drawing.Point(12, 29);
 			this.status.Name = "status";
 			this.status.Size = new System.Drawing.Size(110, 13);
 			this.status.TabIndex = 2;
@@ -90,6 +91,14 @@
 			this.maps.UseVisualStyleBackColor = true;
 			this.maps.Click += new System.EventHandler(this.maps_Click);
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(445, 24);
+			this.menuStrip1.TabIndex = 5;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
 			// Server
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -100,6 +109,7 @@
 			this.Controls.Add(this.status);
 			this.Controls.Add(this.stop);
 			this.Controls.Add(this.start);
+			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Server";
 			this.Text = "Server";
@@ -116,6 +126,7 @@
 		private System.Windows.Forms.Label status;
 		private System.Windows.Forms.Button startGame;
 		private System.Windows.Forms.Button maps;
+		private System.Windows.Forms.MenuStrip menuStrip1;
 	}
 }
 

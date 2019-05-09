@@ -13,23 +13,23 @@ namespace ClassLibrary
 	public class ModelClient
 	{
 		List<UserInfo> listUsers = new List<UserInfo>();
+		List<BulletInfo> listBullet = new List<BulletInfo>();
+		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
 		Action action = new Action();
 		int ping = 0;
-		UserInfo thisUser = new UserInfo(new Point(300, 300));
-		List<BulletInfo> listBullet = new List<BulletInfo>();
+		int countGamers = 0;
+		UserInfo thisUser = new UserInfo(new Point(300, 300));	
 		Map map = new Map();
 		short lifes;
 		bool die, win;
+		public bool Start = false;
 		Image[] images = new Image[20];
 		GeneralInfo gInfo = new GeneralInfo();
-		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
-		public bool Start = false;
 		Point mouseCoord = new Point();
 		double angelToZone;
 		string killer;
 		Kill[] arrayKills = new Kill[3];
-		int countGamers = 0;
-
+		
 		public int number;
 		public int CountGamers
 		{

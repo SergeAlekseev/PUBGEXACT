@@ -8,6 +8,7 @@ namespace ClassLibrary
 {
 	public class Weapon:Item
 	{
+		public string Name;
 		public short Speed, TimeLife, Spread;
 		public UserInfo UserInfo;
 		public short Damage;

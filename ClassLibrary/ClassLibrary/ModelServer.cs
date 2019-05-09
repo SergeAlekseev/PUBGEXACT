@@ -29,6 +29,7 @@ namespace ClassLibrary
 			get { return listShoting; }
 			set { listShoting = value; }
 		}
+
 		public List<MMove> ListMove
 		{
 			get { return listMove; }
