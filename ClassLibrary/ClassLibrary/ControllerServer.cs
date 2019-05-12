@@ -208,6 +208,18 @@ namespace ClassLibrary
 								if (g.Name == model.ListUsers[i].Name)
 									g.Dies += 1;
 							}
+
+							GetKillsInfo kill = new GetKillsInfo();
+							kill.kill.killer = "ZONA";
+							kill.kill.dead = model.ListUsers[i].Name;
+
+							for (int k = 0; k < model.ListUsers.Count; k++)
+							{
+								if (model.ListUsers[k] != null)
+								{
+									CTransfers.Writing(kill, model.ListNs[k]);
+								}
+							}
 						}
 					}
 
@@ -614,7 +626,7 @@ namespace ClassLibrary
 			}
 			lock (model.ListBullet)
 			{
-				model.ListBullet.Remove(bulletInfo);
+				model.ListBullet.TryTake(out bulletInfo);
 			}
 		}
 
@@ -671,11 +683,11 @@ namespace ClassLibrary
 					angel.listUserInfo = model.ListUsers;
 					GetBulletsInfo buletsInfo = new GetBulletsInfo();
 					lock (model.ListBullet)
-						buletsInfo.listBulets = model.ListBullet;
+						buletsInfo.listBulets = model.ListBullet.ToList<BulletInfo>();
 
 					CTransfers.Writing(angel, nStream);
 					CTransfers.Writing(buletsInfo, nStream);
-					Thread.Sleep(20);
+					Thread.Sleep(10);
 				}
 				catch (System.IO.IOException err)
 				{

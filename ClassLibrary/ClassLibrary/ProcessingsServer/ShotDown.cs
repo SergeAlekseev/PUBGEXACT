@@ -134,7 +134,7 @@ namespace ClassLibrary.ProcessingsServer
 			}
 			lock (model.ListBullet)
 			{
-				model.ListBullet.Remove(bulletInfo);
+				model.ListBullet.TryTake(out bulletInfo);
 			}
 		}
 	}

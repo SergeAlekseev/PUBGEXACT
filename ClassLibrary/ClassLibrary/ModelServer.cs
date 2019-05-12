@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace ClassLibrary
 {
 	public class ModelServer
 	{
-		List<BulletInfo> listBullet = new List<BulletInfo>();
+		BlockingCollection<BulletInfo> listBullet = new BlockingCollection<BulletInfo>();
 		List<UserInfo> listUsers = new List<UserInfo>();
 		List<NetworkStream> listNs = new List<NetworkStream>();
 		Map map = new Map();
@@ -59,7 +60,7 @@ namespace ClassLibrary
 			set { listUsers = value; }
 		}
 
-		public List<BulletInfo> ListBullet
+		public BlockingCollection<BulletInfo> ListBullet
 		{
 			get { return listBullet; }
 			set { listBullet = value; }
@@ -83,7 +84,7 @@ namespace ClassLibrary
 			workingGame = false;
 			//listMove = new List<MMove>();
 			listShoting = new List<Thread>();
-			listBullet = new List<BulletInfo>();
+			listBullet = new BlockingCollection<BulletInfo>();
 			listUsers = new List<UserInfo>();
 			listNs = new List<NetworkStream>();
 			listGInfo = new List<GeneralInfo>();

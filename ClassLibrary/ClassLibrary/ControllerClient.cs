@@ -298,14 +298,10 @@ namespace ClassLibrary
 			while (serverStart)
 			{
 				string tmpString = CTransfers.Reading(nStream);
-				try
-				{
+				
 					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
-				}
-				catch
-				{
-					
-				}
+				
+				
 
 
 				manualResetEvent.Set();
