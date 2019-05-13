@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ClassLibrary">
-      <HintPath>..\..\ClassLibrary\ClassLibrary\bin\Debug\ClassLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -54,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMyMenu.cs" />
-    <Compile Include="Controller.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
@@ -68,14 +64,12 @@
     <Compile Include="MyMenu.Designer.cs">
       <DependentUpon>MyMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Vector.cs" />
     <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View.Designer.cs">
       <DependentUpon>View.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Login.resx">
@@ -142,6 +136,12 @@
     <None Include="Picture\notThisPlayer.png" />
     <None Include="Picture\clear100.png" />
     <Content Include="Picture\grass.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClassLibrary\ClassLibrary\ClassLibrary.csproj">
+      <Project>{013ac4c5-74d5-44d7-a4db-4d4289fae6b7}</Project>
+      <Name>ClassLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

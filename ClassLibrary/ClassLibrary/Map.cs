@@ -42,7 +42,6 @@ namespace ClassLibrary
 			set
 			{
 				mapBorders = value;
-				this.Remove();
 			}
 		}
 

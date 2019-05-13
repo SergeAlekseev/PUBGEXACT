@@ -10,6 +10,7 @@ namespace ClassLibrary
 	{
 		public NormalShotgun()
 		{
+			this.Name = "Normal Shotпun";
 			this.Damage = 15;
 			this.Count = 8;
 			this.MaxCount = 8;

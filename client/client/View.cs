@@ -13,9 +13,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary;
+
 using Newtonsoft.Json;
 using Action = ClassLibrary.Action;
-
 namespace client
 {
 	public partial class Client : Form
@@ -32,8 +32,11 @@ namespace client
 		public delegate void MouseLocatinD(Point MouseLocatin);
 		public event MouseLocatinD MouseLocatinEvent;
 
-		public delegate void ShotD(byte type);
-		public event ShotD ShotEvent;
+		public delegate void ShotUpD();
+		public event ShotUpD ShotUpEvent;
+
+		public delegate void ShotDownD();
+		public event ShotDownD ShotDownEvent;
 
 		public delegate double RotatateD();
 		public event RotatateD RotatateEvent;
@@ -44,14 +47,15 @@ namespace client
 		public delegate void СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
-		static Model model = new Model();
-		Controller controller = new Controller(model);
+		static ModelClient model = new ModelClient();
+		ControllerClient controller = new ControllerClient(model);
 
 		Graphics pictureBox;
 		BufferedGraphicsContext bufferedGraphicsContext;
 		BufferedGraphics bufferedGraphics;
 		bool Start = false;
 		bool MouseDown = false;
+
 
 		System.Drawing.TextureBrush tb;
 
@@ -88,7 +92,10 @@ namespace client
 			ActionEvent += controller.PressKey;
 			ConnectEvent += controller.Connect;
 			DisconnectEvent += controller.Disconnect;
-			ShotEvent += controller.Shot;
+
+			ShotUpEvent += controller.ShotUp;
+			ShotDownEvent += controller.ShotDown;
+
 			MouseLocatinEvent += controller.WriteMouseLocation;
 			RotatateEvent += controller.mouseMove;
 			СhangeItemEvent += controller.ChangeItem;
@@ -96,11 +103,12 @@ namespace client
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
+
 			controller.ErrorConnect += ErrorConnect;
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			Start = true;
-			controller.setName(model.GInfo.Name);
+			
 
 			System.Windows.Forms.Timer timerMove = new System.Windows.Forms.Timer();
 			timerMove.Interval = 100;
@@ -151,18 +159,23 @@ namespace client
 			{
 				if (!model.Die && !model.Win)
 				{
+					#region DrawingGrass
 					if (model.Images[1] != null)
 					{
 						TextureBrush grass = new TextureBrush(model.Images[1]);
 						grass.TranslateTransform(-model.ThisUser.userLocation.X, -model.ThisUser.userLocation.Y);
-						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X-300 + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y-300 + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 603, model.Map.MapBorders.Height + 603);
 					}
+					#endregion
 
+					#region DrawingBoxes
 					foreach (Box box in model.Map.ListBox)
 					{
 						bufferedGraphics.Graphics.DrawImage(model.Images[3], box.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, box.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
+					#endregion
 
+					#region drawingOtherUsers
 					foreach (UserInfo user in model.ListUsers)
 					{
 						if (user != null && user.userLocation != model.ThisUser.userLocation)
@@ -177,6 +190,9 @@ namespace client
 							bufferedGraphics.Graphics.DrawImage(background, user.userLocation.X + PlayingField.Width / 2 - 13 - model.ThisUser.userLocation.X, user.userLocation.Y + PlayingField.Height / 2 - 13 - model.ThisUser.userLocation.Y);
 						}
 					}
+					#endregion
+
+					#region DrawingThisUser
 					if (model.ListUsers.Count > 0)
 					{
 
@@ -189,7 +205,7 @@ namespace client
 						g.DrawImage(model.Images[6], 5, 5);
 
 						bufferedGraphics.Graphics.DrawImage(background, 288, 288);
-						bufferedGraphics.Graphics.DrawString(model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.Red, 560, 2);
+						bufferedGraphics.Graphics.DrawString("Hp " +model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 500);
 						///////////
 						if (model.ThisUser.flagZone)
 						{
@@ -209,22 +225,11 @@ namespace client
 
 						//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
 					}
-					foreach (BulletInfo bullet in model.ListBullet)
-					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
-					}
+					#endregion
 
-					foreach (Bush bush in model.Map.ListBush)
-					{
-						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
-					}
+					#region UserInteface
 
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
-
-
-					bufferedGraphics.Graphics.DrawString(model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 2, 2);
+					bufferedGraphics.Graphics.DrawString("Ping " + model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 540, 2);
 
 					if (model.ArrayKills[2] != null)
 						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n" +
@@ -236,30 +241,57 @@ namespace client
 					else if (model.ArrayKills[0] != null)
 						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
 
-					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Blue, 20, 2);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 535, 24);
 
-					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Red, 200, 2);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Red, 2, 2);
 
-					bufferedGraphics.Graphics.DrawString(model.CountGamers + " gamers", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.DarkBlue, 300, 2);
+					bufferedGraphics.Graphics.DrawString(model.CountGamers + " Gamers", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.DarkBlue, 300, 2);
 
 					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
-						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Green, 300, 580);
+					{
+						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name+" : "+ model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
+					}
+					#endregion
 
+					#region DrawingBullets
+					foreach (BulletInfo bullet in model.ListBullet)
+					{
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
+					}
+					#endregion
 
+					#region DraingBushes
+					foreach (Bush bush in model.Map.ListBush)
+					{
+						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+					}
+					#endregion
 
+					#region Drawing_Borders_andZone
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
+
+					#endregion
+				
 				}
 				else if (model.Die)
 				{
+					#region Death
+
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
 					bufferedGraphics.Graphics.DrawString("You killed " + model.Killer, new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 340);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 375);
+					#endregion
 				}
 				else
 				{
+					#region Win
 					bufferedGraphics.Graphics.FillRectangle(Brushes.White, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You win!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Green, 150, 275);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Green, 150, 340);
+					#endregion
 				}
 				bufferedGraphics.Render(pictureBox);
 				bufferedGraphics.Graphics.Clear(DefaultBackColor);
@@ -292,7 +324,7 @@ namespace client
 		{
 			if (!MouseDown)
 			{
-				ShotEvent(3);
+				ShotDownEvent();
 				MouseDown = true;
 			}
 		}
@@ -301,7 +333,7 @@ namespace client
 		{
 			if (MouseDown)
 			{
-				ShotEvent(4);
+				ShotUpEvent();
 				MouseDown = false;
 			}
 		}
@@ -324,6 +356,11 @@ namespace client
 		private void Client_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void Client_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

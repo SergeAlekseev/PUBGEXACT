@@ -41,9 +41,9 @@ namespace client
 					MessageBox.Show("Неверный логин или пароль");
 				}
 			}
-			catch
+			catch(Exception err)
 			{
-				MessageBox.Show("Невозможно подключиться к заданному IP");
+				MessageBox.Show(err.Message);
 			}
 		}
 
@@ -74,15 +74,15 @@ namespace client
 					break;
 				}
 				if (typeCommand[0] == 10|| typeCommand[0] == 12)
-				{
-					string tmpString = Reading(nStream2);
-					GInfo = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
-					flag = true;
-					return true;
+				{		
+						string tmpString = Reading(nStream2);
+						GInfo = JsonConvert.DeserializeObject<GeneralInfo>(tmpString);
+						flag = true;
+						return true;	
 				}
 				else if (typeCommand[0] == 11)
 				{
-					flag = true;
+					flag = false;
 					return false;
 				}
 				
