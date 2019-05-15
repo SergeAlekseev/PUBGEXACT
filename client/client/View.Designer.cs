@@ -53,6 +53,7 @@
 			// 
 			// timerPaint
 			// 
+			this.timerPaint.Interval = 10;
 			this.timerPaint.Tick += new System.EventHandler(this.timerPaint_Tick);
 			// 
 			// timerMouseLocation

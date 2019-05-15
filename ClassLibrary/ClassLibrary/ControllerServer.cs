@@ -213,6 +213,7 @@ namespace ClassLibrary
 							kill.kill.killer = "ZONA";
 							kill.kill.dead = model.ListUsers[i].Name;
 
+
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{
 								if (model.ListUsers[k] != null)
@@ -239,6 +240,7 @@ namespace ClassLibrary
 
 		public void StartServer(object tmpObject)//Controller
 		{
+			SecureQueue = new ConcurrentQueue<ProcessingServer>();
 
 			if (!workingServer && !model.workingGame)
 			{
@@ -328,14 +330,12 @@ namespace ClassLibrary
 			if (workingServer)
 			{
 				PlayerSave(model.ListGInfo);
-				SecureQueue = new ConcurrentQueue<ProcessingServer>();
 				number = -1;
 				PublicHost.Stop();
 				PublicHost2.Stop();
 				PublicHost3.Stop();
 				if (model.workingGame)
 				{
-
 					timerZone.Stop();
 					timerUsersInZone.Stop();
 				}
@@ -351,7 +351,11 @@ namespace ClassLibrary
 						catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
 					}
 				}
-
+				foreach(System.Timers.Timer t in model.ListTimers)
+				{
+					t.Stop();
+				}
+				
 				workingServer = false;
 				workingThread = false;
 				model.Remove();
@@ -458,7 +462,7 @@ namespace ClassLibrary
 							GeneralInfo tmpUser = PlayerCheck(PlayerRead(newUser), newUser);
 							if (!model.workingGame)
 							{
-								if (tmpUser == null && model.ListGInfo.Count > 0)
+								if (tmpUser == null)
 								{
 									model.ListGInfo.Add(new GeneralInfo());
 									model.ListGInfo[model.ListGInfo.Count - 1].Name = newUser.Name;
@@ -865,12 +869,12 @@ namespace ClassLibrary
 		{
 			int num = (int)obj;
 			System.Timers.Timer timerMove = new System.Timers.Timer();
-
+			model.ListTimers.Add(timerMove);
 
 			try
 			{
 				timerMove.Interval = 15;
-				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
+				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num);  };
 				timerMove.Start();
 
 				try
@@ -902,13 +906,14 @@ namespace ClassLibrary
 					}
 					model.CountGamers -= 1;
 					writingCountGames();
-					timerMove.Stop();
+					
 
 				}
 			}
 			catch
 			{
 				ErrorEvent("Ложный вызов продюсера");
+				timerMove.Stop();
 			}
 
 		}

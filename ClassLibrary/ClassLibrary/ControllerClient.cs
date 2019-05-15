@@ -98,12 +98,16 @@ namespace ClassLibrary
 
 		private void Writing(object obj)
 		{
-			string serialized = JsonConvert.SerializeObject(obj, CTransfers.jss);
-			byte[] massByts = Encoding.UTF8.GetBytes(serialized);
-			byte[] countRead = BitConverter.GetBytes(massByts.Count());
+			try
+			{
+				string serialized = JsonConvert.SerializeObject(obj, CTransfers.jss);
+				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
+				byte[] countRead = BitConverter.GetBytes(massByts.Count());
 
-			nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-			nStream.Write(massByts, 0, massByts.Count());
+				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+				nStream.Write(massByts, 0, massByts.Count());
+			}
+			catch { Disconnect(); }
 		}
 
 		public void WriteMouseLocation(Point mouseLocation)
@@ -123,7 +127,7 @@ namespace ClassLibrary
 			this.model = model;
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
-			//timerPing.Start();
+			timerPing.Start();
 
 			//timerMouseOverItem.Elapsed += timerMouseOverItem_Tick;
 			//timerMouseOverItem.Interval = 1000;
@@ -134,19 +138,19 @@ namespace ClassLibrary
 		{
 			if (threadStart)
 			{
-				if (PingWatch.ElapsedMilliseconds > 4000)
-				{
-					PingWatch.Stop();
-					CloseFormEvent(null, null);
-				}
-				else
-				{
-					PingWatch = new Stopwatch();
-					ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-					pi.num = model.ThisUser.userNumber;
-					Writing(pi);
-					PingWatch.Start();
-				}
+				//if (PingWatch.ElapsedMilliseconds > 4000)
+				//{
+				//	PingWatch.Stop();
+				//	CloseFormEvent(null, null);
+				//}
+				//else
+				//{
+				//	PingWatch = new Stopwatch();
+				//	ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+				//	pi.num = model.ThisUser.userNumber;
+				//	Writing(pi);
+				//	PingWatch.Start();
+				//}
 			}
 
 		}
@@ -212,13 +216,13 @@ namespace ClassLibrary
 
 			if (threadStart)
 			{
-				nStream.Close();
 				serverStart = false;
 				client.Close();
 				timerPing.Stop();
-				CloseEvent();
 				threadReading.Abort();
 				manualResetEvent.Set();
+				nStream.Close();
+				CloseEvent();
 			}
 		}
 
@@ -322,16 +326,20 @@ namespace ClassLibrary
 
 		public void Producer()
 		{
-			while (serverStart)
+			while (serverStart )
 			{
-				string tmpString = CTransfers.Reading(nStream);
+				try
+				{
+					string tmpString = CTransfers.Reading(nStream);
 
-				SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
+					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
 
 
 
 
-				manualResetEvent.Set();
+					manualResetEvent.Set();
+				}
+				catch { Disconnect(); }
 
 			}
 

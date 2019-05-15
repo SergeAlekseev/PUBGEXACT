@@ -10,8 +10,8 @@ namespace ClassLibrary
 	{
 		public override object Use(UserInfo obj)
 		{
-			return null;
 
+			return null;
 		}
 	}
 }

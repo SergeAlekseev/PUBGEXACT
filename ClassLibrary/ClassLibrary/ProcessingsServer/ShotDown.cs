@@ -59,6 +59,10 @@ namespace ClassLibrary.ProcessingsServer
 						}
 						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
 					}
+					else if (obj is Grenade)
+					{
+
+					}
 				}
 			}
 
@@ -70,9 +74,9 @@ namespace ClassLibrary.ProcessingsServer
 			bool flagBreak = false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
 			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += (13.0 / bulletInfo.speed) * bulletInfo.speedX;
+			X += (15.0 / bulletInfo.speed) * bulletInfo.speedX;
 			bulletInfo.location.X = (int)X;
-			Y += (13.0 / bulletInfo.speed) * bulletInfo.speedY;
+			Y += (15.0 / bulletInfo.speed) * bulletInfo.speedY;
 			bulletInfo.location.Y = (int)Y;
 			for (int i = 0; i < bulletInfo.timeLife; i++)
 			{
@@ -84,6 +88,7 @@ namespace ClassLibrary.ProcessingsServer
 				{
 					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9)
 					{
+
 						byte[] popad = new byte[1];
 						popad[0] = 6;
 						model.ListUsers[j].hp -= bulletInfo.damage;
@@ -102,11 +107,11 @@ namespace ClassLibrary.ProcessingsServer
 								if (g.Name == bulletInfo.owner)
 									g.Kills += 1;
 							}
-
+							
 							GetKillsInfo kill = new GetKillsInfo();
 							kill.kill.killer = bulletInfo.owner;
 							kill.kill.dead = model.ListUsers[j].Name;
-
+							
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{
 								if (model.ListUsers[k] != null)

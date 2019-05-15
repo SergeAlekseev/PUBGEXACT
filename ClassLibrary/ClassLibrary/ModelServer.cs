@@ -21,9 +21,16 @@ namespace ClassLibrary
 		int countGamers = 0;
 		List<MMove> listMove = new List<MMove>();
 		List<Thread> listShoting = new List<Thread>();
+		List<System.Timers.Timer> listTimers = new List<System.Timers.Timer>();
+
 
 		public bool workingGame;
 
+		public List<System.Timers.Timer> ListTimers
+		{
+			get { return listTimers; }
+			set { listTimers = value; }
+		}
 		public List<Thread> ListShoting
 		{
 			get { return listShoting; }
@@ -75,6 +82,7 @@ namespace ClassLibrary
 		{
 			countGamers = 0;
 			workingGame = false;
+			listTimers = new List<System.Timers.Timer>();
 			listShoting = new List<Thread>();
 			listBullet = new BlockingCollection<BulletInfo>();
 			listUsers = new List<UserInfo>();
