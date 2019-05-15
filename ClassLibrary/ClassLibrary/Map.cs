@@ -13,6 +13,7 @@ namespace ClassLibrary
 		public List<Box> listBox = new List<Box>();
 		public List<Bush> listBush = new List<Bush>();
 		public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200);
+		List<Item> items = new List<Item>();
 		Zone nextZone = new Zone();
 		Zone prevZone = new Zone();
 		public bool[,] bordersForUsers;
@@ -24,6 +25,13 @@ namespace ClassLibrary
 			bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
 
 		}
+
+		public List<Item> ListItems
+		{
+			get { return items; }
+			set { items = value; }
+		}
+
 		public List<Box> ListBox
 		{
 			get { return listBox; }

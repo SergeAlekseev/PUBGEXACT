@@ -45,6 +45,8 @@ namespace ClassLibrary
 		public bool serverStart;
 
 		public System.Timers.Timer timerPing = new System.Timers.Timer();
+		public System.Timers.Timer timerMouseOverItem = new System.Timers.Timer();
+
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
@@ -68,6 +70,29 @@ namespace ClassLibrary
 				ShotUp su = new ShotUp();
 				su.num = model.number;
 				Writing(su);
+			}
+		}
+
+		public void Mouse_Click()
+		{
+			Point mousLoc = new Point(model.MouseCoord.X-300 + model.ThisUser.userLocation.X, model.MouseCoord.Y-300 + model.ThisUser.userLocation.Y);
+			foreach (Item item in model.Map.ListItems)
+			{
+				if ((mousLoc.X >= item.Location.X - 15 && mousLoc.X <= item.Location.X + 15) && (mousLoc.Y >= item.Location.Y - 15 && mousLoc.Y <= item.Location.Y + 15))
+				{
+					if (Math.Abs(model.ThisUser.userLocation.X - item.Location.X) < 50 && Math.Abs(model.ThisUser.userLocation.Y - item.Location.Y) < 50)
+					{
+						ItemTaken itemT = new ItemTaken();
+						itemT.item = item;
+
+						CTransfers.Writing(itemT, nStream);
+					}
+					else
+					{
+						// Сообщение о том, что игрок слишком далеко от желаемого предмета
+					}
+
+				}
 			}
 		}
 
@@ -98,26 +123,30 @@ namespace ClassLibrary
 			this.model = model;
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
-			timerPing.Start();
+			//timerPing.Start();
+
+			//timerMouseOverItem.Elapsed += timerMouseOverItem_Tick;
+			//timerMouseOverItem.Interval = 1000;
+			//timerMouseOverItem.Start();
 		}
 
 		public void timerPing_Tick(object sender, EventArgs e)
 		{
 			if (threadStart)
 			{
-				//	if (PingWatch.ElapsedMilliseconds > 4000)
-				//	{
-				//		PingWatch.Stop();
-				//		CloseFormEvent(null, null);
-				//	}
-				//	else
-				//	{
-				//		//PingWatch = new Stopwatch();
-				//		//ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-				//		//pi.num = model.ThisUser.userNumber;
-				//		//Writing(pi);
-				//		//PingWatch.Start();
-				//	}
+				if (PingWatch.ElapsedMilliseconds > 4000)
+				{
+					PingWatch.Stop();
+					CloseFormEvent(null, null);
+				}
+				else
+				{
+					PingWatch = new Stopwatch();
+					ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+					pi.num = model.ThisUser.userNumber;
+					Writing(pi);
+					PingWatch.Start();
+				}
 			}
 
 		}
@@ -155,7 +184,7 @@ namespace ClassLibrary
 			threadReading.Abort();
 		}
 
-		
+
 
 		public void DeathPlayer()
 		{
@@ -241,8 +270,6 @@ namespace ClassLibrary
 				gpa.angels = angleDegree;
 				Writing(gpa);
 			}
-
-
 			return angleDegree;
 		}
 
@@ -298,10 +325,10 @@ namespace ClassLibrary
 			while (serverStart)
 			{
 				string tmpString = CTransfers.Reading(nStream);
-				
-					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
-				
-				
+
+				SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
+
+
 
 
 				manualResetEvent.Set();
@@ -309,7 +336,6 @@ namespace ClassLibrary
 			}
 
 		}
-
 		public void Consumer()
 		{
 			Thread.Sleep(100);
@@ -334,5 +360,10 @@ namespace ClassLibrary
 				else { manualResetEvent.Reset(); }
 			}
 		}
+
+		//public void timerMouseOverItem_Tick(object sender, EventArgs e)
+		//{
+		
+		//}
 	}
 }

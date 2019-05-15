@@ -73,6 +73,7 @@
     <Compile Include="ProcessingsClient\GetBushesInfo.cs" />
     <Compile Include="ProcessingsClient\GetCountGamesInfo.cs" />
     <Compile Include="ProcessingsClient\GetCountWinsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetInfoItems.cs" />
     <Compile Include="ProcessingsClient\GetKillsInfo.cs" />
     <Compile Include="ProcessingsClient\GetMapBordersInfo.cs" />
     <Compile Include="ProcessingsClient\GetNumber.cs" />
@@ -81,10 +82,12 @@
     <Compile Include="ProcessingsClient\PingInfoClient.cs" />
     <Compile Include="ProcessingsClient\PlayerDeath.cs" />
     <Compile Include="ProcessingsClient\ProcessingClient.cs" />
+    <Compile Include="ProcessingsClient\UserItemInfo.cs" />
     <Compile Include="ProcessingsServer\ChangeWeapons.cs" />
     <Compile Include="ProcessingsServer\GetPlayersAngels.cs" />
     <Compile Include="ProcessingsServer\GetPlayersMousesLocation.cs" />
     <Compile Include="ProcessingsServer\GetUserName.cs" />
+    <Compile Include="ProcessingsServer\ItemTaken.cs" />
     <Compile Include="ProcessingsServer\PingInfoServer.cs" />
     <Compile Include="ProcessingsServer\PlayerMovementsInfo.cs" />
     <Compile Include="ProcessingsServer\ProcessingServer.cs" />

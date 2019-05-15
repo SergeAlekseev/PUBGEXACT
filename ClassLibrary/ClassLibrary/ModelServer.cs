@@ -18,7 +18,6 @@ namespace ClassLibrary
 		List<NetworkStream> listNs = new List<NetworkStream>();
 		Map map = new Map();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
-		List<Item> items = new List<Item>();
 		int countGamers = 0;
 		List<MMove> listMove = new List<MMove>();
 		List<Thread> listShoting = new List<Thread>();
@@ -46,12 +45,6 @@ namespace ClassLibrary
 		{
 			get { return listGInfo; }
 			set { listGInfo = value; }
-		}
-
-		public List<Item> Items
-		{
-			get { return items; }
-			set { items = value; }
 		}
 
 		public List<UserInfo> ListUsers
@@ -82,13 +75,11 @@ namespace ClassLibrary
 		{
 			countGamers = 0;
 			workingGame = false;
-			//listMove = new List<MMove>();
 			listShoting = new List<Thread>();
 			listBullet = new BlockingCollection<BulletInfo>();
 			listUsers = new List<UserInfo>();
 			listNs = new List<NetworkStream>();
 			listGInfo = new List<GeneralInfo>();
-			items = new List<Item>();
 			map = new Map();
 		}
 	}

@@ -47,6 +47,9 @@ namespace client
 		public delegate void СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
+		public delegate void MouseClickD();
+		public event MouseClickD MouseClickEvent;
+
 		static ModelClient model = new ModelClient();
 		ControllerClient controller = new ControllerClient(model);
 
@@ -100,6 +103,7 @@ namespace client
 			RotatateEvent += controller.mouseMove;
 			СhangeItemEvent += controller.ChangeItem;
 			RechargeEvent += controller.Recharge;
+			MouseClickEvent += controller.Mouse_Click;
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -225,6 +229,35 @@ namespace client
 
 						//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
 					}
+					#endregion				
+
+					#region DrawingBullets
+					foreach (BulletInfo bullet in model.ListBullet)
+					{
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
+					}
+					#endregion
+
+					#region DraingBushes
+					foreach (Bush bush in model.Map.ListBush)
+					{
+						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+					}
+					#endregion
+
+					#region Drawing_Borders_andZone
+					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
+
+					#endregion
+
+					#region DrawingItems
+					foreach (Item item in model.Map.ListItems)
+					{
+						if((item is NormalGun)) bufferedGraphics.Graphics.DrawRectangle(Pens.Red, item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 10, 10);
+						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawRectangle(Pens.Orange, item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+					}
 					#endregion
 
 					#region UserInteface
@@ -249,31 +282,10 @@ namespace client
 
 					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
 					{
-						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name+" : "+ model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
+						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
 					}
 					#endregion
 
-					#region DrawingBullets
-					foreach (BulletInfo bullet in model.ListBullet)
-					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
-					}
-					#endregion
-
-					#region DraingBushes
-					foreach (Bush bush in model.Map.ListBush)
-					{
-						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
-					}
-					#endregion
-
-					#region Drawing_Borders_andZone
-					bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Green, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.NextZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.NextZone.ZoneRadius * 2, (float)model.Map.NextZone.ZoneRadius * 2);
-					bufferedGraphics.Graphics.DrawEllipse(Pens.Red, model.Map.PrevZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.X, model.Map.PrevZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.Map.PrevZone.ZoneRadius - model.ThisUser.userLocation.Y, (float)model.Map.PrevZone.ZoneRadius * 2, (float)model.Map.PrevZone.ZoneRadius * 2);
-
-					#endregion
-				
 				}
 				else if (model.Die)
 				{
@@ -361,6 +373,11 @@ namespace client
 		private void Client_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private void PlayingField_Click(object sender, EventArgs e)
+		{
+			MouseClickEvent();
 		}
 	}
 }
