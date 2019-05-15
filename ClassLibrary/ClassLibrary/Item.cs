@@ -9,6 +9,7 @@ namespace ClassLibrary
 {
 	public  class Item
 	{
+		public int IdItem;
 		public string Name;
 		public short Count, MaxCount, Time, TimeReloading;
 		public Point Location;

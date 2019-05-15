@@ -112,7 +112,7 @@ namespace ClassLibrary
 						if ((moveRight) && model.ListUsers[num].userLocation.X - model.Map.MapBorders.Height < -2 && !model.Map.bordersForUsers[model.ListUsers[num].userLocation.X + speed, model.ListUsers[num].userLocation.Y]) model.ListUsers[num].userLocation.X += speed;// Вправо	
 					}
 				}
-				
+
 			}
 			catch
 			{
@@ -263,7 +263,7 @@ namespace ClassLibrary
 
 
 				RandomBox();
-
+				GenerateItems();
 
 				PublicHost = host;
 				host.Start();
@@ -644,6 +644,8 @@ namespace ClassLibrary
 			bordersInfo.rectangle = model.Map.MapBorders;
 			GetBoxesInfo boxesInfo = new GetBoxesInfo();
 			boxesInfo.listBox = model.Map.ListBox;
+			GetInfoItems itemsInfo = new GetInfoItems();
+			itemsInfo.listItems = model.Map.ListItems;
 
 			CTransfers.Writing(gNumber, model.ListNs[num]);
 			Thread.Sleep(100);
@@ -652,6 +654,8 @@ namespace ClassLibrary
 			CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
 			Thread.Sleep(100);
 			CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
+			Thread.Sleep(100);
+			CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
 
 
 			model.CountGamers += 1;
@@ -880,7 +884,8 @@ namespace ClassLibrary
 
 						manualResetEvent.Set();
 
-					}timerMove.Stop();
+					}
+					timerMove.Stop();
 
 				}
 				catch (System.IO.IOException)
@@ -911,7 +916,6 @@ namespace ClassLibrary
 		public void Consumer(object obj)
 		{
 			Thread.Sleep(100);
-			//MessageBox.Show("Костыль №1");
 			ProcessingServer processing;
 			while (workingServer && workingThread)
 			{
@@ -936,6 +940,43 @@ namespace ClassLibrary
 				}
 				else { manualResetEvent.Reset(); }
 
+			}
+		}
+
+		public void GenerateItems()
+		{
+			Random n = new Random();
+			List<Item> ListItems = new List<Item>();
+			int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 500000;
+
+			for (int i = 0; i < Count; i++)
+			{
+				NormalShotgun gun = new NormalShotgun();
+				Thread.Sleep(7);
+				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+				gun.IdItem = ListItems.Count; 
+				ListItems.Add(gun);
+			}
+
+			for (int i = 0; i < Count; i++)
+			{
+				NormalGun gun = new NormalGun();
+				Thread.Sleep(8);
+				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+				gun.IdItem = ListItems.Count;
+				ListItems.Add(gun);
+			}
+
+			model.Map.ListItems = ListItems;
+		}
+
+		public void SendingItemsInfo()
+		{
+			foreach (NetworkStream nStream in model.ListNs)
+			{
+				GetInfoItems items = new GetInfoItems();
+				items.listItems = model.Map.ListItems;
+				CTransfers.Writing(items, nStream);
 			}
 		}
 	}
