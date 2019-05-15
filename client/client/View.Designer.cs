@@ -103,6 +103,7 @@
 			this.Load += new System.EventHandler(this.Client_Load);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.Client_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Client_KeyPress);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
 			((System.ComponentModel.ISupportInitialize)(this.PlayingField)).EndInit();
 			this.ResumeLayout(false);

@@ -103,7 +103,7 @@ namespace client
 			RotatateEvent += controller.mouseMove;
 			СhangeItemEvent += controller.ChangeItem;
 			RechargeEvent += controller.Recharge;
-			MouseClickEvent += controller.Mouse_Click;
+			MouseClickEvent += controller.Mouse_Click; //Клик по вещи
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -377,7 +377,18 @@ namespace client
 
 		private void PlayingField_Click(object sender, EventArgs e)
 		{
-			MouseClickEvent();
+			//MouseClickEvent();
+		}
+
+		private void Client_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == 'q' || e.KeyChar == 'й')
+			{
+				//Событие в котором метод, что добавляет предмет в список предметов карты из инвентаря и удаляет его оттуда
+			}
+			else if (e.KeyChar == 'e' || e.KeyChar == 'у') MouseClickEvent();
+
+
 		}
 	}
 }
