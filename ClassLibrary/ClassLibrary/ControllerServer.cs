@@ -46,7 +46,7 @@ namespace ClassLibrary
 
 		Thread ConsumerThread;
 		ManualResetEvent manualResetEvent;
-		ConcurrentQueue<ProcessingServer> SecureQueue = new ConcurrentQueue<ProcessingServer>(); //___________________________________
+		public ConcurrentQueue<ProcessingServer> SecureQueue = new ConcurrentQueue<ProcessingServer>(); //___________________________________
 
 		public void StartGame()
 		{
@@ -351,11 +351,11 @@ namespace ClassLibrary
 						catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
 					}
 				}
-				foreach(System.Timers.Timer t in model.ListTimers)
+				foreach (System.Timers.Timer t in model.ListTimers)
 				{
 					t.Stop();
 				}
-				
+
 				workingServer = false;
 				workingThread = false;
 				model.Remove();
@@ -584,6 +584,7 @@ namespace ClassLibrary
 						if (model.ListUsers[j].hp <= 0)
 						{
 
+		
 							PlayerDeath death = new PlayerDeath();
 							death.Killer = bulletInfo.owner;
 
@@ -665,8 +666,8 @@ namespace ClassLibrary
 			model.CountGamers += 1;
 			writingCountGames();
 
-			model.ListUsers[num].Items[1] = new NormalGun();
-			model.ListUsers[num].Items[2] = new NormalShotgun();
+			model.ListUsers[num].Items[1] = new Item();
+			model.ListUsers[num].Items[2] = new Item();
 			model.ListUsers[num].Items[3] = new Item();
 			model.ListUsers[num].Items[4] = new Item();
 			model.ListUsers[num].Items[5] = new Item();
@@ -874,7 +875,7 @@ namespace ClassLibrary
 			try
 			{
 				timerMove.Interval = 15;
-				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num);  };
+				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
 				timerMove.Start();
 
 				try
@@ -906,7 +907,7 @@ namespace ClassLibrary
 					}
 					model.CountGamers -= 1;
 					writingCountGames();
-					
+
 
 				}
 			}
@@ -959,7 +960,7 @@ namespace ClassLibrary
 				NormalShotgun gun = new NormalShotgun();
 				Thread.Sleep(7);
 				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				gun.IdItem = ListItems.Count; 
+				gun.IdItem = ListItems.Count;
 				ListItems.Add(gun);
 			}
 

@@ -75,6 +75,8 @@ namespace client
 			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
 			model.Images[6] = client.Properties.Resources.thisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
 			model.Images[7] = client.Properties.Resources.notThisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
+			model.Images[8] = client.Properties.Resources.marker.GetThumbnailImage(23,12, null, IntPtr.Zero);
+			model.Images[9] = client.Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -103,7 +105,6 @@ namespace client
 			RotatateEvent += controller.mouseMove;
 			СhangeItemEvent += controller.ChangeItem;
 			RechargeEvent += controller.Recharge;
-			MouseClickEvent += controller.Mouse_Click; //Клик по вещи
 
 			controller.CloseFormEvent += Client_FormClosing;
 			controller.CloseEvent += AllClose;
@@ -255,8 +256,8 @@ namespace client
 					#region DrawingItems
 					foreach (Item item in model.Map.ListItems)
 					{
-						if((item is NormalGun)) bufferedGraphics.Graphics.DrawRectangle(Pens.Red, item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 10, 10);
-						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawRectangle(Pens.Orange, item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+						if((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
+						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[9], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 					}
 					#endregion
 
@@ -285,6 +286,7 @@ namespace client
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
 					}
 					#endregion
+
 
 				}
 				else if (model.Die)
@@ -370,23 +372,19 @@ namespace client
 			Application.Exit();
 		}
 
-		private void Client_Load(object sender, EventArgs e)
-		{
-
-		}
-
-		private void PlayingField_Click(object sender, EventArgs e)
-		{
-			//MouseClickEvent();
-		}
-
 		private void Client_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar == 'q' || e.KeyChar == 'й')
 			{
+				MouseClickEvent = controller.ItemDroping;
+				MouseClickEvent();
 				//Событие в котором метод, что добавляет предмет в список предметов карты из инвентаря и удаляет его оттуда
 			}
-			else if (e.KeyChar == 'e' || e.KeyChar == 'у') MouseClickEvent();
+			else if (e.KeyChar == 'e' || e.KeyChar == 'у')
+			{
+				MouseClickEvent = controller.Mouse_Click;
+				MouseClickEvent();
+			}
 
 
 		}

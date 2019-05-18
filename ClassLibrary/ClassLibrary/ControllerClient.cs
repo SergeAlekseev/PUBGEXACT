@@ -75,17 +75,19 @@ namespace ClassLibrary
 
 		public void Mouse_Click()
 		{
-			Point mousLoc = new Point(model.MouseCoord.X-300 + model.ThisUser.userLocation.X, model.MouseCoord.Y-300 + model.ThisUser.userLocation.Y);
+			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
 			foreach (Item item in model.Map.ListItems)
 			{
 				if ((mousLoc.X >= item.Location.X - 15 && mousLoc.X <= item.Location.X + 15) && (mousLoc.Y >= item.Location.Y - 15 && mousLoc.Y <= item.Location.Y + 15))
 				{
 					if (Math.Abs(model.ThisUser.userLocation.X - item.Location.X) < 50 && Math.Abs(model.ThisUser.userLocation.Y - item.Location.Y) < 50)
 					{
-						ItemTaken itemT = new ItemTaken();
-						itemT.item = item;
+						ItemTaken itemTaken = new ItemTaken();
+						itemTaken.item = item;
+						itemTaken.num = model.number;
 
-						CTransfers.Writing(itemT, nStream);
+						CTransfers.Writing(itemTaken, nStream);
+						break;
 					}
 					else
 					{
@@ -93,6 +95,27 @@ namespace ClassLibrary
 					}
 
 				}
+			}
+		}
+
+		public void ItemDroping()
+		{
+			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
+
+			for (int i = 1; i < model.ThisUser.Items.Length; i++)
+			{
+				if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+				{
+					ItemDroping itemDrop = new ItemDroping();
+					List<Item> listItems = new List<Item>();
+					listItems.Add(model.ThisUser.Items[i]);
+					itemDrop.items = listItems;
+					itemDrop.num = model.number;
+					itemDrop.itemLocation = model.ThisUser.userLocation;
+
+					CTransfers.Writing(itemDrop, nStream);
+				}
+
 			}
 		}
 
@@ -128,10 +151,6 @@ namespace ClassLibrary
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
 			timerPing.Start();
-
-			//timerMouseOverItem.Elapsed += timerMouseOverItem_Tick;
-			//timerMouseOverItem.Interval = 1000;
-			//timerMouseOverItem.Start();
 		}
 
 		public void timerPing_Tick(object sender, EventArgs e)
@@ -180,7 +199,6 @@ namespace ClassLibrary
 		public void GetCountWinsInfo()
 		{
 			model.Win = true;
-			// string tmpString = Reading(nStream);
 			nStream.Close();
 			serverStart = false;
 			client.Close();
@@ -326,7 +344,7 @@ namespace ClassLibrary
 
 		public void Producer()
 		{
-			while (serverStart )
+			while (serverStart)
 			{
 				try
 				{
@@ -347,7 +365,6 @@ namespace ClassLibrary
 		public void Consumer()
 		{
 			Thread.Sleep(100);
-			//MessageBox.Show("Костыль №1");
 			ProcessingClient processing;
 			while (serverStart)
 			{
@@ -368,10 +385,5 @@ namespace ClassLibrary
 				else { manualResetEvent.Reset(); }
 			}
 		}
-
-		//public void timerMouseOverItem_Tick(object sender, EventArgs e)
-		//{
-		
-		//}
 	}
 }

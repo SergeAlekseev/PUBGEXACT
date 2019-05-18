@@ -95,9 +95,11 @@ namespace ClassLibrary.ProcessingsServer
 						flagBreak = true;
 						if (model.ListUsers[j].hp <= 0)
 						{
-
+			
 							PlayerDeath pd = new PlayerDeath();
 							pd.Killer = bulletInfo.owner;
+							//pd.num = j;
+							//pd.nSream = model.ListNs[j];
 							CTransfers.Writing(pd, model.ListNs[j]);
 
 							foreach (GeneralInfo g in model.ListGInfo)

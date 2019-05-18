@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+
 namespace ClassLibrary.ProcessingsServer
 {
 	class ItemTaken : ProcessingServer
@@ -16,10 +17,6 @@ namespace ClassLibrary.ProcessingsServer
 				if (Model.ListUsers[num].Items[i].Name == null )
 				{
 					Model.ListUsers[num].Items[i] = item; //Кладём вещь игроку
-
-					UserItemInfo userItem = new UserItemInfo();
-					userItem.Items = Model.ListUsers[num].Items; 
-					CTransfers.Writing(userItem, Model.ListNs[num]); //Даём актуальную инфу игроку об его инвентаре
 
 					lock (Model.Map.ListItems)
 					{
