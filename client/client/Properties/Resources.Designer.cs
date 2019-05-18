@@ -209,5 +209,41 @@ namespace client.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-    }
+
+		/// <summary>
+		///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+		/// </summary>
+		internal static System.Drawing.Bitmap marker
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("marker", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+
+		/// <summary>
+		///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+		/// </summary>
+		internal static System.Drawing.Bitmap marker2
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("marker2", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+
+		/// <summary>
+		///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+		/// </summary>
+		internal static System.Drawing.Bitmap med
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject("med", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+	}
 }

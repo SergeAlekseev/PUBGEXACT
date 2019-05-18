@@ -71,7 +71,7 @@ namespace server
 			localListBox.Size = new Size(300, 200);
 			localListBox.Location = new Point(0, 0);
 			localListBox.Dock = DockStyle.Fill;
-			
+			localListBox.Items.AddRange(listBox.Items);
 
 			listBoxForm.Controls.Add(localListBox);
 

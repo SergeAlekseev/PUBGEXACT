@@ -87,6 +87,7 @@
     <Compile Include="ProcessingsServer\GetPlayersAngels.cs" />
     <Compile Include="ProcessingsServer\GetPlayersMousesLocation.cs" />
     <Compile Include="ProcessingsServer\GetUserName.cs" />
+    <Compile Include="ProcessingsServer\ItemDroping.cs" />
     <Compile Include="ProcessingsServer\ItemTaken.cs" />
     <Compile Include="ProcessingsServer\PingInfoServer.cs" />
     <Compile Include="ProcessingsServer\PlayerMovementsInfo.cs" />
