@@ -95,12 +95,10 @@ namespace ClassLibrary.ProcessingsServer
 						flagBreak = true;
 						if (model.ListUsers[j].hp <= 0)
 						{
-			
-							PlayerDeath pd = new PlayerDeath();
-							pd.Killer = bulletInfo.owner;
-							//pd.num = j;
-							//pd.nSream = model.ListNs[j];
-							CTransfers.Writing(pd, model.ListNs[j]);
+
+							SingalForDroping Signal = new SingalForDroping();
+							CTransfers.Writing(Signal, model.ListNs[j]);
+							Thread.Sleep(100);//Чтобы вещи успевали дропнуться до удаления игрока
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
@@ -123,6 +121,10 @@ namespace ClassLibrary.ProcessingsServer
 									CTransfers.Writing(kill, model.ListNs[k]);
 								}
 							}
+
+							PlayerDeath pd = new PlayerDeath();
+							pd.Killer = bulletInfo.owner;
+							CTransfers.Writing(pd, model.ListNs[j]);
 
 						}
 						break;

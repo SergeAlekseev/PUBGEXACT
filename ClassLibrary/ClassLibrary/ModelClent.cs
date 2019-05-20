@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary;
@@ -30,7 +31,8 @@ namespace ClassLibrary
 		double angelToZone;
 		string killer;
 		public Kill[] arrayKills = new Kill[3];
-		
+		 NetworkStream nStream;
+
 		public int number;
 		public int CountGamers
 		{
@@ -47,6 +49,8 @@ namespace ClassLibrary
 			if (thisUser != null)
 				Start = true;
 		}
+
+		public NetworkStream NStream { get { return nStream; } set { nStream = value; } }
 		public double AngelToZone { get { return angelToZone; } set { angelToZone = value; } }
 		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }

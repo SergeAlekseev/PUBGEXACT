@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+	[Serializable]
 	public  class Item
 	{
 		public int IdItem;

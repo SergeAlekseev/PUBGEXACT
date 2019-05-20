@@ -14,7 +14,7 @@ namespace ClassLibrary.ProcessingsClient
 		{
 			if (controller.threadStart)
 			{
-				controller.nStream.Close();
+				controller.model.NStream.Close();
 				controller.serverStart = false;
 				controller.client.Close();
 				controller.timerPing.Stop();
