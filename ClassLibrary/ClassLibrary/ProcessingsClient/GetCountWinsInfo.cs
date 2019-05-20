@@ -13,7 +13,7 @@ namespace ClassLibrary.ProcessingsClient
 			controller.threadStart = false;
 			controller.manualResetEvent.Set();
 			controller.model.Win = true;
-			controller.nStream.Close();
+			controller.model.NStream.Close();
 			controller.serverStart = false;
 			controller.client.Close();
 			controller.timerPing.Stop();

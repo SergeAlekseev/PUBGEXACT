@@ -82,6 +82,7 @@
     <Compile Include="ProcessingsClient\PingInfoClient.cs" />
     <Compile Include="ProcessingsClient\PlayerDeath.cs" />
     <Compile Include="ProcessingsClient\ProcessingClient.cs" />
+    <Compile Include="ProcessingsClient\SingalForDroping.cs" />
     <Compile Include="ProcessingsClient\UserItemInfo.cs" />
     <Compile Include="ProcessingsServer\ChangeWeapons.cs" />
     <Compile Include="ProcessingsServer\GetPlayersAngels.cs" />

@@ -769,6 +769,7 @@ namespace ClassLibrary
 				}
 			return null;
 		}
+
 		public bool CheckData(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
 			foreach (GeneralInfo user in listUser)
@@ -777,6 +778,7 @@ namespace ClassLibrary
 			}
 			return false;
 		}
+
 		public List<GeneralInfo> PlayerRead(GeneralInfo newUser)// Читает данные из файла
 		{
 			BinaryFormatter formatter = new BinaryFormatter();
@@ -804,8 +806,6 @@ namespace ClassLibrary
 				return newList;
 			}
 		}
-
-
 
 		public void PlayerSave(List<GeneralInfo> listUsers)
 		{

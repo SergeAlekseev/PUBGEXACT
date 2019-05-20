@@ -37,7 +37,6 @@ namespace ClassLibrary
 		public ModelClient model;
 
 		public TcpClient client;// 25.46.244.0 
-		public NetworkStream nStream;
 		public Thread threadReading;
 
 		public Stopwatch PingWatch = new Stopwatch();
@@ -86,7 +85,7 @@ namespace ClassLibrary
 						itemTaken.item = item;
 						itemTaken.num = model.number;
 
-						CTransfers.Writing(itemTaken, nStream);
+						CTransfers.Writing(itemTaken, model.NStream);
 						break;
 					}
 					else
@@ -113,7 +112,7 @@ namespace ClassLibrary
 					itemDrop.num = model.number;
 					itemDrop.itemLocation = model.ThisUser.userLocation;
 
-					CTransfers.Writing(itemDrop, nStream);
+					CTransfers.Writing(itemDrop, model.NStream);
 				}
 
 			}
@@ -127,8 +126,8 @@ namespace ClassLibrary
 				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 				byte[] countRead = BitConverter.GetBytes(massByts.Count());
 
-				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
-				nStream.Write(massByts, 0, massByts.Count());
+				model.NStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
+				model.NStream.Write(massByts, 0, massByts.Count());
 			}
 			catch { Disconnect(); }
 		}
@@ -199,7 +198,7 @@ namespace ClassLibrary
 		public void GetCountWinsInfo()
 		{
 			model.Win = true;
-			nStream.Close();
+			model.NStream.Close();
 			serverStart = false;
 			client.Close();
 			timerPing.Stop();
@@ -210,7 +209,7 @@ namespace ClassLibrary
 
 		public void DeathPlayer()
 		{
-			nStream.Close();
+			model.NStream.Close();
 			threadStart = false;
 			client.Close();
 			timerPing.Stop();
@@ -239,7 +238,7 @@ namespace ClassLibrary
 				timerPing.Stop();
 				threadReading.Abort();
 				manualResetEvent.Set();
-				nStream.Close();
+				model.NStream.Close();
 				CloseEvent();
 			}
 		}
@@ -254,7 +253,7 @@ namespace ClassLibrary
 					{
 						manualResetEvent = new ManualResetEvent(true);
 						client = new TcpClient(ip, 1337);
-						nStream = client.GetStream();
+						model.NStream = client.GetStream();
 						serverStart = true;
 
 						//threadReading = new Thread(ReadingStream);
@@ -348,7 +347,7 @@ namespace ClassLibrary
 			{
 				try
 				{
-					string tmpString = CTransfers.Reading(nStream);
+					string tmpString = CTransfers.Reading(model.NStream);
 
 					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
 
