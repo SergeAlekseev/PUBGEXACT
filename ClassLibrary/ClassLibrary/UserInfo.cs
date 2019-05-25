@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace ClassLibrary
 {
-
+	[Serializable]
 	public class UserInfo
 	{
 		public short hp = 100, armor = 0;

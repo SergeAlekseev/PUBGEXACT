@@ -15,27 +15,18 @@ namespace MapEdit
 		{
 			Box box = new Box(mouseLocation.X, mouseLocation.Y);
 			model.Map.ListBox.Add(box);
-
 			for (int k = box.Location.X - 10; k < box.Location.X + 10; k++)
 			{
 				for (int j = box.Location.Y - 10; j < box.Location.Y + 10; j++)
 				{
-					try
-					{
 						model.Map.bordersForBullets[k, j] = true;
-					}
-					catch { }
 				}
 			}
-			for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
+			for (int k = box.Location.X - 13; k < box.Location.X + 13; k++)
 			{
-				for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
+				for (int j = box.Location.Y - 13; j < box.Location.Y + 13; j++)
 				{
-					try
-					{
 						model.Map.bordersForUsers[k, j] = true;
-					}
-					catch { }
 				}
 			}
 		}

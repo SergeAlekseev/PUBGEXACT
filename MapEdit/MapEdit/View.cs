@@ -26,6 +26,9 @@ namespace MapEdit
 			model.Images[0] = Properties.Resources.Bush.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[1] = Properties.Resources.Grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = Properties.Resources.box.GetThumbnailImage(25, 25, null, IntPtr.Zero);
+			model.Images[3] = Properties.Resources.tree2.GetThumbnailImage(32, 32, null, IntPtr.Zero);
+			model.Images[4] = Properties.Resources.marker.GetThumbnailImage(23, 12, null, IntPtr.Zero);
+			model.Images[5] = Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 
 			graphics = map.CreateGraphics();
 			bufferedGraphicsContext = new BufferedGraphicsContext();
@@ -45,6 +48,13 @@ namespace MapEdit
 				grass.TranslateTransform(-model.ThisUserLocation.X, -model.ThisUserLocation.Y);
 				bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X + map.Width / 2 - model.ThisUserLocation.X, model.Map.MapBorders.Y + map.Height / 2 - model.ThisUserLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
 			}
+
+			foreach (Item item in model.Map.ListItems)
+			{
+				if ((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[4], item.Location.X + map.Width / 2 - 10 - model.ThisUserLocation.X, item.Location.Y + map.Height / 2 - 10 - model.ThisUserLocation.Y, 23, 12);
+				if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[5], item.Location.X + map.Width / 2 - 10 - model.ThisUserLocation.X, item.Location.Y + map.Height / 2 - 10 - model.ThisUserLocation.Y, 23, 12);
+			}
+
 			foreach (Box box in model.Map.ListBox)
 			{
 				bufferedGraphics.Graphics.DrawImage(model.Images[2], box.Location.X + map.Width / 2 - 10 - model.ThisUserLocation.X, box.Location.Y + map.Height / 2 - 10 - model.ThisUserLocation.Y, 20, 20);
@@ -54,6 +64,12 @@ namespace MapEdit
 			{
 				bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + map.Width / 2 - 10 - model.ThisUserLocation.X, bush.Location.Y + map.Height / 2 - 10 - model.ThisUserLocation.Y, 20, 20);
 			}
+
+			foreach (Tree tree in model.Map.ListTrees)
+			{
+				bufferedGraphics.Graphics.DrawImage(model.Images[3], tree.Location.X + map.Width / 2 - 10 - model.ThisUserLocation.X, tree.Location.Y + map.Height / 2 - 10 - model.ThisUserLocation.Y, 32, 32);
+			}
+
 			bufferedGraphics.Graphics.DrawRectangle(Pens.Red, model.Map.MapBorders.X + map.Width / 2 - model.ThisUserLocation.X, model.Map.MapBorders.Y + map.Height / 2 - model.ThisUserLocation.Y, model.Map.MapBorders.Width + 3, model.Map.MapBorders.Height + 3);
 			bufferedGraphics.Render(graphics);
 			bufferedGraphics.Graphics.Clear(DefaultBackColor);
@@ -116,6 +132,24 @@ namespace MapEdit
 		private void map_MouseLeave(object sender, EventArgs e)
 		{
 			model.MouseOutside = true;
+		}
+
+		private void NormalGuns_Click(object sender, EventArgs e)
+		{
+			Items item = new CNormalGun();
+			model.Item = item.Add;
+		}
+
+		private void NormalShotGuns_Click(object sender, EventArgs e)
+		{
+			Items item = new CNormalShotGun();
+			model.Item = item.Add;
+		}
+
+		private void Trees_Click(object sender, EventArgs e)
+		{
+			Items item = new CTree();
+			model.Item = item.Add;
 		}
 	}
 }

@@ -43,6 +43,9 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.save = new System.Windows.Forms.Button();
 			this.load = new System.Windows.Forms.Button();
+			this.NormalShotGuns = new System.Windows.Forms.Button();
+			this.NormalGuns = new System.Windows.Forms.Button();
+			this.Trees = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.map)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -99,7 +102,7 @@
 			// 
 			// Start
 			// 
-			this.Start.Location = new System.Drawing.Point(621, 126);
+			this.Start.Location = new System.Drawing.Point(621, 310);
 			this.Start.Name = "Start";
 			this.Start.Size = new System.Drawing.Size(94, 23);
 			this.Start.TabIndex = 5;
@@ -115,7 +118,7 @@
 			// X
 			// 
 			this.X.AutoSize = true;
-			this.X.Location = new System.Drawing.Point(628, 190);
+			this.X.Location = new System.Drawing.Point(628, 374);
 			this.X.Name = "X";
 			this.X.Size = new System.Drawing.Size(35, 13);
 			this.X.TabIndex = 6;
@@ -124,7 +127,7 @@
 			// Y
 			// 
 			this.Y.AutoSize = true;
-			this.Y.Location = new System.Drawing.Point(629, 215);
+			this.Y.Location = new System.Drawing.Point(629, 399);
 			this.Y.Name = "Y";
 			this.Y.Size = new System.Drawing.Size(35, 13);
 			this.Y.TabIndex = 7;
@@ -133,7 +136,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(628, 258);
+			this.label2.Location = new System.Drawing.Point(628, 442);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(35, 13);
 			this.label2.TabIndex = 8;
@@ -142,7 +145,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(629, 290);
+			this.label3.Location = new System.Drawing.Point(629, 474);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(35, 13);
 			this.label3.TabIndex = 9;
@@ -150,7 +153,7 @@
 			// 
 			// save
 			// 
-			this.save.Location = new System.Drawing.Point(618, 332);
+			this.save.Location = new System.Drawing.Point(618, 516);
 			this.save.Name = "save";
 			this.save.Size = new System.Drawing.Size(94, 23);
 			this.save.TabIndex = 10;
@@ -160,7 +163,7 @@
 			// 
 			// load
 			// 
-			this.load.Location = new System.Drawing.Point(618, 370);
+			this.load.Location = new System.Drawing.Point(618, 554);
 			this.load.Name = "load";
 			this.load.Size = new System.Drawing.Size(94, 23);
 			this.load.TabIndex = 11;
@@ -168,11 +171,44 @@
 			this.load.UseVisualStyleBackColor = true;
 			this.load.Click += new System.EventHandler(this.load_Click);
 			// 
+			// NormalShotGuns
+			// 
+			this.NormalShotGuns.Image = global::MapEdit.Properties.Resources.marker2;
+			this.NormalShotGuns.Location = new System.Drawing.Point(670, 110);
+			this.NormalShotGuns.Name = "NormalShotGuns";
+			this.NormalShotGuns.Size = new System.Drawing.Size(48, 47);
+			this.NormalShotGuns.TabIndex = 13;
+			this.NormalShotGuns.UseVisualStyleBackColor = true;
+			this.NormalShotGuns.Click += new System.EventHandler(this.NormalShotGuns_Click);
+			// 
+			// NormalGuns
+			// 
+			this.NormalGuns.Image = global::MapEdit.Properties.Resources.marker;
+			this.NormalGuns.Location = new System.Drawing.Point(618, 110);
+			this.NormalGuns.Name = "NormalGuns";
+			this.NormalGuns.Size = new System.Drawing.Size(46, 47);
+			this.NormalGuns.TabIndex = 12;
+			this.NormalGuns.UseVisualStyleBackColor = true;
+			this.NormalGuns.Click += new System.EventHandler(this.NormalGuns_Click);
+			// 
+			// Trees
+			// 
+			this.Trees.Image = global::MapEdit.Properties.Resources.tree2;
+			this.Trees.Location = new System.Drawing.Point(618, 163);
+			this.Trees.Name = "Trees";
+			this.Trees.Size = new System.Drawing.Size(46, 47);
+			this.Trees.TabIndex = 14;
+			this.Trees.UseVisualStyleBackColor = true;
+			this.Trees.Click += new System.EventHandler(this.Trees_Click);
+			// 
 			// View
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(726, 628);
+			this.Controls.Add(this.Trees);
+			this.Controls.Add(this.NormalShotGuns);
+			this.Controls.Add(this.NormalGuns);
 			this.Controls.Add(this.load);
 			this.Controls.Add(this.save);
 			this.Controls.Add(this.label3);
@@ -210,6 +246,9 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button save;
 		private System.Windows.Forms.Button load;
+		private System.Windows.Forms.Button NormalShotGuns;
+		private System.Windows.Forms.Button NormalGuns;
+		private System.Windows.Forms.Button Trees;
 	}
 }
 

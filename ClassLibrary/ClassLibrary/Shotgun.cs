@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+	[Serializable]
 	public class Shotgun : Weapon
 	{
 		List<BulletInfo> Bullets;
