@@ -50,7 +50,10 @@
     <Compile Include="CBox.cs" />
     <Compile Include="CBush.cs" />
     <Compile Include="CEditor.cs" />
+    <Compile Include="CNormalGun.cs" />
+    <Compile Include="CNormalShotGun.cs" />
     <Compile Include="Controllers.cs" />
+    <Compile Include="CTree.cs" />
     <Compile Include="Items.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="View.cs">

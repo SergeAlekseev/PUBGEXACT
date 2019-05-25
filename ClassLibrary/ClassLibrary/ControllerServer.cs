@@ -401,9 +401,9 @@ namespace ClassLibrary
 							model.Map.bordersForBullets[k, j] = true;
 						}
 					}
-					for (int k = box.Location.X - 16; k < box.Location.X + 13; k++)
+					for (int k = box.Location.X - 13; k < box.Location.X + 13; k++)
 					{
-						for (int j = box.Location.Y - 16; j < box.Location.Y + 13; j++)
+						for (int j = box.Location.Y - 13; j < box.Location.Y + 13; j++)
 						{
 							model.Map.bordersForUsers[k, j] = true;
 						}

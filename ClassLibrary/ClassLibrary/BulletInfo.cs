@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary
 {
+	[Serializable]
 	public class BulletInfo
 	{
 		public double speedX, speedY;
