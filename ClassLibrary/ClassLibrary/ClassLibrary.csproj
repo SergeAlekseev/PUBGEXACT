@@ -78,6 +78,7 @@
     <Compile Include="ProcessingsClient\GetMapBordersInfo.cs" />
     <Compile Include="ProcessingsClient\GetNumber.cs" />
     <Compile Include="ProcessingsClient\GetPrevZoneInfo.cs" />
+    <Compile Include="ProcessingsClient\GetTreesInfo.cs" />
     <Compile Include="ProcessingsClient\GetZoneStartInfo.cs" />
     <Compile Include="ProcessingsClient\PingInfoClient.cs" />
     <Compile Include="ProcessingsClient\PlayerDeath.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="ProcessingsServer\ShotUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shotgun.cs" />
+    <Compile Include="Tree.cs" />
     <Compile Include="UserInfo.cs" />
     <Compile Include="Vector.cs" />
     <Compile Include="Weapon.cs" />

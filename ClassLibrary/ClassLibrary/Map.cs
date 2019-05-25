@@ -10,9 +10,11 @@ namespace ClassLibrary
 	[Serializable]
 	public class Map
 	{
-		public List<Box> listBox = new List<Box>();
-		public List<Bush> listBush = new List<Bush>();
-		public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200);
+		 List<Box> listBox = new List<Box>();
+		 List<Bush> listBush = new List<Bush>();
+		 List<Tree> listTrees = new List<Tree>();
+
+		public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200); //Переделать, чтобы размер зоны изменялся под загружаемую карту___________!!!!
 		List<Item> items = new List<Item>();
 		Zone nextZone = new Zone();
 		Zone prevZone = new Zone();
@@ -30,6 +32,12 @@ namespace ClassLibrary
 		{
 			get { return items; }
 			set { items = value; }
+		}
+
+		public List<Tree> ListTrees
+		{
+			get { return listTrees; }
+			set { listTrees = value; }
 		}
 
 		public List<Box> ListBox
@@ -69,6 +77,7 @@ namespace ClassLibrary
 		{
 			listBox = new List<Box>();
 			listBush = new List<Bush>();
+			listTrees = new List<Tree>();
 			nextZone = new Zone();
 			prevZone = new Zone();
 			bordersForUsers = new bool[mapBorders.Width, mapBorders.Height];

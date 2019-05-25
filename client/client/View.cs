@@ -77,6 +77,7 @@ namespace client
 			model.Images[7] = client.Properties.Resources.notThisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
 			model.Images[8] = client.Properties.Resources.marker.GetThumbnailImage(23,12, null, IntPtr.Zero);
 			model.Images[9] = client.Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
+			model.Images[10] = client.Properties.Resources.tree2.GetThumbnailImage(32, 32, null, IntPtr.Zero);
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -178,7 +179,7 @@ namespace client
 					{
 						bufferedGraphics.Graphics.DrawImage(model.Images[3], box.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, box.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
-					#endregion
+					#endregion					
 
 					#region drawingOtherUsers
 					foreach (UserInfo user in model.ListUsers)
@@ -243,6 +244,13 @@ namespace client
 					foreach (Bush bush in model.Map.ListBush)
 					{
 						bufferedGraphics.Graphics.DrawImage(model.Images[0], bush.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, bush.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
+					}
+					#endregion
+
+					#region DrawingTrees
+					foreach (Tree tree in model.Map.ListTrees)
+					{
+						bufferedGraphics.Graphics.DrawImage(model.Images[10], tree.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, tree.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 32, 32);
 					}
 					#endregion
 

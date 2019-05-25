@@ -265,6 +265,7 @@ namespace ClassLibrary
 
 
 				RandomBox();
+				RandomTree();
 				GenerateItems();
 
 				PublicHost = host;
@@ -382,9 +383,9 @@ namespace ClassLibrary
 			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 50000;)
 			{
 				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-				foreach (Box b in model.Map.ListBox)
+				foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
 				{
-					if (Math.Abs(b.Location.X - box.Location.X) < Box.size || Math.Abs(b.Location.Y - box.Location.Y) < Box.size)
+					if (Math.Abs(b.Location.X - box.Location.X) < Box.size || Math.Abs(b.Location.Y - box.Location.Y) < Box.size) 
 					{
 						flag = false;
 						break;
@@ -400,9 +401,47 @@ namespace ClassLibrary
 							model.Map.bordersForBullets[k, j] = true;
 						}
 					}
-					for (int k = box.Location.X - 10 - 3; k < box.Location.X + 10 + 3; k++)
+					for (int k = box.Location.X - 16; k < box.Location.X + 13; k++)
 					{
-						for (int j = box.Location.Y - 10 - 3; j < box.Location.Y + 10 + 3; j++)
+						for (int j = box.Location.Y - 16; j < box.Location.Y + 13; j++)
+						{
+							model.Map.bordersForUsers[k, j] = true;
+						}
+					}
+					i++;
+				}
+				flag = true;
+			}
+		}
+
+		public void RandomTree()
+		{
+			bool flag = true;
+			Random random = new Random();
+			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
+			{
+				Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
+				foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+				{
+					if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+					{
+						flag = false;
+						break;
+					}
+				}
+				if (flag)
+				{
+					model.Map.ListTrees.Add(tree);
+					for (int k = tree.Location.X - 3; k < tree.Location.X + 11; k++)
+					{
+						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 11; j++)
+						{
+							model.Map.bordersForBullets[k, j] = true;
+						}
+					}
+					for (int k = tree.Location.X - 3; k < tree.Location.X + 13; k++)
+					{
+						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 13; j++)
 						{
 							model.Map.bordersForUsers[k, j] = true;
 						}
@@ -641,27 +680,7 @@ namespace ClassLibrary
 		{
 			int num = number;   //шанс ошибки при одновременном подключении
 
-			GetNumber gNumber = new GetNumber();
-			gNumber.num = number;
-			GetBushesInfo bushesInfo = new GetBushesInfo();
-			bushesInfo.listBush = model.Map.ListBush;
-			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
-			bordersInfo.rectangle = model.Map.MapBorders;
-			GetBoxesInfo boxesInfo = new GetBoxesInfo();
-			boxesInfo.listBox = model.Map.ListBox;
-			GetInfoItems itemsInfo = new GetInfoItems();
-			itemsInfo.listItems = model.Map.ListItems;
-
-			CTransfers.Writing(gNumber, model.ListNs[num]);
-			Thread.Sleep(100);
-			CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
-			Thread.Sleep(100);
-			CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
-			Thread.Sleep(100);
-			CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
-			Thread.Sleep(100);
-			CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
-
+			SendingInformationAboutObjects(num); //Отправка инфы обо всех объектах карты
 
 			model.CountGamers += 1;
 			writingCountGames();
@@ -676,6 +695,34 @@ namespace ClassLibrary
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
 
+		}
+
+		private void SendingInformationAboutObjects(int num)
+		{
+			GetNumber gNumber = new GetNumber();
+			gNumber.num = number;
+			GetBushesInfo bushesInfo = new GetBushesInfo();
+			bushesInfo.listBush = model.Map.ListBush;
+			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+			bordersInfo.rectangle = model.Map.MapBorders;
+			GetBoxesInfo boxesInfo = new GetBoxesInfo();
+			boxesInfo.listBox = model.Map.ListBox;
+			GetInfoItems itemsInfo = new GetInfoItems();
+			itemsInfo.listItems = model.Map.ListItems;
+			GetTreesInfo treesInfo = new GetTreesInfo();
+			treesInfo.listTree = model.Map.ListTrees;
+
+			CTransfers.Writing(gNumber, model.ListNs[num]);
+			Thread.Sleep(100);
+			CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
+			Thread.Sleep(100);
+			CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
+			Thread.Sleep(100);
+			CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
+			Thread.Sleep(100);
+			CTransfers.Writing(treesInfo, model.ListNs[num]); // Отправка инфы о деревьях
+			Thread.Sleep(100);
+			CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
 		}
 
 		public void InfoUsers(object tc)
@@ -847,18 +894,8 @@ namespace ClassLibrary
 			{
 				if (model.ListUsers[i] != null)
 				{
-					GetBushesInfo bushesInfo = new GetBushesInfo();
-					bushesInfo.listBush = model.Map.ListBush;
-					GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
-					bordersInfo.rectangle = model.Map.MapBorders;
-					GetBoxesInfo boxesInfo = new GetBoxesInfo();
-					boxesInfo.listBox = model.Map.ListBox;
+					SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
 
-					CTransfers.Writing(bushesInfo, model.ListNs[i]); // Отправка инфы о кустах
-					Thread.Sleep(100);
-					CTransfers.Writing(bordersInfo, model.ListNs[i]); //Инфа о границах карты
-					Thread.Sleep(100);
-					CTransfers.Writing(boxesInfo, model.ListNs[i]); // Отправка инфы о коробках
 					do
 						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
 					while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
