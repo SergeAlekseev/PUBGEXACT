@@ -17,6 +17,7 @@ namespace ClassLibrary
 		List<UserInfo> listUsers = new List<UserInfo>();
 		List<BulletInfo> listBullet = new List<BulletInfo>();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();
+		List<GrenadeInfo> listGrenade = new List<GrenadeInfo>();
 		Action action = new Action();
 		int ping = 0;
 		int countGamers = 0;
@@ -58,6 +59,7 @@ namespace ClassLibrary
 		public string Killer { get { return killer; } set { killer = value; } }
 		public short Lifes { get { return lifes; } set { lifes = value; } }
 		public List<BulletInfo> ListBullet { get { return listBullet; } set { listBullet = value; } }
+		public List<GrenadeInfo> ListGrenade { get { return listGrenade; } set { listGrenade = value; } }
 		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; } }
 		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; } }
 		public Action Action { get { return action; } set { action = value; } }

@@ -14,6 +14,7 @@ namespace ClassLibrary
 	public class ModelServer
 	{
 		BlockingCollection<BulletInfo> listBullet = new BlockingCollection<BulletInfo>();
+		BlockingCollection<GrenadeInfo> listGrenade = new BlockingCollection<GrenadeInfo>();
 		List<UserInfo> listUsers = new List<UserInfo>();
 		List<NetworkStream> listNs = new List<NetworkStream>();
 		Map map = new Map();
@@ -43,6 +44,11 @@ namespace ClassLibrary
 			set { listMove = value; }
 		}
 
+		public BlockingCollection<GrenadeInfo> ListGrenade
+		{
+			get { return listGrenade; }
+			set { listGrenade = value; }
+		}
 		public int CountGamers
 		{
 			get { return countGamers; }
