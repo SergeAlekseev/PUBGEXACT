@@ -17,11 +17,19 @@ namespace ClassLibrary.ProcessingsServer
 			{
 				Model.ListUsers[num].flagWaitShoting = true;
 				Model.ListShoting[num].Abort();
+				if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Grenade)
+				{
+					(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Grenade).Grena.flagFly=true;
+				}
 				Model.ListUsers[num].flagShoting = false;
 				Thread t = new Thread(() =>
 				{
 					Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
-					Model.ListUsers[num].flagWaitShoting = false;
+					try
+					{
+						Model.ListUsers[num].flagWaitShoting = false;
+					}
+					catch { }
 				});
 				t.Start();
 			}

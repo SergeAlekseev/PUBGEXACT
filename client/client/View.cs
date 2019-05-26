@@ -71,11 +71,11 @@ namespace client
 			model.Images[1] = client.Properties.Resources.grass.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 			model.Images[2] = client.Properties.Resources.clear.GetThumbnailImage(25, 25, null, IntPtr.Zero);
 			model.Images[3] = client.Properties.Resources.box.GetThumbnailImage(23, 23, null, IntPtr.Zero);
-			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(16,16, null, IntPtr.Zero);
+			model.Images[4] = client.Properties.Resources.strelka.GetThumbnailImage(16, 16, null, IntPtr.Zero);
 			model.Images[5] = client.Properties.Resources.clear100.GetThumbnailImage(100, 100, null, IntPtr.Zero);
 			model.Images[6] = client.Properties.Resources.thisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
 			model.Images[7] = client.Properties.Resources.notThisPlayer.GetThumbnailImage(17, 17, null, IntPtr.Zero);
-			model.Images[8] = client.Properties.Resources.marker.GetThumbnailImage(23,12, null, IntPtr.Zero);
+			model.Images[8] = client.Properties.Resources.marker.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 			model.Images[9] = client.Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 			model.Images[10] = client.Properties.Resources.tree2.GetThumbnailImage(32, 32, null, IntPtr.Zero);
 
@@ -114,7 +114,7 @@ namespace client
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			Start = true;
-			
+
 
 			System.Windows.Forms.Timer timerMove = new System.Windows.Forms.Timer();
 			timerMove.Interval = 100;
@@ -170,7 +170,7 @@ namespace client
 					{
 						TextureBrush grass = new TextureBrush(model.Images[1]);
 						grass.TranslateTransform(-model.ThisUser.userLocation.X, -model.ThisUser.userLocation.Y);
-						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X-300 + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y-300 + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 603, model.Map.MapBorders.Height + 603);
+						bufferedGraphics.Graphics.FillRectangle(grass, model.Map.MapBorders.X - 300 + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.MapBorders.Y - 300 + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.MapBorders.Width + 603, model.Map.MapBorders.Height + 603);
 					}
 					#endregion
 
@@ -179,7 +179,7 @@ namespace client
 					{
 						bufferedGraphics.Graphics.DrawImage(model.Images[3], box.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, box.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 20, 20);
 					}
-					#endregion					
+					#endregion
 
 					#region drawingOtherUsers
 					foreach (UserInfo user in model.ListUsers)
@@ -211,7 +211,7 @@ namespace client
 						g.DrawImage(model.Images[6], 5, 5);
 
 						bufferedGraphics.Graphics.DrawImage(background, 288, 288);
-						bufferedGraphics.Graphics.DrawString("Hp " +model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 500);
+						bufferedGraphics.Graphics.DrawString("Hp " + model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 500);
 						///////////
 						if (model.ThisUser.flagZone)
 						{
@@ -230,13 +230,6 @@ namespace client
 						//////////
 
 						//		if (model.ThisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, model.ThisUser.userLocation.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.ThisUser.userLocation.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - model.ThisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - model.ThisUser.userLocation.Y);
-					}
-					#endregion				
-
-					#region DrawingBullets
-					foreach (BulletInfo bullet in model.ListBullet)
-					{
-						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
 					}
 					#endregion
 
@@ -261,10 +254,30 @@ namespace client
 
 					#endregion
 
+					#region DrawingBullets
+					foreach (BulletInfo bullet in model.ListBullet)
+					{
+						bufferedGraphics.Graphics.FillEllipse(Brushes.Yellow, bullet.location.X + PlayingField.Width / 2 - 1 - model.ThisUser.userLocation.X, bullet.location.Y + PlayingField.Height / 2 - 1 - model.ThisUser.userLocation.Y, 2, 2);
+					}
+					#endregion
+
+					#region DrawingGrenades
+					foreach (GrenadeInfo grenade in model.ListGrenade)
+					{
+						if (grenade.timeBoo > 50)
+							bufferedGraphics.Graphics.FillEllipse(Brushes.Black, grenade.location.X + PlayingField.Width / 2 - 3 - model.ThisUser.userLocation.X, grenade.location.Y + PlayingField.Height / 2 - 3 - model.ThisUser.userLocation.Y, 7, 7);
+						else if (grenade.timeBoo > 0)
+							bufferedGraphics.Graphics.FillEllipse(Brushes.DarkRed, grenade.location.X + PlayingField.Width / 2 - 3 - model.ThisUser.userLocation.X, grenade.location.Y + PlayingField.Height / 2 - 3 - model.ThisUser.userLocation.Y, 7, 7);
+						else
+							bufferedGraphics.Graphics.FillEllipse(Brushes.OrangeRed, grenade.location.X + PlayingField.Width / 2 - 50 - model.ThisUser.userLocation.X, grenade.location.Y + PlayingField.Height / 2 - 50 - model.ThisUser.userLocation.Y, 100, 100);
+
+					}
+					#endregion
+
 					#region DrawingItems
 					foreach (Item item in model.Map.ListItems)
 					{
-						if((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
+						if ((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[9], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 					}
 					#endregion

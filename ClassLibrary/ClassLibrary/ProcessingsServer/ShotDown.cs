@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace ClassLibrary.ProcessingsServer
 {
 	public class ShotDown : ProcessingServer
 	{
+		UserInfo userInfo;
 		ModelServer model;
 		public override void Process(ModelServer Model)
 		{
@@ -27,7 +29,7 @@ namespace ClassLibrary.ProcessingsServer
 
 		public void ShotUser(object ui)//Controller
 		{
-			UserInfo userInfo = (UserInfo)ui;
+			userInfo = (UserInfo)ui;
 			Object obj = null;
 			while (userInfo.flagShoting)
 			{
@@ -59,9 +61,16 @@ namespace ClassLibrary.ProcessingsServer
 						}
 						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
 					}
-					else if (obj is Grenade)
+					else if (obj is GrenadeInfo)
 					{
-
+						GrenadeInfo gi = (GrenadeInfo)obj;
+						Thread thread = new Thread(new ParameterizedThreadStart(Grenade));
+						thread.Start(gi);
+						lock (model.ListGrenade)
+						{
+							model.ListGrenade.Add(gi);
+						}
+						break;
 					}
 				}
 			}
@@ -86,7 +95,7 @@ namespace ClassLibrary.ProcessingsServer
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9)
+					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9 && model.ListUsers[j].hp > 0)
 					{
 
 						byte[] popad = new byte[1];
@@ -107,11 +116,11 @@ namespace ClassLibrary.ProcessingsServer
 								if (g.Name == bulletInfo.owner)
 									g.Kills += 1;
 							}
-							
+
 							GetKillsInfo kill = new GetKillsInfo();
 							kill.kill.killer = bulletInfo.owner;
 							kill.kill.dead = model.ListUsers[j].Name;
-							
+
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{
 								if (model.ListUsers[k] != null)
@@ -145,6 +154,93 @@ namespace ClassLibrary.ProcessingsServer
 			{
 				model.ListBullet.TryTake(out bulletInfo);
 			}
+		}
+
+
+		public void Grenade(object tmpObject)
+		{
+			bool flagfly = false, stop = false;
+			GrenadeInfo grena = (GrenadeInfo)tmpObject;
+			double X = grena.location.X, Y = grena.location.Y;
+			for (int i = 0; i < 250; i++)
+			{
+				grena.timeBoo--;
+				if (grena.flagFly)
+				{
+					grena.flagFly = false;
+					grena.location = new Point(userInfo.userLocation.X, userInfo.userLocation.Y);
+					double interval = Math.Sqrt(Math.Pow(userInfo.mouseLocation.X - userInfo.userLocation.X, 2)
+									+ Math.Pow(userInfo.mouseLocation.Y - userInfo.userLocation.Y, 2));
+					double k = interval / 3;
+					grena.speedX = (userInfo.mouseLocation.X - userInfo.userLocation.X) / k;
+					grena.speedY = (userInfo.mouseLocation.Y - userInfo.userLocation.Y) / k;
+					X = grena.location.X;
+					Y = grena.location.Y;
+					flagfly = true;
+				}
+				if (flagfly)
+				{
+					X += grena.speedX;
+					grena.location.X = (int)X;
+					Y += grena.speedY;
+					grena.location.Y = (int)Y;
+					if (grena.timeLife > 0)
+						grena.timeLife--;
+					else
+					{
+						flagfly = false;
+						stop = true;
+					}
+				}
+				else if(!stop) { grena.location = userInfo.userLocation; }
+				Thread.Sleep(20);
+			}
+			for (int j = 0; j < model.ListUsers.Count; j++)
+			{
+				if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 59 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 59 && model.ListUsers[j].hp > 0)
+				{
+
+					byte[] popad = new byte[1];
+					popad[0] = 6;
+					model.ListUsers[j].hp -= grena.damage;
+					if (model.ListUsers[j].hp <= 0)
+					{
+
+						SingalForDroping Signal = new SingalForDroping();
+						CTransfers.Writing(Signal, model.ListNs[j]);
+						Thread.Sleep(100);//Чтобы вещи успевали дропнуться до удаления игрока
+
+						foreach (GeneralInfo g in model.ListGInfo)
+						{
+							if (g.Name == model.ListUsers[j].Name)
+								g.Dies += 1;
+							if (g.Name == grena.owner)
+								g.Kills += 1;
+						}
+
+						GetKillsInfo kill = new GetKillsInfo();
+						kill.kill.killer = grena.owner;
+						kill.kill.dead = model.ListUsers[j].Name;
+
+						for (int k = 0; k < model.ListUsers.Count; k++)
+						{
+							if (model.ListUsers[k] != null)
+							{
+								if (model.ListUsers[k].Name == grena.owner)
+									model.ListUsers[k].kills += 1;
+								CTransfers.Writing(kill, model.ListNs[k]);
+							}
+						}
+
+						PlayerDeath pd = new PlayerDeath();
+						pd.Killer = grena.owner;
+						CTransfers.Writing(pd, model.ListNs[j]);
+
+					}
+				}
+			}
+			Thread.Sleep(700);
+			model.ListGrenade.TryTake(out grena);
 		}
 	}
 }

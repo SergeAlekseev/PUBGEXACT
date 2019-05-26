@@ -685,7 +685,7 @@ namespace ClassLibrary
 			model.CountGamers += 1;
 			writingCountGames();
 
-			model.ListUsers[num].Items[1] = new Item();
+			model.ListUsers[num].Items[1] = new Grenade();
 			model.ListUsers[num].Items[2] = new Item();
 			model.ListUsers[num].Items[3] = new Item();
 			model.ListUsers[num].Items[4] = new Item();
@@ -740,9 +740,13 @@ namespace ClassLibrary
 					GetBulletsInfo buletsInfo = new GetBulletsInfo();
 					lock (model.ListBullet)
 						buletsInfo.listBulets = model.ListBullet.ToList<BulletInfo>();
+					GetGrenadesInfo grenadesInfo = new GetGrenadesInfo();
+					lock (model.ListGrenade)
+						grenadesInfo.grenadesInfo = model.ListGrenade.ToList<GrenadeInfo>();
 
 					CTransfers.Writing(angel, nStream);
 					CTransfers.Writing(buletsInfo, nStream);
+					CTransfers.Writing(grenadesInfo, nStream);
 					Thread.Sleep(10);
 				}
 				catch (System.IO.IOException err)

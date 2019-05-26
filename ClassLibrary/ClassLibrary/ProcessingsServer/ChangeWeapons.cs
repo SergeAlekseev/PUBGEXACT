@@ -18,6 +18,10 @@ namespace ClassLibrary.ProcessingsServer
 			Model.ListUsers[num].flagRecharge = false;
 			Model.ListUsers[num].flagWaitShoting = true;
 			Model.ListShoting[num].Abort();
+			if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Grenade)
+			{
+				(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Grenade).Grena.flagFly = true;
+			}
 			Model.ListUsers[num].flagShoting = false;
 			Thread t = new Thread(() =>
 			{

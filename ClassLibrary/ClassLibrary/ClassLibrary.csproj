@@ -56,6 +56,7 @@
     <Compile Include="CTransfers.cs" />
     <Compile Include="GeneralInfo.cs" />
     <Compile Include="Grenade.cs" />
+    <Compile Include="GrenadeInfo.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Kill.cs" />
     <Compile Include="LinearWeapons.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="ProcessingsClient\GetBushesInfo.cs" />
     <Compile Include="ProcessingsClient\GetCountGamesInfo.cs" />
     <Compile Include="ProcessingsClient\GetCountWinsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetGrenadesInfo.cs" />
     <Compile Include="ProcessingsClient\GetInfoItems.cs" />
     <Compile Include="ProcessingsClient\GetKillsInfo.cs" />
     <Compile Include="ProcessingsClient\GetMapBordersInfo.cs" />
