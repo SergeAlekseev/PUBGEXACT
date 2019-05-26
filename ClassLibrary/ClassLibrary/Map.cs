@@ -14,7 +14,7 @@ namespace ClassLibrary
 		 List<Bush> listBush = new List<Bush>();
 		 List<Tree> listTrees = new List<Tree>();
 
-		public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200); //Переделать, чтобы размер зоны изменялся под загружаемую карту___________!!!!
+		public Rectangle mapBorders = new Rectangle(0, 0, 6000, 6000); //Переделать, чтобы размер зоны изменялся под загружаемую карту___________!!!!
 		List<Item> items = new List<Item>();
 		Zone nextZone = new Zone();
 		Zone prevZone = new Zone();
