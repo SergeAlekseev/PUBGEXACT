@@ -385,7 +385,7 @@ namespace ClassLibrary
 				Box box = new Box(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
 				foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
 				{
-					if (Math.Abs(b.Location.X - box.Location.X) < Box.size || Math.Abs(b.Location.Y - box.Location.Y) < Box.size) 
+					if (Math.Abs(b.Location.X - box.Location.X) < Box.size && Math.Abs(b.Location.Y - box.Location.Y) < Box.size) 
 					{
 						flag = false;
 						break;
