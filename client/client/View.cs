@@ -78,6 +78,7 @@ namespace client
 			model.Images[8] = client.Properties.Resources.marker.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 			model.Images[9] = client.Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 			model.Images[10] = client.Properties.Resources.tree2.GetThumbnailImage(32, 32, null, IntPtr.Zero);
+			model.Images[11] = client.Properties.Resources.Grenade.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -279,6 +280,7 @@ namespace client
 					{
 						if ((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[9], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
+						if ((item is Grenade)) bufferedGraphics.Graphics.DrawImage(model.Images[11], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 23);
 					}
 					#endregion
 
@@ -401,7 +403,7 @@ namespace client
 				MouseClickEvent();
 				//Событие в котором метод, что добавляет предмет в список предметов карты из инвентаря и удаляет его оттуда
 			}
-			else if (e.KeyChar == 'e' || e.KeyChar == 'у')
+			else if (e.KeyChar == 'f' || e.KeyChar == 'а')
 			{
 				MouseClickEvent = controller.Mouse_Click;
 				MouseClickEvent();
