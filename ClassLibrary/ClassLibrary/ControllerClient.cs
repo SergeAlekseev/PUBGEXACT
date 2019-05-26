@@ -38,6 +38,7 @@ namespace ClassLibrary
 
 		public TcpClient client;// 25.46.244.0 
 		public Thread threadReading;
+		public Thread threadConsumer;
 
 		public Stopwatch PingWatch = new Stopwatch();
 		public bool threadStart = false;
@@ -203,6 +204,7 @@ namespace ClassLibrary
 			client.Close();
 			timerPing.Stop();
 			threadReading.Abort();
+			threadConsumer.Abort();
 		}
 
 
@@ -214,6 +216,7 @@ namespace ClassLibrary
 			client.Close();
 			timerPing.Stop();
 			threadReading.Abort();
+			threadConsumer.Abort();
 		}
 
 
@@ -237,9 +240,11 @@ namespace ClassLibrary
 				client.Close();
 				timerPing.Stop();
 				threadReading.Abort();
+				threadConsumer.Abort();
 				manualResetEvent.Set();
 				model.NStream.Close();
 				CloseEvent();
+
 			}
 		}
 
@@ -258,7 +263,7 @@ namespace ClassLibrary
 
 						//threadReading = new Thread(ReadingStream);
 						threadReading = new Thread(Producer);
-						Thread threadConsumer = new Thread(Consumer);
+						threadConsumer = new Thread(Consumer);
 						//Вот тут вставить продусюре и консамера
 						threadReading.Start();
 						threadConsumer.Start();

@@ -328,6 +328,7 @@ namespace client
 					bufferedGraphics.Graphics.FillRectangle(Brushes.White, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You win!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Green, 150, 275);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Green, 150, 340);
+					
 					#endregion
 				}
 				bufferedGraphics.Render(pictureBox);
