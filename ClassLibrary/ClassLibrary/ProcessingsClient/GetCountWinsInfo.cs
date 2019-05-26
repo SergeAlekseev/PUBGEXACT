@@ -18,6 +18,7 @@ namespace ClassLibrary.ProcessingsClient
 			controller.client.Close();
 			controller.timerPing.Stop();
 			controller.threadReading.Abort();
+			controller.threadConsumer.Abort();
 		}
 	}
 }

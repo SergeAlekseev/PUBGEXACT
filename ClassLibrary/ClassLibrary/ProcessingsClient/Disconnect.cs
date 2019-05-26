@@ -20,6 +20,7 @@ namespace ClassLibrary.ProcessingsClient
 				controller.timerPing.Stop();
 				controller.Disconnect();
 				controller.threadReading.Abort();
+				controller.threadConsumer.Abort();
 				controller.manualResetEvent.Set();
 			}
 		}

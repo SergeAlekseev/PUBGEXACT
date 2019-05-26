@@ -66,6 +66,7 @@
     <Compile Include="ModelClent.cs" />
     <Compile Include="ModelServer.cs" />
     <Compile Include="NormalGun.cs" />
+    <Compile Include="NormalPistol.cs" />
     <Compile Include="NormalShotgun.cs" />
     <Compile Include="ProcessingsClient\AngelToZone.cs" />
     <Compile Include="ProcessingsClient\Disconnect.cs" />
