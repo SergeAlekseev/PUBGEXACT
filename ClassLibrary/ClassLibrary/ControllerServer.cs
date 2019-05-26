@@ -1010,6 +1010,15 @@ namespace ClassLibrary
 				ListItems.Add(gun);
 			}
 
+			for (int i = 0; i < Count; i++)
+			{
+				Grenade grenade = new Grenade();
+				Thread.Sleep(8);
+				grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+				grenade.IdItem = ListItems.Count;
+				ListItems.Add(grenade);
+			}
+
 			model.Map.ListItems = ListItems;
 		}
 
