@@ -119,7 +119,7 @@ namespace ClassLibrary
 			}
 		}
 
-		private void Writing(object obj)
+		public void Writing(object obj)
 		{
 			try
 			{

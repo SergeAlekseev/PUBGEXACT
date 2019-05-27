@@ -14,7 +14,7 @@ namespace ClassLibrary
 		 List<Bush> listBush = new List<Bush>();
 		 List<Tree> listTrees = new List<Tree>();
 
-		public Rectangle mapBorders = new Rectangle(0, 0, 6000, 6000); 
+		public Rectangle mapBorders = new Rectangle(0, 0, 1200, 1200); 
 
 		List<Item> items = new List<Item>();
 		Zone nextZone = new Zone();
@@ -26,7 +26,6 @@ namespace ClassLibrary
 		{
 			bordersForUsers = new bool[mapBorders.Width, mapBorders.Height];
 			bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
-
 		}
 
 		public List<Item> ListItems
@@ -74,15 +73,21 @@ namespace ClassLibrary
 			set { prevZone = value; }
 		}
 
-		public void Remove()
+		public bool Remove()
 		{
-			listBox = new List<Box>();
-			listBush = new List<Bush>();
-			listTrees = new List<Tree>();
-			nextZone = new Zone();
-			prevZone = new Zone();
-			bordersForUsers = new bool[mapBorders.Width, mapBorders.Height];
-			bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
+			try
+			{
+				listBox = new List<Box>();
+				listBush = new List<Bush>();
+				listTrees = new List<Tree>();
+				ListItems = new List<Item>();
+				nextZone = new Zone();
+				prevZone = new Zone();
+				bordersForUsers = new bool[mapBorders.Width, mapBorders.Height];
+				bordersForBullets = new bool[mapBorders.Width, mapBorders.Height];
+				return true;
+			}
+			catch (Exception) { return false; }
 		}
 	}
 }

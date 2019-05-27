@@ -41,24 +41,33 @@ namespace ClassLibrary
 			set { zoneCenterCoordinates = value; }
 		}
 
-		public void NewCenterZone(Rectangle mapBorders,Point prevCenter,int prevRadius) //Костыльный метод. 
+		public bool NewCenterZone(Rectangle mapBorders,Point prevCenter,int prevRadius) //Костыльный метод. 
 		{
-			int minX, minY, maxX, maxY;
-			minX = prevCenter.X - prevRadius + zoneRadius;
-			minY = prevCenter.Y - prevRadius + zoneRadius;
-			maxX = prevCenter.X + prevRadius - zoneRadius;
-			maxY = prevCenter.Y + prevRadius - zoneRadius;
-			if (minX < 0) minX = 0;
-			if (minY < 0) minY = 0;
-			if (maxY > mapBorders.Width) maxY = mapBorders.Width;
-			if (maxX > mapBorders.Height) maxX = mapBorders.Height;
-			do
+			try
 			{
-				Random n = new Random();
-				zoneCenterCoordinates.X = n.Next(minX, maxX);
-				zoneCenterCoordinates.Y = n.Next(minY, maxY);
+				if (prevCenter.X <= mapBorders.Width && prevCenter.Y <= mapBorders.Height)
+				{
+					int minX, minY, maxX, maxY;
+					minX = prevCenter.X - prevRadius + zoneRadius;
+					minY = prevCenter.Y - prevRadius + zoneRadius;
+					maxX = prevCenter.X + prevRadius - zoneRadius;
+					maxY = prevCenter.Y + prevRadius - zoneRadius;
+					if (minX < 0) minX = 0;
+					if (minY < 0) minY = 0;
+					if (maxY > mapBorders.Width) maxY = mapBorders.Width;
+					if (maxX > mapBorders.Height) maxX = mapBorders.Height;
+					do
+					{
+						Random n = new Random();
+						zoneCenterCoordinates.X = n.Next(minX, maxX);
+						zoneCenterCoordinates.Y = n.Next(minY, maxY);
+					}
+					while (Math.Sqrt(Math.Pow(prevCenter.X - zoneCenterCoordinates.X, 2) + Math.Pow(prevCenter.Y - zoneCenterCoordinates.Y, 2)) > prevRadius - zoneRadius);
+					return true;
+				}
+				else return false;
 			}
-			while (Math.Sqrt(Math.Pow(prevCenter.X-zoneCenterCoordinates.X,2)+Math.Pow(prevCenter.Y - zoneCenterCoordinates.Y, 2))> prevRadius - zoneRadius);
+			catch (Exception) { return false; }
 		}
 
 		public void startCenterZone(Rectangle rectangle)

@@ -310,9 +310,9 @@ namespace client
 					{
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
 					}
-					#endregion
 
-					bufferedGraphics.Graphics.DrawString("Время до сужения зоны: "+model.Map.NextZone.TimeTocompression, new Font("Times New Roman", 13, FontStyle.Bold), Brushes.Orange, 300, 2);
+					bufferedGraphics.Graphics.DrawString("Время до сужения зоны: " + model.Map.NextZone.TimeTocompression, new Font("Times New Roman", 13, FontStyle.Bold), Brushes.Orange, 300, 2);
+					#endregion
 
 				}
 				else if (model.Die)

@@ -712,32 +712,38 @@ namespace ClassLibrary
 
 		}
 
-		private void SendingInformationAboutObjects(int num)
+		public bool SendingInformationAboutObjects(int num)
 		{
-			GetNumber gNumber = new GetNumber();
-			gNumber.num = number;
-			GetBushesInfo bushesInfo = new GetBushesInfo();
-			bushesInfo.listBush = model.Map.ListBush;
-			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
-			bordersInfo.rectangle = model.Map.MapBorders;
-			GetBoxesInfo boxesInfo = new GetBoxesInfo();
-			boxesInfo.listBox = model.Map.ListBox;
-			GetInfoItems itemsInfo = new GetInfoItems();
-			itemsInfo.listItems = model.Map.ListItems;
-			GetTreesInfo treesInfo = new GetTreesInfo();
-			treesInfo.listTree = model.Map.ListTrees;
+			try
+			{
+				GetNumber gNumber = new GetNumber();
+				gNumber.num = number;
+				GetBushesInfo bushesInfo = new GetBushesInfo();
+				bushesInfo.listBush = model.Map.ListBush;
+				GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+				bordersInfo.rectangle = model.Map.MapBorders;
+				GetBoxesInfo boxesInfo = new GetBoxesInfo();
+				boxesInfo.listBox = model.Map.ListBox;
+				GetInfoItems itemsInfo = new GetInfoItems();
+				itemsInfo.listItems = model.Map.ListItems;
+				GetTreesInfo treesInfo = new GetTreesInfo();
+				treesInfo.listTree = model.Map.ListTrees;
 
-			CTransfers.Writing(gNumber, model.ListNs[num]);
-			Thread.Sleep(100);
-			CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
-			Thread.Sleep(100);
-			CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
-			Thread.Sleep(100);
-			CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
-			Thread.Sleep(100);
-			CTransfers.Writing(treesInfo, model.ListNs[num]); // Отправка инфы о деревьях
-			Thread.Sleep(100);
-			CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
+				CTransfers.Writing(gNumber, model.ListNs[num]);
+				Thread.Sleep(100);
+				CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
+				Thread.Sleep(100);
+				CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
+				Thread.Sleep(100);
+				CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
+				Thread.Sleep(100);
+				CTransfers.Writing(treesInfo, model.ListNs[num]); // Отправка инфы о деревьях
+				Thread.Sleep(100);
+				CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
+				return true;
+			}
+			catch (Exception) { return false; }
+
 		}
 
 		public void InfoUsers(object tc)
@@ -826,23 +832,32 @@ namespace ClassLibrary
 
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
-			if (listUser != null)
-				foreach (GeneralInfo user in listUser)
-				{
+			try
+			{
+				if (listUser != null)
+					foreach (GeneralInfo user in listUser)
+					{
 
-					if (user != null && user.Name == newUser.Name) return user;
+						if (user != null && user.Name == newUser.Name) return user;
 
-				}
-			return null;
+					}
+				return null;
+			}
+			catch { return null; }
 		}
 
 		public bool CheckData(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
-			foreach (GeneralInfo user in listUser)
+			try
 			{
-				if (user != null && user.Name == newUser.Name && user.Password == newUser.Password) return true;
+				if (listUser != null)
+					foreach (GeneralInfo user in listUser)
+					{
+						if (user != null && user.Name == newUser.Name && user.Password == newUser.Password) return true;
+					}
+				return false;
 			}
-			return false;
+			catch { return false; }
 		}
 
 		public List<GeneralInfo> PlayerRead(GeneralInfo newUser)// Читает данные из файла
@@ -873,53 +888,58 @@ namespace ClassLibrary
 			}
 		}
 
-		public void PlayerSave(List<GeneralInfo> listUsers)
+		public bool PlayerSave(List<GeneralInfo> listUsers)
 		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
+			try
 			{
-				formatter.Serialize(fs, listUsers);
+				BinaryFormatter formatter = new BinaryFormatter();
+				using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
+				{
+					formatter.Serialize(fs, listUsers);
+				}
+				return true;
 			}
+			catch { return false; }
 		}
 
 		public void LoadMap()
-		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			OpenFileDialog sn = new OpenFileDialog();
-			sn.DefaultExt = ".dat";
-			sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
-			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
-			DialogResult res = sn.ShowDialog();
-			if (res == DialogResult.Cancel)
-				return;
-			if (res == DialogResult.OK)
-			{
-				string NameFile = sn.FileName;
-				try
+		{		
+				BinaryFormatter formatter = new BinaryFormatter();
+				OpenFileDialog sn = new OpenFileDialog();
+				sn.DefaultExt = ".dat";
+				sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
+				sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
+				DialogResult res = sn.ShowDialog();
+				if (res == DialogResult.Cancel)
+					return ;
+				if (res == DialogResult.OK)
 				{
-					using (FileStream fs = new FileStream(NameFile, FileMode.Open))
+					string NameFile = sn.FileName;
+					try
 					{
-						Map m = (Map)formatter.Deserialize(fs);
-						model.Map = m;
+						using (FileStream fs = new FileStream(NameFile, FileMode.Open))
+						{
+							Map m = (Map)formatter.Deserialize(fs);
+							model.Map = m;
+						}
+					}
+					catch (Exception err)
+					{
+						ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе LoadMap");
 					}
 				}
-				catch (Exception err)
+				Random random = new Random();
+				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
-					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе LoadMap");
-				}
-			}
-			Random random = new Random();
-			for (int i = 0; i < model.ListUsers.Count; i++)
-			{
-				if (model.ListUsers[i] != null)
-				{
-					SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
+					if (model.ListUsers[i] != null)
+					{
+						SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
 
-					do
-						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
+						do
+							model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+						while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
+					}
 				}
-			}
 		}
 
 		public void Producer(object obj)
