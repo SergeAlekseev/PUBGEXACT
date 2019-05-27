@@ -82,6 +82,7 @@
     <Compile Include="ProcessingsClient\GetNumber.cs" />
     <Compile Include="ProcessingsClient\GetPrevZoneInfo.cs" />
     <Compile Include="ProcessingsClient\GetTreesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetZoneCompression.cs" />
     <Compile Include="ProcessingsClient\GetZoneStartInfo.cs" />
     <Compile Include="ProcessingsClient\PingInfoClient.cs" />
     <Compile Include="ProcessingsClient\PlayerDeath.cs" />

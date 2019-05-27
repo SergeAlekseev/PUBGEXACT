@@ -125,10 +125,26 @@ namespace ClassLibrary
 		{
 			if (model.Map.NextZone.TimeTocompression > 0)
 			{
-				model.Map.NextZone.TimeTocompression -= 1;
+				GetZoneCompression Compress = new GetZoneCompression();
+				Compress.Count = model.Map.NextZone.TimeTocompression;
+
+				foreach (NetworkStream n in model.ListNs)
+				{
+					CTransfers.Writing(Compress, n);
+				}
+				
+				model.Map.NextZone.TimeTocompression -= 1;				
 			}
 			else
 			{
+				GetZoneCompression Compress = new GetZoneCompression();
+				Compress.Count = model.Map.NextZone.TimeTocompression;
+
+				foreach (NetworkStream n in model.ListNs)
+				{
+					CTransfers.Writing(Compress, n);
+				}
+
 				timerZone.Stop();
 				double x = model.Map.PrevZone.ZoneCenterCoordinates.X, y = model.Map.PrevZone.ZoneCenterCoordinates.Y, radius = model.Map.PrevZone.ZoneRadius; ;
 				double koef = Math.Sqrt(Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2)
@@ -247,7 +263,6 @@ namespace ClassLibrary
 				workingServer = true;
 				model.ListMove = new List<MMove>();
 				Random random = new Random();
-				RandomBushs();
 				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
 
@@ -263,7 +278,7 @@ namespace ClassLibrary
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
 				menuConnecting.Start(host3);
 
-
+				RandomBushs();
 				RandomBox();
 				RandomTree();
 				GenerateItems();
@@ -994,7 +1009,7 @@ namespace ClassLibrary
 		{
 			Random n = new Random();
 			List<Item> ListItems = new List<Item>();
-			int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 500000;
+			int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 450000;
 
 			for (int i = 0; i < Count; i++)
 			{
@@ -1021,6 +1036,15 @@ namespace ClassLibrary
 				grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
 				grenade.IdItem = ListItems.Count;
 				ListItems.Add(grenade);
+			}
+
+			for (int i = 0; i < Count; i++)
+			{
+				NormalPistol pistol = new NormalPistol();
+				Thread.Sleep(8);
+				pistol.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+				pistol.IdItem = ListItems.Count;
+				ListItems.Add(pistol);
 			}
 
 			model.Map.ListItems = ListItems;
