@@ -74,6 +74,7 @@ namespace Client.Tests
 			controler.threadStart = true;
 			Thread threadClient = new Thread(new ThreadStart(serverStart));
 			threadClient.Start();
+			Thread.Sleep(8);
 			model.NStream = clientStart();
 
 			bool expected = true;
@@ -101,6 +102,41 @@ namespace Client.Tests
 		}
 		#endregion
 
+		#region Test_ChangeItem
+		[TestMethod]
+		public void ChangeItemTests_1()//Вещь изменяется существующим игроком
+		{
+			ModelClient model = new ModelClient();
+			ControllerClient controler = new ControllerClient(model);
+			controler.threadStart = true;
+			Thread threadClient = new Thread(new ThreadStart(serverStart));
+			threadClient.Start();
+			bool expected = true;
+
+			model.NStream = clientStart();
+			bool actual = controler.ChangeItem(0);
+
+			Assert.AreEqual(expected, actual);
+
+		}
+
+		[TestMethod]
+		public void ChangeItemTests_null()//Вещь изменяется несуществующим игроком
+		{
+			ModelClient model = new ModelClient();
+			ControllerClient controler = new ControllerClient(model);
+			controler.threadStart = true;
+			Thread threadClient = new Thread(new ThreadStart(serverStart));
+			threadClient.Start();
+			bool expected = false;
+
+			bool actual = controler.ChangeItem(1);
+
+			Assert.AreEqual(expected, actual);
+
+		}
+		#endregion
+
 		public void serverStart()//Замена сервера
 		{
 			TcpListener server = new TcpListener(IPAddress.Any, 1337);
@@ -117,5 +153,6 @@ namespace Client.Tests
 			NetworkStream streamClient = client.GetStream();
 			return streamClient;
 		}
+
 	}
 }

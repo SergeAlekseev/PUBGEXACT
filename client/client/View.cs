@@ -44,7 +44,7 @@ namespace client
 		public delegate void RechargeD();
 		public event RechargeD RechargeEvent;
 
-		public delegate void СhangeItemD(byte num);
+		public delegate bool СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
 		public delegate void MouseClickD();
