@@ -25,7 +25,7 @@ namespace client
 			InfoIP.Text = ip;
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		public void button1_Click(object sender, EventArgs e)
 		{
 			try
 			{

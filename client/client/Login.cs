@@ -24,7 +24,7 @@ namespace client
 			InitializeComponent();
 		}
 
-		private void Join_Click(object sender, EventArgs e)
+		public void Join_Click(object sender, EventArgs e)
 		{
 			try
 			{

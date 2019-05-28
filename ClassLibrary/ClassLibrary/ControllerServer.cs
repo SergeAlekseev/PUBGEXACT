@@ -125,10 +125,26 @@ namespace ClassLibrary
 		{
 			if (model.Map.NextZone.TimeTocompression > 0)
 			{
-				model.Map.NextZone.TimeTocompression -= 1;
+				GetZoneCompression Compress = new GetZoneCompression();
+				Compress.Count = model.Map.NextZone.TimeTocompression;
+
+				foreach (NetworkStream n in model.ListNs)
+				{
+					CTransfers.Writing(Compress, n);
+				}
+				
+				model.Map.NextZone.TimeTocompression -= 1;				
 			}
 			else
 			{
+				GetZoneCompression Compress = new GetZoneCompression();
+				Compress.Count = model.Map.NextZone.TimeTocompression;
+
+				foreach (NetworkStream n in model.ListNs)
+				{
+					CTransfers.Writing(Compress, n);
+				}
+
 				timerZone.Stop();
 				double x = model.Map.PrevZone.ZoneCenterCoordinates.X, y = model.Map.PrevZone.ZoneCenterCoordinates.Y, radius = model.Map.PrevZone.ZoneRadius; ;
 				double koef = Math.Sqrt(Math.Pow(model.Map.PrevZone.ZoneCenterCoordinates.X - model.Map.NextZone.ZoneCenterCoordinates.X, 2)
@@ -247,7 +263,6 @@ namespace ClassLibrary
 				workingServer = true;
 				model.ListMove = new List<MMove>();
 				Random random = new Random();
-				RandomBushs();
 				number = -1;
 				TcpListener host = new TcpListener(IPAddress.Any, 1337);
 
@@ -263,7 +278,7 @@ namespace ClassLibrary
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(MenuConnecting));
 				menuConnecting.Start(host3);
 
-
+				RandomBushs();
 				RandomBox();
 				RandomTree();
 				GenerateItems();
@@ -414,42 +429,57 @@ namespace ClassLibrary
 			}
 		}
 
-		public void RandomTree()
+		public bool RandomTree()
 		{
-			bool flag = true;
-			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
+			try
 			{
-				Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-				foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+				bool flag = true;
+				Random random = new Random();
+				for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
 				{
-					if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
+					foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
 					{
-						flag = false;
-						break;
-					}
-				}
-				if (flag)
-				{
-					model.Map.ListTrees.Add(tree);
-					for (int k = tree.Location.X - 3; k < tree.Location.X + 11; k++)
-					{
-						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 11; j++)
+						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
 						{
-							model.Map.bordersForBullets[k, j] = true;
+							flag = false;
+							break;
 						}
 					}
-					for (int k = tree.Location.X - 3; k < tree.Location.X + 13; k++)
+
+					//foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+					//{
+					//	if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+					//	{
+					//		flag = false;
+					//		break;
+					//	}
+					//}
+
+					if (flag)
 					{
-						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 13; j++)
+						model.Map.ListTrees.Add(tree);
+						for (int k = tree.Location.X - 3; k < tree.Location.X + 11; k++)
 						{
-							model.Map.bordersForUsers[k, j] = true;
+							for (int j = tree.Location.Y - 3; j < tree.Location.Y + 11; j++)
+							{
+								model.Map.bordersForBullets[k, j] = true;
+							}
 						}
+						for (int k = tree.Location.X - 3; k < tree.Location.X + 13; k++)
+						{
+							for (int j = tree.Location.Y - 3; j < tree.Location.Y + 13; j++)
+							{
+								model.Map.bordersForUsers[k, j] = true;
+							}
+						}
+						i++;
 					}
-					i++;
+					flag = true;
 				}
-				flag = true;
+				return true;
 			}
+			catch { return false; }
 		}
 
 		public void MenuConnecting(object tc)//Controller
@@ -697,32 +727,38 @@ namespace ClassLibrary
 
 		}
 
-		private void SendingInformationAboutObjects(int num)
+		public bool SendingInformationAboutObjects(int num)
 		{
-			GetNumber gNumber = new GetNumber();
-			gNumber.num = number;
-			GetBushesInfo bushesInfo = new GetBushesInfo();
-			bushesInfo.listBush = model.Map.ListBush;
-			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
-			bordersInfo.rectangle = model.Map.MapBorders;
-			GetBoxesInfo boxesInfo = new GetBoxesInfo();
-			boxesInfo.listBox = model.Map.ListBox;
-			GetInfoItems itemsInfo = new GetInfoItems();
-			itemsInfo.listItems = model.Map.ListItems;
-			GetTreesInfo treesInfo = new GetTreesInfo();
-			treesInfo.listTree = model.Map.ListTrees;
+			try
+			{
+				GetNumber gNumber = new GetNumber();
+				gNumber.num = number;
+				GetBushesInfo bushesInfo = new GetBushesInfo();
+				bushesInfo.listBush = model.Map.ListBush;
+				GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+				bordersInfo.rectangle = model.Map.MapBorders;
+				GetBoxesInfo boxesInfo = new GetBoxesInfo();
+				boxesInfo.listBox = model.Map.ListBox;
+				GetInfoItems itemsInfo = new GetInfoItems();
+				itemsInfo.listItems = model.Map.ListItems;
+				GetTreesInfo treesInfo = new GetTreesInfo();
+				treesInfo.listTree = model.Map.ListTrees;
 
-			CTransfers.Writing(gNumber, model.ListNs[num]);
-			Thread.Sleep(100);
-			CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
-			Thread.Sleep(100);
-			CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
-			Thread.Sleep(100);
-			CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
-			Thread.Sleep(100);
-			CTransfers.Writing(treesInfo, model.ListNs[num]); // Отправка инфы о деревьях
-			Thread.Sleep(100);
-			CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
+				CTransfers.Writing(gNumber, model.ListNs[num]);
+				Thread.Sleep(100);
+				CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
+				Thread.Sleep(100);
+				CTransfers.Writing(bordersInfo, model.ListNs[num]); //Инфа о границах карты
+				Thread.Sleep(100);
+				CTransfers.Writing(boxesInfo, model.ListNs[num]); // Отправка инфы о коробках
+				Thread.Sleep(100);
+				CTransfers.Writing(treesInfo, model.ListNs[num]); // Отправка инфы о деревьях
+				Thread.Sleep(100);
+				CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
+				return true;
+			}
+			catch (Exception) { return false; }
+
 		}
 
 		public void InfoUsers(object tc)
@@ -811,23 +847,32 @@ namespace ClassLibrary
 
 		public GeneralInfo PlayerCheck(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
-			if (listUser != null)
-				foreach (GeneralInfo user in listUser)
-				{
+			try
+			{
+				if (listUser != null)
+					foreach (GeneralInfo user in listUser)
+					{
 
-					if (user != null && user.Name == newUser.Name) return user;
+						if (user != null && user.Name == newUser.Name) return user;
 
-				}
-			return null;
+					}
+				return null;
+			}
+			catch { return null; }
 		}
 
 		public bool CheckData(List<GeneralInfo> listUser, GeneralInfo newUser)
 		{
-			foreach (GeneralInfo user in listUser)
+			try
 			{
-				if (user != null && user.Name == newUser.Name && user.Password == newUser.Password) return true;
+				if (listUser != null)
+					foreach (GeneralInfo user in listUser)
+					{
+						if (user != null && user.Name == newUser.Name && user.Password == newUser.Password) return true;
+					}
+				return false;
 			}
-			return false;
+			catch { return false; }
 		}
 
 		public List<GeneralInfo> PlayerRead(GeneralInfo newUser)// Читает данные из файла
@@ -858,53 +903,58 @@ namespace ClassLibrary
 			}
 		}
 
-		public void PlayerSave(List<GeneralInfo> listUsers)
+		public bool PlayerSave(List<GeneralInfo> listUsers)
 		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
+			try
 			{
-				formatter.Serialize(fs, listUsers);
+				BinaryFormatter formatter = new BinaryFormatter();
+				using (FileStream fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "usersInfo.dat", FileMode.OpenOrCreate))
+				{
+					formatter.Serialize(fs, listUsers);
+				}
+				return true;
 			}
+			catch { return false; }
 		}
 
 		public void LoadMap()
-		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			OpenFileDialog sn = new OpenFileDialog();
-			sn.DefaultExt = ".dat";
-			sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
-			sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
-			DialogResult res = sn.ShowDialog();
-			if (res == DialogResult.Cancel)
-				return;
-			if (res == DialogResult.OK)
-			{
-				string NameFile = sn.FileName;
-				try
+		{		
+				BinaryFormatter formatter = new BinaryFormatter();
+				OpenFileDialog sn = new OpenFileDialog();
+				sn.DefaultExt = ".dat";
+				sn.Filter = "Text files(*.dat)|*.dat|All files(*.*)|*.*";
+				sn.InitialDirectory = @"C:\Users\Василий\Desktop\Exaxt\PUBGEXACT\MapEdit\MapEdit\Maps";
+				DialogResult res = sn.ShowDialog();
+				if (res == DialogResult.Cancel)
+					return ;
+				if (res == DialogResult.OK)
 				{
-					using (FileStream fs = new FileStream(NameFile, FileMode.Open))
+					string NameFile = sn.FileName;
+					try
 					{
-						Map m = (Map)formatter.Deserialize(fs);
-						model.Map = m;
+						using (FileStream fs = new FileStream(NameFile, FileMode.Open))
+						{
+							Map m = (Map)formatter.Deserialize(fs);
+							model.Map = m;
+						}
+					}
+					catch (Exception err)
+					{
+						ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе LoadMap");
 					}
 				}
-				catch (Exception err)
+				Random random = new Random();
+				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
-					ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе LoadMap");
-				}
-			}
-			Random random = new Random();
-			for (int i = 0; i < model.ListUsers.Count; i++)
-			{
-				if (model.ListUsers[i] != null)
-				{
-					SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
+					if (model.ListUsers[i] != null)
+					{
+						SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
 
-					do
-						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
-					while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
+						do
+							model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));
+						while (model.Map.bordersForUsers[model.ListUsers[i].userLocation.X, model.ListUsers[i].userLocation.Y]);
+					}
 				}
-			}
 		}
 
 		public void Producer(object obj)
@@ -990,40 +1040,54 @@ namespace ClassLibrary
 			}
 		}
 
-		public void GenerateItems()
+		public bool GenerateItems()
 		{
-			Random n = new Random();
-			List<Item> ListItems = new List<Item>();
-			int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 500000;
-
-			for (int i = 0; i < Count; i++)
+			try
 			{
-				NormalShotgun gun = new NormalShotgun();
-				Thread.Sleep(7);
-				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				gun.IdItem = ListItems.Count;
-				ListItems.Add(gun);
-			}
+				Random n = new Random();
+				List<Item> ListItems = new List<Item>();
+				int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 450000;
 
-			for (int i = 0; i < Count; i++)
-			{
-				NormalGun gun = new NormalGun();
-				Thread.Sleep(8);
-				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				gun.IdItem = ListItems.Count;
-				ListItems.Add(gun);
-			}
+				for (int i = 0; i < Count; i++)
+				{
+					NormalShotgun gun = new NormalShotgun();
+					Thread.Sleep(7);
+					gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					gun.IdItem = ListItems.Count;
+					ListItems.Add(gun);
+				}
 
-			for (int i = 0; i < Count; i++)
-			{
-				Grenade grenade = new Grenade();
-				Thread.Sleep(8);
-				grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				grenade.IdItem = ListItems.Count;
-				ListItems.Add(grenade);
-			}
+				for (int i = 0; i < Count; i++)
+				{
+					NormalGun gun = new NormalGun();
+					Thread.Sleep(8);
+					gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					gun.IdItem = ListItems.Count;
+					ListItems.Add(gun);
+				}
 
-			model.Map.ListItems = ListItems;
+				for (int i = 0; i < Count; i++)
+				{
+					Grenade grenade = new Grenade();
+					Thread.Sleep(8);
+					grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					grenade.IdItem = ListItems.Count;
+					ListItems.Add(grenade);
+				}
+
+				for (int i = 0; i < Count; i++)
+				{
+					NormalPistol pistol = new NormalPistol();
+					Thread.Sleep(8);
+					pistol.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					pistol.IdItem = ListItems.Count;
+					ListItems.Add(pistol);
+				}
+
+				model.Map.ListItems = ListItems;
+				return true;
+			}
+			catch { return false; }
 		}
 
 		public void SendingItemsInfo()

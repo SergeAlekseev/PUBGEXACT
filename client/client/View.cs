@@ -44,7 +44,7 @@ namespace client
 		public delegate void RechargeD();
 		public event RechargeD RechargeEvent;
 
-		public delegate void СhangeItemD(byte num);
+		public delegate bool СhangeItemD(byte num);
 		public event СhangeItemD СhangeItemEvent;
 
 		public delegate void MouseClickD();
@@ -79,6 +79,7 @@ namespace client
 			model.Images[9] = client.Properties.Resources.marker2.GetThumbnailImage(23, 12, null, IntPtr.Zero);
 			model.Images[10] = client.Properties.Resources.tree2.GetThumbnailImage(32, 32, null, IntPtr.Zero);
 			model.Images[11] = client.Properties.Resources.Grenade.GetThumbnailImage(23, 23, null, IntPtr.Zero);
+			model.Images[12] = client.Properties.Resources.Pistol.GetThumbnailImage(23, 23, null, IntPtr.Zero);
 
 			timerPaint.Interval = 10;
 			timerPaint.Start();
@@ -281,6 +282,7 @@ namespace client
 						if ((item is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 						if ((item is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[9], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 12);
 						if ((item is Grenade)) bufferedGraphics.Graphics.DrawImage(model.Images[11], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 23);
+						if ((item is NormalPistol)) bufferedGraphics.Graphics.DrawImage(model.Images[12], item.Location.X + PlayingField.Width / 2 - 10 - model.ThisUser.userLocation.X, item.Location.Y + PlayingField.Height / 2 - 10 - model.ThisUser.userLocation.Y, 23, 23);
 					}
 					#endregion
 
@@ -302,14 +304,15 @@ namespace client
 
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Red, 2, 2);
 
-					bufferedGraphics.Graphics.DrawString(model.CountGamers + " Gamers", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.DarkBlue, 300, 2);
+					bufferedGraphics.Graphics.DrawString(model.CountGamers + " Gamers", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.DarkBlue, 150, 2);
 
 					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
 					{
 						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
 					}
-					#endregion
 
+					bufferedGraphics.Graphics.DrawString("Время до сужения зоны: " + model.Map.NextZone.TimeTocompression, new Font("Times New Roman", 13, FontStyle.Bold), Brushes.Orange, 300, 2);
+					#endregion
 
 				}
 				else if (model.Die)
