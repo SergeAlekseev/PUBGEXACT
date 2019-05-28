@@ -429,42 +429,47 @@ namespace ClassLibrary
 			}
 		}
 
-		public void RandomTree()
+		public bool RandomTree()
 		{
-			bool flag = true;
-			Random random = new Random();
-			for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
+			try
 			{
-				Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-				foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+				bool flag = true;
+				Random random = new Random();
+				for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
 				{
-					if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
+					foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
 					{
-						flag = false;
-						break;
-					}
-				}
-				if (flag)
-				{
-					model.Map.ListTrees.Add(tree);
-					for (int k = tree.Location.X - 3; k < tree.Location.X + 11; k++)
-					{
-						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 11; j++)
+						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
 						{
-							model.Map.bordersForBullets[k, j] = true;
+							flag = false;
+							break;
 						}
 					}
-					for (int k = tree.Location.X - 3; k < tree.Location.X + 13; k++)
+					if (flag)
 					{
-						for (int j = tree.Location.Y - 3; j < tree.Location.Y + 13; j++)
+						model.Map.ListTrees.Add(tree);
+						for (int k = tree.Location.X - 3; k < tree.Location.X + 11; k++)
 						{
-							model.Map.bordersForUsers[k, j] = true;
+							for (int j = tree.Location.Y - 3; j < tree.Location.Y + 11; j++)
+							{
+								model.Map.bordersForBullets[k, j] = true;
+							}
 						}
+						for (int k = tree.Location.X - 3; k < tree.Location.X + 13; k++)
+						{
+							for (int j = tree.Location.Y - 3; j < tree.Location.Y + 13; j++)
+							{
+								model.Map.bordersForUsers[k, j] = true;
+							}
+						}
+						i++;
 					}
-					i++;
+					flag = true;
 				}
-				flag = true;
+				return true;
 			}
+			catch { return false; }
 		}
 
 		public void MenuConnecting(object tc)//Controller
@@ -1025,49 +1030,54 @@ namespace ClassLibrary
 			}
 		}
 
-		public void GenerateItems()
+		public bool GenerateItems()
 		{
-			Random n = new Random();
-			List<Item> ListItems = new List<Item>();
-			int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 450000;
-
-			for (int i = 0; i < Count; i++)
+			try
 			{
-				NormalShotgun gun = new NormalShotgun();
-				Thread.Sleep(7);
-				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				gun.IdItem = ListItems.Count;
-				ListItems.Add(gun);
-			}
+				Random n = new Random();
+				List<Item> ListItems = new List<Item>();
+				int Count = model.Map.MapBorders.Height * model.Map.MapBorders.Width / 450000;
 
-			for (int i = 0; i < Count; i++)
-			{
-				NormalGun gun = new NormalGun();
-				Thread.Sleep(8);
-				gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				gun.IdItem = ListItems.Count;
-				ListItems.Add(gun);
-			}
+				for (int i = 0; i < Count; i++)
+				{
+					NormalShotgun gun = new NormalShotgun();
+					Thread.Sleep(7);
+					gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					gun.IdItem = ListItems.Count;
+					ListItems.Add(gun);
+				}
 
-			for (int i = 0; i < Count; i++)
-			{
-				Grenade grenade = new Grenade();
-				Thread.Sleep(8);
-				grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				grenade.IdItem = ListItems.Count;
-				ListItems.Add(grenade);
-			}
+				for (int i = 0; i < Count; i++)
+				{
+					NormalGun gun = new NormalGun();
+					Thread.Sleep(8);
+					gun.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					gun.IdItem = ListItems.Count;
+					ListItems.Add(gun);
+				}
 
-			for (int i = 0; i < Count; i++)
-			{
-				NormalPistol pistol = new NormalPistol();
-				Thread.Sleep(8);
-				pistol.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
-				pistol.IdItem = ListItems.Count;
-				ListItems.Add(pistol);
-			}
+				for (int i = 0; i < Count; i++)
+				{
+					Grenade grenade = new Grenade();
+					Thread.Sleep(8);
+					grenade.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					grenade.IdItem = ListItems.Count;
+					ListItems.Add(grenade);
+				}
 
-			model.Map.ListItems = ListItems;
+				for (int i = 0; i < Count; i++)
+				{
+					NormalPistol pistol = new NormalPistol();
+					Thread.Sleep(8);
+					pistol.Location = new Point(n.Next(0, model.Map.MapBorders.Width), n.Next(0, model.Map.MapBorders.Height));
+					pistol.IdItem = ListItems.Count;
+					ListItems.Add(pistol);
+				}
+
+				model.Map.ListItems = ListItems;
+				return true;
+			}
+			catch { return false; }
 		}
 
 		public void SendingItemsInfo()

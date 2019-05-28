@@ -34,15 +34,19 @@ namespace ClassLibrary
 		// вычисляет угол между веторами
 		public static double CalculateAngleBetween(Vector vector1, Vector vector2)
 		{
-			if (vector1.Length == 0 || vector2.Length == 0)
+			try
 			{
-				return 0;
-			}
-			var scalarMultiplier = vector1 * vector2;
-			var cos = scalarMultiplier / (vector1.Length * vector2.Length);
-			var angle = Math.Acos(cos);
+				if (vector1.Length == 0 || vector2.Length == 0)
+				{
+					return 0;
+				}
+				var scalarMultiplier = vector1 * vector2;
+				var cos = scalarMultiplier / (vector1.Length * vector2.Length);
+				var angle = Math.Acos(cos);
 
-			return angle;
+				return angle;
+			}
+			catch { return -1; }
 		}
 
 		// вычисляет скалярное произведение векторов

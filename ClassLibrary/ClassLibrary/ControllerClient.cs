@@ -99,24 +99,24 @@ namespace ClassLibrary
 		}
 
 		public void ItemDroping()
-		{
-			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
+		{		
+				Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
 
-			for (int i = 1; i < model.ThisUser.Items.Length; i++)
-			{
-				if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+				for (int i = 1; i < model.ThisUser.Items.Length; i++)
 				{
-					ItemDroping itemDrop = new ItemDroping();
-					List<Item> listItems = new List<Item>();
-					listItems.Add(model.ThisUser.Items[i]);
-					itemDrop.items = listItems;
-					itemDrop.num = model.number;
-					itemDrop.itemLocation = model.ThisUser.userLocation;
+					if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+					{
+						ItemDroping itemDrop = new ItemDroping();
+						List<Item> listItems = new List<Item>();
+						listItems.Add(model.ThisUser.Items[i]);
+						itemDrop.items = listItems;
+						itemDrop.num = model.number;
+						itemDrop.itemLocation = model.ThisUser.userLocation;
 
-					CTransfers.Writing(itemDrop, model.NStream);
-				}
+						CTransfers.Writing(itemDrop, model.NStream);
+					}
 
-			}
+				}			
 		}
 
 		public void Writing(object obj)
@@ -174,15 +174,21 @@ namespace ClassLibrary
 
 		}
 
-		public void ChangeItem(byte num)
+		public bool ChangeItem(byte num)
 		{
-			if (threadStart)
+			try
 			{
-				ChangeWeapons cw = new ChangeWeapons();
-				cw.num = model.number;
-				cw.numItems = num;
-				Writing(cw);
+				if (threadStart)
+				{
+					ChangeWeapons cw = new ChangeWeapons();
+					cw.num = model.number;
+					cw.numItems = num;
+					Writing(cw);
+					return true;
+				}
+				else return false;
 			}
+			catch { return false; }
 		}
 
 		public void Recharge()
@@ -271,7 +277,7 @@ namespace ClassLibrary
 					}
 					catch (Exception err)
 					{
-						MessageBox.Show(err.Message);
+						//MessageBox.Show(err.Message);
 						ErrorConnect();
 						return false;
 					}

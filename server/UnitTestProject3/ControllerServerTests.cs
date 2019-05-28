@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ClassLibrary;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Server.Tests
 {
@@ -234,6 +235,92 @@ namespace Server.Tests
 			bool actual = controller.PlayerSave(listG);
 
 			//assert
+			Assert.AreEqual(expected, actual);
+		}
+		#endregion
+
+		#region Test_GenerateItems
+		[TestMethod]
+		public void GenerateItemsTests_12000x12000() //Генерация предметов на карте при ОГРОМНЫХ размерах
+		{
+			ModelServer model = new ModelServer();
+			ControllerServer controller = new ControllerServer(model);
+			model.Map.MapBorders = new Rectangle(0, 0, 12000, 12000);
+			bool expected = true;
+
+			bool actual = controller.GenerateItems();
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		[TestMethod]
+		public void GenerateItemsTests_6000x6000() //Генерация предметов на карте при нормальных размерах
+		{
+			ModelServer model = new ModelServer();
+			ControllerServer controller = new ControllerServer(model);
+			model.Map.MapBorders = new Rectangle(0, 0, 6000, 6000);
+			bool expected = true;
+
+			bool actual = controller.GenerateItems();
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		#endregion
+
+		#region Test_RandomTree
+		[TestMethod]
+		public void RandomTreeTests_15000x15000() //Генерация предметов на карте при ОГРОМНЫХ размерах
+		{
+			ModelServer model = new ModelServer();
+			ControllerServer controller = new ControllerServer(model);
+			model.Map.MapBorders = new Rectangle(0, 0, 15000, 15000);
+			model.Map.bordersForUsers = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
+			model.Map.bordersForBullets = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
+			bool expected = true;
+
+			bool actual = controller.RandomTree();
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		[TestMethod]
+		public void RandomTreeTests_6000x6000() //Генерация предметов на карте при нормальных размерах
+		{
+			ModelServer model = new ModelServer();
+			ControllerServer controller = new ControllerServer(model);
+			model.Map.MapBorders = new Rectangle(0, 0, 6000, 6000);
+			bool expected = true;
+
+			bool actual = controller.RandomTree();
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		#endregion
+
+		#region Test_CalculateAngleBetween
+
+		[TestMethod]
+		public void CalculateAngleBetweenTets_001010_00510()//Вектора стоят под прямым углом
+		{
+			Vector v1 = Vector.FromPoints(new Point(0, 0), new Point(0, 10));
+			Vector v2 = Vector.FromPoints(new Point(0, 0), new Point(10, 0));
+			double expected = 90;
+
+			double actual = Vector.CalculateAngleBetween(v1, v2);
+			actual= actual/Math.PI * 180;
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		[TestMethod]
+		public void CalculateAngleBetweenTets_null_null()//Вектора стоят под прямым углом
+		{
+			double expected = -1;
+
+			double actual = Vector.CalculateAngleBetween(null, null);
+
 			Assert.AreEqual(expected, actual);
 		}
 		#endregion
