@@ -10,7 +10,7 @@ namespace ClassLibrary
 {
 	public class Grenade :Item
 	{
-		public GrenadeInfo Grena;
+		public GrenadeInfo Grena = new GrenadeInfo();
 		public short Speed, TimeLife;
 		public short Damage;
 

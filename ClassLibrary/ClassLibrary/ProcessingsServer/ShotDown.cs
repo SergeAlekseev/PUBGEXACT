@@ -165,7 +165,7 @@ namespace ClassLibrary.ProcessingsServer
 			for (int i = 0; i < 250; i++)
 			{
 				grena.timeBoo--;
-				if (grena.flagFly)
+				if (grena.flagFly&&!flagfly&&!stop)
 				{
 					grena.flagFly = false;
 					grena.location = new Point(userInfo.userLocation.X, userInfo.userLocation.Y);
