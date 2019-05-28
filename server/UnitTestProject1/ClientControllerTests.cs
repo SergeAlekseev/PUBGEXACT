@@ -44,7 +44,7 @@ namespace Client.Tests
 			//act	
 
 			//assert 
-			Assert.ThrowsException<NullReferenceException>(() => controler.Connect("192.168.12.5"));
+			Assert.ThrowsException<NullReferenceException>(() => controler.Connect("192.168.1.25"));
 		}
 
 		[TestMethod]
