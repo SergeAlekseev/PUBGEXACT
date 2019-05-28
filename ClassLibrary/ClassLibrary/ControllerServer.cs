@@ -438,15 +438,6 @@ namespace ClassLibrary
 				for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
 				{
 					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-					foreach (Tree b in model.Map.ListTrees)//Проверка, заспавнился ли ящик в ящике
-					{
-						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
-						{
-							flag = false;
-							break;
-						}
-					}
-
 					foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
 					{
 						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
@@ -455,6 +446,15 @@ namespace ClassLibrary
 							break;
 						}
 					}
+
+					//foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+					//{
+					//	if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+					//	{
+					//		flag = false;
+					//		break;
+					//	}
+					//}
 
 					if (flag)
 					{
