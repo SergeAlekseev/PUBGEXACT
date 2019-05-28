@@ -290,6 +290,8 @@ namespace Server.Tests
 			ModelServer model = new ModelServer();
 			ControllerServer controller = new ControllerServer(model);
 			model.Map.MapBorders = new Rectangle(0, 0, 6000, 6000);
+			model.Map.bordersForUsers = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
+			model.Map.bordersForBullets = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
 			bool expected = true;
 
 			bool actual = controller.RandomTree();
