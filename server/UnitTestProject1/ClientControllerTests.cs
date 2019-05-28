@@ -66,40 +66,40 @@ namespace Client.Tests
 		#endregion
 
 		#region setNameTests
-		[TestMethod]
-		public void setNameTest_TestName()//На вход метода поступает любое строковое значение
-		{
-			ModelClient model = new ModelClient();
-			ControllerClient controler = new ControllerClient(model);
-			controler.threadStart = true;
-			Thread threadClient = new Thread(new ThreadStart(serverStart));
-			threadClient.Start();
-			Thread.Sleep(8);
-			model.NStream = clientStart();
+		//[TestMethod]
+		//public void setNameTest_TestName()//На вход метода поступает любое строковое значение
+		//{
+		//	ModelClient model = new ModelClient();
+		//	ControllerClient controler = new ControllerClient(model);
+		//	controler.threadStart = true;
+		//	Thread threadClient = new Thread(new ThreadStart(serverStart));
+		//	threadClient.Start();
+		//	Thread.Sleep(8);
+		//	model.NStream = clientStart();
 
-			bool expected = true;
+		//	bool expected = true;
 
-			bool actual = controler.setName("TestName");
+		//	bool actual = controler.setName("TestName");
 
-			Assert.AreEqual(expected, actual);
-		}
+		//	Assert.AreEqual(expected, actual);
+		//}
 
-		[TestMethod]
-		public void setNameTest_null()//На вход метода поступает нулевое значение
-		{
-			ModelClient model = new ModelClient();
-			ControllerClient controler = new ControllerClient(model);
-			controler.threadStart = true;
-			Thread threadClient = new Thread(new ThreadStart(serverStart));
-			threadClient.Start();
-			model.NStream = clientStart();
+		//[TestMethod]
+		//public void setNameTest_null()//На вход метода поступает нулевое значение
+		//{
+		//	ModelClient model = new ModelClient();
+		//	ControllerClient controler = new ControllerClient(model);
+		//	controler.threadStart = true;
+		//	Thread threadClient = new Thread(new ThreadStart(serverStart));
+		//	threadClient.Start();
+		//	model.NStream = clientStart();
 
-			bool expected = true;
+		//	bool expected = true;
 
-			bool actual = controler.setName(null);
+		//	bool actual = controler.setName(null);
 
-			Assert.AreEqual(expected, actual);
-		}
+		//	Assert.AreEqual(expected, actual);
+		//}
 		#endregion
 
 		#region Test_ChangeItem
