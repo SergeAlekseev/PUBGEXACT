@@ -299,16 +299,17 @@ namespace ClassLibrary
 			return angleDegree;
 		}
 
-		public void setName(string Name)
+		public bool setName(string Name)
 		{
 			if (threadStart)
 			{
-
 				GetUserName gun = new GetUserName();
 				gun.num = model.number;
 				gun.name = Name;
 				Writing(gun);
+				return true;
 			}
+			else return false;
 		}
 		public double defineAngle(Point onePoint, Point twoPoint)
 		{
@@ -355,9 +356,6 @@ namespace ClassLibrary
 					string tmpString = CTransfers.Reading(model.NStream);
 
 					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingClient>(tmpString, CTransfers.jss));
-
-
-
 
 					manualResetEvent.Set();
 				}
