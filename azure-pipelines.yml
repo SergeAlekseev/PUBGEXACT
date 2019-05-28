@@ -34,7 +34,3 @@ steps:
     artifactName: 'drop'
     publishLocation: 'Container' # Options : container, filePatch 
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
