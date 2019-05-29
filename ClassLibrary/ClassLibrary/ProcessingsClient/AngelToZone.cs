@@ -13,13 +13,13 @@ namespace ClassLibrary.ProcessingsClient
 	{
 		public List<UserInfo> listUserInfo;
 
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
 
-			controller.model.ListUsers = listUserInfo;
-			controller.model.ThisUser = controller.model.ListUsers[controller.model.number];
+			model.ListUsers = listUserInfo;
+			model.ThisUser =model.ListUsers[model.number];
 
-			controller.model.AngelToZone = defineAngleZone(controller.model.Map.NextZone.ZoneCenterCoordinates, controller.model.ThisUser.userLocation);
+			model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates,model.ThisUser.userLocation);
 		}
 
 		//Уберём при рефакторинге контроллера

@@ -8,17 +8,13 @@ namespace ClassLibrary.ProcessingsClient
 {
 	public class GetCountWinsInfo : ProcessingClient
 	{
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.threadStart = false;
-			controller.manualResetEvent.Set();
-			controller.model.Win = true;
-			controller.model.NStream.Close();
-			controller.serverStart = false;
-			controller.client.Close();
-			controller.timerPing.Stop();
-			controller.threadReading.Abort();
-			controller.threadConsumer.Abort();
+			model.threadStart = false;
+			model.Win = true;
+			model.NStream.Close();
+			model.serverStart = false;
+			model.exit();
 		}
 	}
 }

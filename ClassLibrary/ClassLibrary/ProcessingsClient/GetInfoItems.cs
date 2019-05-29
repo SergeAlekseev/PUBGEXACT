@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	class GetInfoItems : ProcessingClient
 	{
 		public List<Item> listItems;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.ListItems = listItems;
+			model.Map.ListItems = listItems;
 		}
 	}
 }

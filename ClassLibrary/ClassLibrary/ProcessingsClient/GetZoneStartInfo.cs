@@ -10,10 +10,10 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetZoneStartInfo : ProcessingClient
 	{
 		public Zone nextZone;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.PrevZone = controller.model.Map.NextZone;
-			controller.model.Map.NextZone = nextZone;
+			model.Map.PrevZone = model.Map.NextZone;
+			model.Map.NextZone = nextZone;
 		}
 	}
 }

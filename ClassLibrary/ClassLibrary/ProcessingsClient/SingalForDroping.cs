@@ -11,11 +11,11 @@ namespace ClassLibrary.ProcessingsClient
 {
 	public class SingalForDroping : ProcessingClient
 	{
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
 			ItemDroping itemDrop = new ItemDroping();
 			List<Item> listItems = new List<Item>();
-			foreach (Item item in controller.model.ListUsers[controller.model.ThisUser.userNumber].Items)
+			foreach (Item item in model.ListUsers[model.ThisUser.userNumber].Items)
 			{
 				if (item != null)
 				{
@@ -24,8 +24,8 @@ namespace ClassLibrary.ProcessingsClient
 				}
 			}
 			itemDrop.items = listItems;
-			itemDrop.itemLocation = controller.model.ListUsers[controller.model.ThisUser.userNumber].userLocation;
-			CTransfers.Writing(itemDrop, controller.model.NStream);
+			itemDrop.itemLocation = model.ListUsers[model.ThisUser.userNumber].userLocation;
+			CTransfers.Writing(itemDrop, model.NStream);
 		}
 	}
 }

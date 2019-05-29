@@ -9,7 +9,7 @@ namespace ClassLibrary.ProcessingsClient
 {
 	public abstract class ProcessingClient
 	{
-		public virtual void Process(ControllerClient Model)
+		public virtual void Process(ModelClient model)
 		{
 			MessageBox.Show("Как так");
 		}

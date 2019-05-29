@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	class GetTreesInfo:ProcessingClient
 	{
 		public List<Tree> listTree;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.ListTrees = listTree;
+			model.Map.ListTrees = listTree;
 		}
 	}
 }

@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetPrevZoneInfo : ProcessingClient
 	{
 		public Zone prevZone;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.PrevZone = prevZone;
+			model.Map.PrevZone = prevZone;
 		}
 	}
 }

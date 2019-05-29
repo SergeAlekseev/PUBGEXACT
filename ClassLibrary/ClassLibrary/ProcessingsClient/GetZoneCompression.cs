@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	class GetZoneCompression:ProcessingClient
 	{
 		public double Count;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.NextZone.TimeTocompression = Count;
+			model.Map.NextZone.TimeTocompression = Count;
 		}
 	}
 }

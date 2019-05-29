@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetGrenadesInfo : ProcessingClient
 	{
 		public List<GrenadeInfo> grenadesInfo;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.ListGrenade = grenadesInfo;
+			model.ListGrenade = grenadesInfo;
 		}
 	}
 }
