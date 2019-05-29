@@ -28,10 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyMenu));
 			this.bPlay = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label5 = new System.Windows.Forms.Label();
+			this.dies = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -40,8 +43,6 @@
 			this.InfoWins = new System.Windows.Forms.Label();
 			this.InfoKills = new System.Windows.Forms.Label();
 			this.InfoName = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.dies = new System.Windows.Forms.Label();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -97,6 +98,24 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(322, 157);
 			this.panel1.TabIndex = 3;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(3, 127);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(86, 13);
+			this.label5.TabIndex = 9;
+			this.label5.Text = "Всего смертей:";
+			// 
+			// dies
+			// 
+			this.dies.AutoSize = true;
+			this.dies.Location = new System.Drawing.Point(95, 127);
+			this.dies.Name = "dies";
+			this.dies.Size = new System.Drawing.Size(174, 13);
+			this.dies.TabIndex = 8;
+			this.dies.Text = "Панель с информацией о игроке";
 			// 
 			// label4
 			// 
@@ -170,24 +189,6 @@
 			this.InfoName.TabIndex = 0;
 			this.InfoName.Text = "Панель с информацией о игроке";
 			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(3, 127);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(86, 13);
-			this.label5.TabIndex = 9;
-			this.label5.Text = "Всего смертей:";
-			// 
-			// dies
-			// 
-			this.dies.AutoSize = true;
-			this.dies.Location = new System.Drawing.Point(95, 127);
-			this.dies.Name = "dies";
-			this.dies.Size = new System.Drawing.Size(174, 13);
-			this.dies.TabIndex = 8;
-			this.dies.Text = "Панель с информацией о игроке";
-			// 
 			// MyMenu
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,6 +198,7 @@
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.bPlay);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MyMenu";
 			this.Text = "Menu";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MyMenu_FormClosed);

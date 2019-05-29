@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace ClassLibrary.ProcessingsServer
 {
-	class ItemDroping : ProcessingServer
+	public class ItemDroping : ProcessingServer
 	{
 		public List<Item> items;
 		public Point itemLocation;
 
 		public override void Process(ModelServer Model)
 		{
-			foreach(Item item in items)
+			foreach (Item item in items)
 			{
 				for (int i = 1; i <= Model.ListUsers[num].Items.Length; i++)
 					if (Model.ListUsers[num].Items[i].IdItem == item.IdItem)
