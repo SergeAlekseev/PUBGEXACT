@@ -192,6 +192,7 @@ namespace ClassLibrary
 						}
 					}
 					model.Map.NextZone.TimeTocompression = 60;
+					model.DamageZone += 2;
 					timerZone.Start();
 				}
 			}
@@ -211,7 +212,7 @@ namespace ClassLibrary
 
 					if (model.Map.PrevZone != null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
 					{
-						model.ListUsers[i].hp -= 2;
+						model.ListUsers[i].hp -= model.DamageZone;
 						if (model.ListUsers[i].hp <= 0)
 						{
 							PlayerDeath death = new PlayerDeath();
@@ -438,7 +439,7 @@ namespace ClassLibrary
 				for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
 				{
 					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-					foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+					foreach (Box b in model.Map.ListBox)//Проверка, заспавнилось ли дерево в ящике
 					{
 						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
 						{
@@ -597,7 +598,7 @@ namespace ClassLibrary
 			model.CountGamers += 1;
 			writingCountGames();
 
-			model.ListUsers[num].Items[1] = new Grenade();
+			model.ListUsers[num].Items[1] = new Item();
 			model.ListUsers[num].Items[2] = new Item();
 			model.ListUsers[num].Items[3] = new Item();
 			model.ListUsers[num].Items[4] = new Item();
