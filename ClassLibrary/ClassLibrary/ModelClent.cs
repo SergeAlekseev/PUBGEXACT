@@ -14,6 +14,7 @@ namespace ClassLibrary
 {
 	public class ModelClient
 	{
+
 		List<UserInfo> listUsers = new List<UserInfo>();
 		List<BulletInfo> listBullet = new List<BulletInfo>();
 		List<GeneralInfo> listGInfo = new List<GeneralInfo>();

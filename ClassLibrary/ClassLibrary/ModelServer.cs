@@ -13,6 +13,9 @@ namespace ClassLibrary
 {
 	public class ModelServer
 	{
+		public bool workingThread;
+		public bool workingServer;
+		public short number;
 		BlockingCollection<BulletInfo> listBullet = new BlockingCollection<BulletInfo>();
 		BlockingCollection<GrenadeInfo> listGrenade = new BlockingCollection<GrenadeInfo>();
 		List<UserInfo> listUsers = new List<UserInfo>();
