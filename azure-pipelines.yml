@@ -27,8 +27,10 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.SourcesDirectory)'
     artifactName: 'drop'
     publishLocation: 'Container' # Options : container, filePatch 
+

@@ -192,6 +192,7 @@ namespace ClassLibrary
 						}
 					}
 					model.Map.NextZone.TimeTocompression = 60;
+					model.DamageZone += 2;
 					timerZone.Start();
 				}
 			}
@@ -211,7 +212,7 @@ namespace ClassLibrary
 
 					if (model.Map.PrevZone != null && Math.Sqrt(Math.Pow(model.ListUsers[i].userLocation.X - model.Map.PrevZone.ZoneCenterCoordinates.X, 2) + Math.Pow(model.ListUsers[i].userLocation.Y - model.Map.PrevZone.ZoneCenterCoordinates.Y, 2)) > model.Map.PrevZone.ZoneRadius)
 					{
-						model.ListUsers[i].hp -= 2;
+						model.ListUsers[i].hp -= model.DamageZone;
 						if (model.ListUsers[i].hp <= 0)
 						{
 							PlayerDeath death = new PlayerDeath();
@@ -317,7 +318,7 @@ namespace ClassLibrary
 
 						model.ListNs.Add(tc.GetStream());
 						model.ListMove.Add(new MMove());
-						model.ListShoting.Add(new Thread(new ParameterizedThreadStart(ShotUser)));
+						model.ListShoting.Add(new Thread(InfoUsers));
 						Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
 						thread.Start(tc);
 
@@ -438,7 +439,7 @@ namespace ClassLibrary
 				for (int i = 0; i < model.Map.MapBorders.Height * model.Map.MapBorders.Width / 68000;)
 				{
 					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
-					foreach (Box b in model.Map.ListBox)//Проверка, заспавнился ли ящик в ящике
+					foreach (Box b in model.Map.ListBox)//Проверка, заспавнилось ли дерево в ящике
 					{
 						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
 						{
@@ -587,124 +588,6 @@ namespace ClassLibrary
 			}
 		}
 
-		public void ShotUser(object ui)//Controller
-		{
-			UserInfo userInfo = (UserInfo)ui;
-			Object obj = null;
-			while (userInfo.flagShoting)
-			{
-				obj = (userInfo.Items[userInfo.thisItem] as Item).Use(userInfo);
-				if (obj != null)
-				{
-					if (obj is BulletInfo)
-					{
-						BulletInfo bi = (BulletInfo)obj;
-						Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
-						thread.Start(bi);
-						lock (model.ListBullet)
-						{
-							model.ListBullet.Add(bi);
-						}
-						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
-					}
-					else if (obj is List<BulletInfo>)
-					{
-						List<BulletInfo> bis = (List<BulletInfo>)obj;
-						foreach (BulletInfo bi in bis)
-						{
-							Thread thread = new Thread(new ParameterizedThreadStart(Bullet));
-							thread.Start(bi);
-							lock (model.ListBullet)
-							{
-								model.ListBullet.Add(bi);
-							}
-						}
-						Thread.Sleep(userInfo.Items[userInfo.thisItem].Time);
-					}
-				}
-			}
-
-
-		}
-
-		public void Bullet(object tmpObject)
-		{
-			bool flagBreak = false;
-			BulletInfo bulletInfo = (BulletInfo)tmpObject;
-			double X = bulletInfo.location.X, Y = bulletInfo.location.Y;
-			X += (13.0 / bulletInfo.speed) * bulletInfo.speedX;
-			bulletInfo.location.X = (int)X;
-			Y += (13.0 / bulletInfo.speed) * bulletInfo.speedY;
-			bulletInfo.location.Y = (int)Y;
-			for (int i = 0; i < bulletInfo.timeLife; i++)
-			{
-				X += bulletInfo.speedX;
-				bulletInfo.location.X = (int)X;
-				Y += bulletInfo.speedY;
-				bulletInfo.location.Y = (int)Y;
-				for (int j = 0; j < model.ListUsers.Count; j++)
-				{
-					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9)
-					{
-						byte[] popad = new byte[1];
-						popad[0] = 6;
-						model.ListUsers[j].hp -= bulletInfo.damage;
-						flagBreak = true;
-						if (model.ListUsers[j].hp <= 0)
-						{
-
-		
-							PlayerDeath death = new PlayerDeath();
-							death.Killer = bulletInfo.owner;
-
-							CTransfers.Writing(death, model.ListNs[j]);
-
-							foreach (GeneralInfo g in model.ListGInfo)
-							{
-								if (g.Name == model.ListUsers[j].Name)
-									g.Dies += 1;
-								if (g.Name == bulletInfo.owner)
-									g.Kills += 1;
-							}
-
-							Kill kill = new Kill();
-							kill.killer = bulletInfo.owner;
-							kill.dead = model.ListUsers[j].Name;
-
-							for (int k = 0; k < model.ListUsers.Count; k++)
-							{
-								if (model.ListUsers[k] != null)
-								{
-									if (model.ListUsers[k].Name == bulletInfo.owner)
-										model.ListUsers[k].kills += 1;
-									GetKillsInfo killsInfo = new GetKillsInfo();
-									killsInfo.kill = kill;
-									CTransfers.Writing(killsInfo, model.ListNs[k]);
-								}
-							}
-
-						}
-						break;
-					}
-				}
-				try
-				{
-					if (model.Map.bordersForBullets[bulletInfo.location.X, bulletInfo.location.Y])
-					{
-						flagBreak = true;
-					}
-				}
-				catch { break; }
-				if (flagBreak) break;
-				Thread.Sleep(20);
-			}
-			lock (model.ListBullet)
-			{
-				model.ListBullet.TryTake(out bulletInfo);
-			}
-		}
-
-
 
 		public void PlayUser(object tc)//Controller
 		{
@@ -715,7 +598,7 @@ namespace ClassLibrary
 			model.CountGamers += 1;
 			writingCountGames();
 
-			model.ListUsers[num].Items[1] = new Grenade();
+			model.ListUsers[num].Items[1] = new Item();
 			model.ListUsers[num].Items[2] = new Item();
 			model.ListUsers[num].Items[3] = new Item();
 			model.ListUsers[num].Items[4] = new Item();

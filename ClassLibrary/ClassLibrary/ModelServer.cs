@@ -23,9 +23,15 @@ namespace ClassLibrary
 		List<MMove> listMove = new List<MMove>();
 		List<Thread> listShoting = new List<Thread>();
 		List<System.Timers.Timer> listTimers = new List<System.Timers.Timer>();
-
+		short damageZone = 2;
 
 		public bool workingGame;
+
+		public short DamageZone
+		{
+			get { return damageZone; }
+			set { damageZone = value; }
+		}
 
 		public List<System.Timers.Timer> ListTimers
 		{
@@ -86,6 +92,7 @@ namespace ClassLibrary
 
 		public void Remove()
 		{
+			damageZone = 2;
 			countGamers = 0;
 			workingGame = false;
 			listTimers = new List<System.Timers.Timer>();

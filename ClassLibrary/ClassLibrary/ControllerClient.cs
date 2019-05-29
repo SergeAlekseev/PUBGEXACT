@@ -157,19 +157,19 @@ namespace ClassLibrary
 		{
 			if (threadStart)
 			{
-				//if (PingWatch.ElapsedMilliseconds > 4000)
-				//{
-				//	PingWatch.Stop();
-				//	CloseFormEvent(null, null);
-				//}
-				//else
-				//{
-				//	PingWatch = new Stopwatch();
-				//	ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-				//	pi.num = model.ThisUser.userNumber;
-				//	Writing(pi);
-				//	PingWatch.Start();
-				//}
+				if (PingWatch.ElapsedMilliseconds > 4000)
+				{
+					PingWatch.Stop();
+					CloseFormEvent(null, null);
+				}
+				else
+				{
+					PingWatch = new Stopwatch();
+					ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+					pi.num = model.ThisUser.userNumber;
+					Writing(pi);
+					PingWatch.Start();
+				}
 			}
 
 		}
