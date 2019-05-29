@@ -15,6 +15,7 @@ namespace ClassLibrary
 {
 	public class ModelClient
 	{
+
 		public delegate void exitD();
 		public delegate bool setNameD(string s);
 
