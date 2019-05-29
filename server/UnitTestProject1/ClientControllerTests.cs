@@ -127,7 +127,7 @@ namespace Client.Tests
 		{
 			ModelClient model = new ModelClient();
 			ControllerClient controler = new ControllerClient(model);
-			controler.threadStart = true;
+			model.threadStart = true;
 			Thread threadClient = new Thread(new ThreadStart(serverStart));
 			threadClient.Start();
 			bool expected = false;

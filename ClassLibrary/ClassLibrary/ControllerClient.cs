@@ -167,22 +167,22 @@ namespace ClassLibrary
 
 		public void timerPing_Tick(object sender, EventArgs e)
 		{
-			if (model.threadStart)
-			{
-				if (model.PingWatch.ElapsedMilliseconds > 4000)
-				{
-					model.PingWatch.Stop();
-					CloseFormEvent(null, null);
-				}
-				else
-				{
-					model.PingWatch = new Stopwatch();
-					ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-					pi.num = model.ThisUser.userNumber;
-					Writing(pi);
-					model.PingWatch.Start();
-				}
-			}
+			//if (model.threadStart)
+			//{
+			//	if (model.PingWatch.ElapsedMilliseconds > 4000)
+			//	{
+			//		model.PingWatch.Stop();
+			//		CloseFormEvent(null, null);
+			//	}
+			//	else
+			//	{
+			//		model.PingWatch = new Stopwatch();
+			//		ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+			//		pi.num = model.ThisUser.userNumber;
+			//		Writing(pi);
+			//		model.PingWatch.Start();
+			//	}
+			//}
 
 		}
 

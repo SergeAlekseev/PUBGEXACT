@@ -280,8 +280,11 @@ namespace ClassLibrary
 				menuConnecting.Start(host3);
 
 				RandomBushs();
+				Thread.Sleep(57);
 				RandomBox();
+				Thread.Sleep(57);
 				RandomTree();
+				Thread.Sleep(57);
 				GenerateItems();
 
 				PublicHost = host;
@@ -868,7 +871,10 @@ namespace ClassLibrary
 						}
 						catch
 						{
-
+							int ind = tmpString.IndexOf('{');
+							var readBytes = new byte[30];
+							model.ListNs[num].Read(readBytes, 0, (ind-1) * 2);
+							tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
 						}
 
 						manualResetEvent.Set();
