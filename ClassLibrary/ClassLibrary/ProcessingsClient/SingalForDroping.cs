@@ -25,6 +25,7 @@ namespace ClassLibrary.ProcessingsClient
 			}
 			itemDrop.items = listItems;
 			itemDrop.itemLocation = model.ListUsers[model.ThisUser.userNumber].userLocation;
+			itemDrop.num = model.ThisUser.userNumber;
 			CTransfers.Writing(itemDrop, model.NStream);
 		}
 	}

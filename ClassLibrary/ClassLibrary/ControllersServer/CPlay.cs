@@ -189,12 +189,12 @@ namespace ClassLibrary.ControllersServer
 			model.CountGamers += 1;
 			writingCountGames();
 
-			model.ListUsers[num].Items[1] = new Item();
-			model.ListUsers[num].Items[2] = new Item();
-			model.ListUsers[num].Items[3] = new Item();
-			model.ListUsers[num].Items[4] = new Item();
-			model.ListUsers[num].Items[5] = new Item();
-			model.ListUsers[num].Items[6] = new Item();
+			model.ListUsers[num].Items[1] = new NormalGun();
+			model.ListUsers[num].Items[2] = new Grenade();
+			model.ListUsers[num].Items[3] = new NormalShotgun();
+			model.ListUsers[num].Items[4] = new NormalPistol();
+			model.ListUsers[num].Items[5] = new NormalGun();
+			model.ListUsers[num].Items[6] = new Grenade();
 
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
@@ -374,14 +374,9 @@ namespace ClassLibrary.ControllersServer
 					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
 					{
-						try
-						{
+						
 							processing.Process(model);
-						}
-						catch
-						{
-							//ErrorEvent("Не прошла команда от отключенного игрока " + processing.num);
-						}
+						
 					}
 
 					Thread.Yield();

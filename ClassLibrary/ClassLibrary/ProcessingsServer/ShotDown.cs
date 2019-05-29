@@ -27,7 +27,7 @@ namespace ClassLibrary.ProcessingsServer
 			}
 		}
 
-		public void ShotUser(object ui)//Controller
+		public void ShotUser(object ui)
 		{
 			userInfo = (UserInfo)ui;
 			Object obj = null;
@@ -78,7 +78,7 @@ namespace ClassLibrary.ProcessingsServer
 
 		}
 
-		public void Bullet(object tmpObject)
+		async public void Bullet(object tmpObject)
 		{
 			bool flagBreak = false;
 			BulletInfo bulletInfo = (BulletInfo)tmpObject;
@@ -107,8 +107,9 @@ namespace ClassLibrary.ProcessingsServer
 
 							SingalForDroping Signal = new SingalForDroping();
 							CTransfers.Writing(Signal, model.ListNs[j]);
-							Thread.Sleep(500);//Чтобы вещи успевали дропнуться до удаления игрока
 
+							await Task.Delay(600);
+							
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
 								if (g.Name == model.ListUsers[j].Name)

@@ -30,18 +30,17 @@ namespace ClassLibrary.ProcessingsServer
 						{
 							Model.Map.ListItems.Add(item); //Добавляем вещь на карту
 						}
-
-						foreach (NetworkStream nStream in Model.ListNs) //Даём актуальную инфу всем игрокам об удалённом с карты предмете 
-						{
-							GetInfoItems items = new GetInfoItems();
-							items.listItems = Model.Map.ListItems;
-							CTransfers.Writing(items, nStream);
-						}
+					
 						break;
 					}
 				itemLocation.X += 25;
 			}
-
+			foreach (NetworkStream nStream in Model.ListNs) //Даём актуальную инфу всем игрокам об удалённом с карты предмете 
+			{
+				GetInfoItems items = new GetInfoItems();
+				items.listItems = Model.Map.ListItems;
+				CTransfers.Writing(items, nStream);
+			}
 		}
 	}
 }
