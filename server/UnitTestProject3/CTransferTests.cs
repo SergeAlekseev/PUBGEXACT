@@ -11,23 +11,23 @@ namespace Server.Tests
 	[TestClass]
 	public class CTransferTests
 	{
-		string actual;
+		static string actual;
 
-		[TestMethod]
-		public void Reading_nStream_string() // На вход поступает строка
-		{
-			//arrange 
-			Thread myThread = new Thread(new ThreadStart(serverStart));
-			myThread.Start();
+		//[TestMethod]
+		//public void Reading_nStream_string() // На вход поступает строка
+		//{
+		//	//arrange 
+		//	Thread myThread = new Thread(new ThreadStart(serverStart));
+		//	myThread.Start();
+		//	clientStart_Test1();
+		//	Thread.Sleep(1000);
+		//	string expected = "Test_1_2_3";
 
-			clientStart_Test1();
-			string expected = "Test_1_2_3";
-			myThread.Join();
-			//act	
+		//	//act	
 
-			//assert 
-			Assert.AreEqual(expected, actual);
-		}
+		//	//assert 
+		//	Assert.AreEqual(expected, actual);
+		//}
 
 		[TestMethod]
 		public void Reading_nStream_null() // На вход поступает строка
