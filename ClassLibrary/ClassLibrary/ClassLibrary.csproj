@@ -53,7 +53,7 @@
     <Compile Include="Bush.cs" />
     <Compile Include="ControllerClient.cs" />
     <Compile Include="ControllerServer.cs" />
-    <Compile Include="ControllersServer\ControllersServer.cs" />
+    <Compile Include="ControllersServer\ControllersS.cs" />
     <Compile Include="ControllersServer\CInfoUsers.cs" />
     <Compile Include="ControllersServer\CMap.cs" />
     <Compile Include="ControllersServer\CPlay.cs" />

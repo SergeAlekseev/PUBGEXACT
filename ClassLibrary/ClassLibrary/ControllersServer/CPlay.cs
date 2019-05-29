@@ -294,7 +294,7 @@ namespace ClassLibrary.ControllersServer
 						break;
 					}
 				}
-				//StopServer();
+				ControllersS.cServer.StopServer();
 			}
 		}
 		public void Producer(object obj)//игра
@@ -303,14 +303,14 @@ namespace ClassLibrary.ControllersServer
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			model.ListTimers.Add(timerMove);
 
-			try
-			{
+			//try
+			//{
 				timerMove.Interval = 15;
 				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
 				timerMove.Start();
 
-				try
-				{
+				//try
+				//{
 					while (model.workingServer && model.workingThread)
 					{
 						string tmpString = CTransfers.Reading(model.ListNs[num]);
@@ -323,30 +323,30 @@ namespace ClassLibrary.ControllersServer
 					}
 					timerMove.Stop();
 
-				}
-				catch (System.IO.IOException)
-				{
-					//ErrorEvent("Отключение игрока в Producer");
-					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
-					{
-						model.ListUsers[num].flagShoting = false;
-						lock (model.ListUsers)
-						{
-							model.ListUsers.RemoveAt(num);
-							model.ListUsers.Insert(num, null);
-						}
-					}
-					model.CountGamers -= 1;
-					writingCountGames();
+				//}
+			//	catch (System.IO.IOException)
+			//	{
+			//		//ErrorEvent("Отключение игрока в Producer");
+			//		if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
+			//		{
+			//			model.ListUsers[num].flagShoting = false;
+			//			lock (model.ListUsers)
+			//			{
+			//				model.ListUsers.RemoveAt(num);
+			//				model.ListUsers.Insert(num, null);
+			//			}
+			//		}
+			//		model.CountGamers -= 1;
+			//		writingCountGames();
 
 
-				}
-			}
-			catch
-			{
-				//ErrorEvent("Ложный вызов продюсера");
-				timerMove.Stop();
-			}
+			//	}
+			//}
+			//catch
+			//{
+			//	//ErrorEvent("Ложный вызов продюсера");
+			//	timerMove.Stop();
+			//}
 
 		}
 

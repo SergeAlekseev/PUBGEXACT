@@ -88,7 +88,7 @@ namespace ClassLibrary
 			CTransfers.jss.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
 			CTransfers.jss.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All;
 			CTransfers.jss.Formatting = Newtonsoft.Json.Formatting.Indented;
-			new ControllersS(model);
+			new ControllersS(model, this);
 		}
 
 		
