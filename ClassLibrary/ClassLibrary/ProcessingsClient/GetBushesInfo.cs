@@ -11,9 +11,9 @@ namespace ClassLibrary.ProcessingsClient
 	{
 		public List<Bush> listBush;
 
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.ListBush = listBush;
+			model.Map.ListBush = listBush;
 		}
 	}
 }

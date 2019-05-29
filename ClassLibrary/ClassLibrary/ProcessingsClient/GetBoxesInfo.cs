@@ -10,9 +10,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetBoxesInfo : ProcessingClient
 	{
 		public List<Box> listBox;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.ListBox = listBox;
+			model.Map.ListBox = listBox;
 		}
 	}
 }

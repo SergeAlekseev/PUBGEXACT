@@ -10,9 +10,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetMapBordersInfo : ProcessingClient
 	{
 		public Rectangle rectangle;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.Map.MapBorders = rectangle;
+			model.Map.MapBorders = rectangle;
 		}
 	}
 }

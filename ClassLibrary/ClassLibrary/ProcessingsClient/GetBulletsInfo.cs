@@ -11,9 +11,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetBulletsInfo : ProcessingClient
 	{
 		public List<BulletInfo> listBulets;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.ListBullet = listBulets;
+			model.ListBullet = listBulets;
 		}
 	}
 }

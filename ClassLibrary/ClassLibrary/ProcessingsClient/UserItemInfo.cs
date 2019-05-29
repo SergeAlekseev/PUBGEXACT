@@ -11,9 +11,9 @@ namespace ClassLibrary.ProcessingsClient
 	{
 		public Item[] Items;
 
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.ThisUser.Items = Items;
+			model.ThisUser.Items = Items;
 		}
 	}
 }

@@ -9,11 +9,11 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetNumber : ProcessingClient
 	{
 		public int num;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.number = num;
-			controller.threadStart = true;
-			controller.setName(controller.model.GInfo.Name);
+			model.number = num;
+			model.threadStart = true;
+			model.setName(model.GInfo.Name);
 		}
 	}
 }

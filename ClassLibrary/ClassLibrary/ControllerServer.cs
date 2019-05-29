@@ -131,10 +131,15 @@ namespace ClassLibrary
 				Thread menuConnecting = new Thread(new ParameterizedThreadStart(ControllersS.cStart.MenuConnecting));
 				menuConnecting.Start(host3);
 
-				ControllersS.cMap.RandomBushs();
-				ControllersS.cMap.RandomBox();
-				ControllersS.cMap.RandomTree();
-				ControllersS.cMap.GenerateItems();
+
+				RandomBushs();
+				Thread.Sleep(57)
+				RandomBox();
+				Thread.Sleep(57);
+				RandomTree();
+				Thread.Sleep(57);
+				GenerateItems();
+
 
 				PublicHost = host;
 				host.Start();
@@ -172,6 +177,10 @@ namespace ClassLibrary
 						model.ListMove.Add(new MMove());
 						model.ListShoting.Add(new Thread(ControllersS.cPlay.InfoUsers));
 						Thread thread = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.PlayUser));
+
+						model.ListShoting.Add(new Thread(Pusto));
+						Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
+
 						thread.Start(tc);
 
 
@@ -236,12 +245,15 @@ namespace ClassLibrary
 		}
 
 
+		public void Pusto(object tc)
+		{
+
+		}
 
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)//основа
 		{
 			StopServer();
 		}
 
-		
 	}
 }

@@ -40,9 +40,8 @@ namespace ClassLibrary
 		public Thread threadReading;
 		public Thread threadConsumer;
 
-		public Stopwatch PingWatch = new Stopwatch();
-		public bool threadStart = false;
-		public bool serverStart;
+		
+		
 
 		public System.Timers.Timer timerPing = new System.Timers.Timer();
 		public System.Timers.Timer timerMouseOverItem = new System.Timers.Timer();
@@ -53,9 +52,18 @@ namespace ClassLibrary
 			model.GInfo.Password = Password;
 		}
 
+		public void exit()
+		{
+			client.Close();
+			timerPing.Stop();
+			Disconnect();
+			threadReading.Abort();
+			threadConsumer.Abort();
+			manualResetEvent.Set();
+		}
 		public void ShotDown()
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				ShotDown sd = new ShotDown();
 				sd.num = model.number;
@@ -65,7 +73,7 @@ namespace ClassLibrary
 
 		public void ShotUp()
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				ShotUp su = new ShotUp();
 				su.num = model.number;
@@ -135,7 +143,7 @@ namespace ClassLibrary
 
 		public void WriteMouseLocation(Point mouseLocation)
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				GetPlayersMousesLocation gpml = new GetPlayersMousesLocation();
 				gpml.num = model.number;
@@ -148,6 +156,10 @@ namespace ClassLibrary
 		public ControllerClient(ModelClient model) // Конструктор
 		{
 			this.model = model;
+
+			model.exit = exit;
+			model.setName = setName;
+
 			timerPing.Elapsed += timerPing_Tick;
 			timerPing.Interval = 2000;
 			timerPing.Start();
@@ -155,22 +167,22 @@ namespace ClassLibrary
 
 		public void timerPing_Tick(object sender, EventArgs e)
 		{
-			if (threadStart)
-			{
-				if (PingWatch.ElapsedMilliseconds > 4000)
-				{
-					PingWatch.Stop();
-					CloseFormEvent(null, null);
-				}
-				else
-				{
-					PingWatch = new Stopwatch();
-					ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
-					pi.num = model.ThisUser.userNumber;
-					Writing(pi);
-					PingWatch.Start();
-				}
-			}
+			//if (model.threadStart)
+			//{
+			//	if (model.PingWatch.ElapsedMilliseconds > 4000)
+			//	{
+			//		model.PingWatch.Stop();
+			//		CloseFormEvent(null, null);
+			//	}
+			//	else
+			//	{
+			//		model.PingWatch = new Stopwatch();
+			//		ClassLibrary.ProcessingsServer.PingInfoServer pi = new PingInfoServer();
+			//		pi.num = model.ThisUser.userNumber;
+			//		Writing(pi);
+			//		model.PingWatch.Start();
+			//	}
+			//}
 
 		}
 
@@ -178,7 +190,7 @@ namespace ClassLibrary
 		{
 			try
 			{
-				if (threadStart)
+				if (model.threadStart)
 				{
 					ChangeWeapons cw = new ChangeWeapons();
 					cw.num = model.number;
@@ -193,7 +205,7 @@ namespace ClassLibrary
 
 		public void Recharge()
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				Reload r = new Reload();
 				r.num = model.number;
@@ -206,7 +218,7 @@ namespace ClassLibrary
 		{
 			model.Win = true;
 			model.NStream.Close();
-			serverStart = false;
+			model.serverStart = false;
 			client.Close();
 			timerPing.Stop();
 			threadReading.Abort();
@@ -218,7 +230,7 @@ namespace ClassLibrary
 		public void DeathPlayer()
 		{
 			model.NStream.Close();
-			threadStart = false;
+			model.threadStart = false;
 			client.Close();
 			timerPing.Stop();
 			threadReading.Abort();
@@ -228,7 +240,7 @@ namespace ClassLibrary
 
 		public void PressKey()
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				PlayerMovementsInfo pmi = new PlayerMovementsInfo();
 				pmi.num = model.number;
@@ -240,9 +252,9 @@ namespace ClassLibrary
 		public void Disconnect()
 		{
 
-			if (threadStart)
+			if (model.threadStart)
 			{
-				serverStart = false;
+				model.serverStart = false;
 				client.Close();
 				timerPing.Stop();
 				threadReading.Abort();
@@ -256,7 +268,7 @@ namespace ClassLibrary
 
 		public bool Connect(string ip)// Controller
 		{
-			if (!threadStart)
+			if (!model.threadStart)
 			{
 				try
 				{
@@ -265,7 +277,7 @@ namespace ClassLibrary
 						manualResetEvent = new ManualResetEvent(true);
 						client = new TcpClient(ip, 1337);
 						model.NStream = client.GetStream();
-						serverStart = true;
+						model.serverStart = true;
 
 						//threadReading = new Thread(ReadingStream);
 						threadReading = new Thread(Producer);
@@ -295,7 +307,7 @@ namespace ClassLibrary
 			double angleDegree = defineAngle(model.MouseCoord, new Point(300, 600));
 			model.ThisUser.Rotate = angleDegree;
 
-			if (threadStart)
+			if (model.threadStart)
 			{
 				GetPlayersAngels gpa = new GetPlayersAngels();
 				gpa.num = model.number;
@@ -307,7 +319,7 @@ namespace ClassLibrary
 
 		public bool setName(string Name)
 		{
-			if (threadStart)
+			if (model.threadStart)
 			{
 				GetUserName gun = new GetUserName();
 				gun.num = model.number;
@@ -355,7 +367,7 @@ namespace ClassLibrary
 
 		public void Producer()
 		{
-			while (serverStart)
+			while (model.serverStart)
 			{
 				try
 				{
@@ -374,7 +386,7 @@ namespace ClassLibrary
 		{
 			Thread.Sleep(100);
 			ProcessingClient processing;
-			while (serverStart)
+			while (model.serverStart)
 			{
 
 				manualResetEvent.WaitOne();
@@ -385,7 +397,7 @@ namespace ClassLibrary
 					if (processing != null)
 					{
 
-						processing.Process(this);
+						processing.Process(model);
 					}
 
 					Thread.Yield();

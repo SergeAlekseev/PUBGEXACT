@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
 			this.tName = new System.Windows.Forms.TextBox();
 			this.Pass = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
 			// 
 			// tName
 			// 
+			this.tName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.tName.Location = new System.Drawing.Point(34, 55);
 			this.tName.Name = "tName";
 			this.tName.Size = new System.Drawing.Size(173, 20);
@@ -48,6 +50,7 @@
 			// 
 			// Pass
 			// 
+			this.Pass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.Pass.Location = new System.Drawing.Point(34, 102);
 			this.Pass.Name = "Pass";
 			this.Pass.PasswordChar = '*';
@@ -85,6 +88,7 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.BackColor = System.Drawing.Color.Transparent;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ip});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -107,6 +111,8 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.BackgroundImage = global::client.Properties.Resources.box;
 			this.ClientSize = new System.Drawing.Size(245, 185);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.Join);
@@ -114,8 +120,10 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.Pass);
 			this.Controls.Add(this.tName);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Login";
 			this.Text = "Авторизация";
+			this.TopMost = true;
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);

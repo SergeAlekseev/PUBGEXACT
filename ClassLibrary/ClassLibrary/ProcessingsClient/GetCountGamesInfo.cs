@@ -9,9 +9,9 @@ namespace ClassLibrary.ProcessingsClient
 	public class GetCountGamesInfo : ProcessingClient
 	{
 		public int count;
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.model.CountGamers = count;
+			model.CountGamers = count;
 		}
 	}
 }

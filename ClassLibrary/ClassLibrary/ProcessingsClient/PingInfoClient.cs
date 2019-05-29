@@ -11,10 +11,10 @@ namespace ClassLibrary.ProcessingsClient
 	{
 		
 
-		public override void Process(ControllerClient controller)
+		public override void Process(ModelClient model)
 		{
-			controller.PingWatch.Stop();
-			controller.model.Ping = (int)controller.PingWatch.ElapsedMilliseconds;
+			model.PingWatch.Stop();
+			model.Ping = (int)model.PingWatch.ElapsedMilliseconds;
 		}
 	}
 }

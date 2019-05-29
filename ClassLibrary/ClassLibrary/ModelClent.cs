@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -14,6 +15,14 @@ namespace ClassLibrary
 {
 	public class ModelClient
 	{
+
+		public delegate void exitD();
+		public delegate bool setNameD(string s);
+
+		public setNameD setName;
+		public exitD exit;
+
+		public Stopwatch PingWatch = new Stopwatch();
 
 		List<UserInfo> listUsers = new List<UserInfo>();
 		List<BulletInfo> listBullet = new List<BulletInfo>();
@@ -34,6 +43,9 @@ namespace ClassLibrary
 		string killer;
 		public Kill[] arrayKills = new Kill[3];
 		 NetworkStream nStream;
+
+		public bool threadStart = false;
+		public bool serverStart;
 
 		public int number;
 		public int CountGamers
