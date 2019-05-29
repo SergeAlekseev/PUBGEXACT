@@ -315,8 +315,14 @@ namespace ClassLibrary.ControllersServer
 					{
 						string tmpString = CTransfers.Reading(model.ListNs[num]);
 
-						SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
-
+				try
+				{
+					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
+				}
+				catch
+				{
+					model.ListNs[num].Read(new Byte[2], 0, 2);
+				}
 
 						manualResetEvent.Set();
 

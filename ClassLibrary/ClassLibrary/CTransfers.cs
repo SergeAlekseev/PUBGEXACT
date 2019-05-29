@@ -26,7 +26,8 @@ namespace ClassLibrary
 				countReadingBytes += nStream.Read(countRead, countReadingBytes, countRead.Count() - countReadingBytes);
 			while (countReadingBytes != 4 && countReadingBytes > 0);
 
-			if (countReadingBytes == 0) throw new System.IO.IOException();
+			if (countReadingBytes == 0)
+				throw new System.IO.IOException();
 
 			countReadingBytes = 0;
 
