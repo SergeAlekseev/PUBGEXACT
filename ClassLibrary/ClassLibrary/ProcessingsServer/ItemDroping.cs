@@ -19,11 +19,11 @@ namespace ClassLibrary.ProcessingsServer
 		{
 			foreach(Item item in items)
 			{
-				for (int i = 0; i <= items.Count+1; i++)
-					if (Model.ListUsers[num].Items[i+1].IdItem == item.IdItem)
+				for (int i = 1; i <= Model.ListUsers[num].Items.Length; i++)
+					if (Model.ListUsers[num].Items[i].IdItem == item.IdItem)
 					{
 						Item voidItem = new Item();
-						Model.ListUsers[num].Items[i+1] = voidItem; //Удаляем вещь из инвентаря игрока
+						Model.ListUsers[num].Items[i] = voidItem; //Удаляем вещь из инвентаря игрока
 						voidItem.IdItem = -1;
 						item.Location = itemLocation;
 						lock (Model.Map.ListItems)
