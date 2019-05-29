@@ -401,13 +401,13 @@ namespace client
 
 		private void Client_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == 'q' || e.KeyChar == 'й')
+			if ((e.KeyChar == 'q' || e.KeyChar == 'й' )||(e.KeyChar == 'Q' || e.KeyChar == 'Й'))
 			{
 				MouseClickEvent = controller.ItemDroping;
 				MouseClickEvent();
 				//Событие в котором метод, что добавляет предмет в список предметов карты из инвентаря и удаляет его оттуда
 			}
-			else if (e.KeyChar == 'f' || e.KeyChar == 'а')
+			else if (e.KeyChar == 'f' || e.KeyChar == 'а' || (e.KeyChar == 'F' || e.KeyChar == 'А'))
 			{
 				MouseClickEvent = controller.Mouse_Click;
 				MouseClickEvent();
