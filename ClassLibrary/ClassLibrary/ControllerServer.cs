@@ -132,13 +132,13 @@ namespace ClassLibrary
 				menuConnecting.Start(host3);
 
 
-				RandomBushs();
-				Thread.Sleep(57)
-				RandomBox();
+				ControllersS.cMap.RandomBushs();
 				Thread.Sleep(57);
-				RandomTree();
+				ControllersS.cMap.RandomBox();
 				Thread.Sleep(57);
-				GenerateItems();
+				ControllersS.cMap.RandomTree();
+				Thread.Sleep(57);
+				ControllersS.cMap.GenerateItems();
 
 
 				PublicHost = host;
@@ -179,7 +179,7 @@ namespace ClassLibrary
 						Thread thread = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.PlayUser));
 
 						model.ListShoting.Add(new Thread(Pusto));
-						Thread thread = new Thread(new ParameterizedThreadStart(PlayUser));
+						Thread thread3 = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.PlayUser));
 
 						thread.Start(tc);
 

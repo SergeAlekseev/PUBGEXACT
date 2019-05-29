@@ -107,7 +107,7 @@ namespace ClassLibrary.ProcessingsServer
 
 							SingalForDroping Signal = new SingalForDroping();
 							CTransfers.Writing(Signal, model.ListNs[j]);
-							Thread.Sleep(100);//Чтобы вещи успевали дропнуться до удаления игрока
+							Thread.Sleep(500);//Чтобы вещи успевали дропнуться до удаления игрока
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
@@ -208,7 +208,7 @@ namespace ClassLibrary.ProcessingsServer
 
 						SingalForDroping Signal = new SingalForDroping();
 						CTransfers.Writing(Signal, model.ListNs[j]);
-						Thread.Sleep(100);//Чтобы вещи успевали дропнуться до удаления игрока
+						Thread.Sleep(500);//Чтобы вещи успевали дропнуться до удаления игрока
 
 						foreach (GeneralInfo g in model.ListGInfo)
 						{

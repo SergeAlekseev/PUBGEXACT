@@ -15,7 +15,7 @@ namespace ClassLibrary.ProcessingsServer
 			this.Model = Model;
 			try
 			{
-				if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon)
+				if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon && Model.ListUsers[num].Items[Model.ListUsers[num].thisItem]!=null)
 				{
 					Model.ListUsers[num].flagRecharge = true;
 					Model.ListShoting[num].Abort();

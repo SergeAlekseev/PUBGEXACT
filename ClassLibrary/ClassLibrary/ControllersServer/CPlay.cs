@@ -14,7 +14,7 @@ namespace ClassLibrary.ControllersServer
 {
 	public class CPlay
 	{
-		
+
 		public System.Timers.Timer timerZone, timerUsersInZone;
 		public ConcurrentQueue<ProcessingServer> SecureQueue = new ConcurrentQueue<ProcessingServer>(); //___________________________________
 		ModelServer model;
@@ -145,6 +145,11 @@ namespace ClassLibrary.ControllersServer
 						model.ListUsers[i].hp -= model.DamageZone;
 						if (model.ListUsers[i].hp <= 0)
 						{
+
+							SingalForDroping Signal = new SingalForDroping();
+							CTransfers.Writing(Signal, model.ListNs[i]);
+							Thread.Sleep(500);//Чтобы вещи успевали дропнуться до удаления игрока
+
 							PlayerDeath death = new PlayerDeath();
 							death.Killer = "ZONA";
 
@@ -303,56 +308,56 @@ namespace ClassLibrary.ControllersServer
 			System.Timers.Timer timerMove = new System.Timers.Timer();
 			model.ListTimers.Add(timerMove);
 
-			//try
-			//{
+			try
+			{
 				timerMove.Interval = 15;
 				timerMove.Elapsed += (x, y) => { timerMove_Tick(model.ListMove[num].moveUp, model.ListMove[num].moveDown, model.ListMove[num].moveLeft, model.ListMove[num].moveRight, model.ListMove[num].shift, num); };
 				timerMove.Start();
 
-				//try
-				//{
+				try
+				{
 					while (model.workingServer && model.workingThread)
 					{
 						string tmpString = CTransfers.Reading(model.ListNs[num]);
 
-				try
-				{
-					SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
-				}
-				catch
-				{
-					model.ListNs[num].Read(new Byte[2], 0, 2);
-				}
+						try
+						{
+							SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
+						}
+						catch
+						{
+							model.ListNs[num].Read(new Byte[2], 0, 2);
+						}
 
 						manualResetEvent.Set();
 
 					}
 					timerMove.Stop();
 
-				//}
-			//	catch (System.IO.IOException)
-			//	{
-			//		//ErrorEvent("Отключение игрока в Producer");
-			//		if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
-			//		{
-			//			model.ListUsers[num].flagShoting = false;
-			//			lock (model.ListUsers)
-			//			{
-			//				model.ListUsers.RemoveAt(num);
-			//				model.ListUsers.Insert(num, null);
-			//			}
-			//		}
-			//		model.CountGamers -= 1;
-			//		writingCountGames();
+				}
+				catch (System.IO.IOException)
+				{
+					//ErrorEvent("Отключение игрока в Producer");
+					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
+					{
+						model.ListUsers[num].flagShoting = false;
+						lock (model.ListUsers)
+						{
+							model.ListUsers.RemoveAt(num);
+							model.ListUsers.Insert(num, null);
+						}
+					}
+					model.CountGamers -= 1;
+					writingCountGames();
 
 
-			//	}
-			//}
-			//catch
-			//{
-			//	//ErrorEvent("Ложный вызов продюсера");
-			//	timerMove.Stop();
-			//}
+				}
+			}
+			catch
+			{
+				//ErrorEvent("Ложный вызов продюсера");
+				timerMove.Stop();
+			}
 
 		}
 

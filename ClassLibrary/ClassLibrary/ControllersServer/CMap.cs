@@ -76,7 +76,7 @@ namespace ClassLibrary.ControllersServer
 					Tree tree = new Tree(random.Next(13, model.Map.MapBorders.Width - 13), random.Next(13, model.Map.MapBorders.Height - 13));
 					foreach (Box b in model.Map.ListBox)//Проверка, заспавнилось ли дерево в ящике
 					{
-						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size || Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
+						if (Math.Abs(b.Location.X - tree.Location.X) < Box.size && Math.Abs(b.Location.Y - tree.Location.Y) < Box.size)
 						{
 							flag = false;
 							break;

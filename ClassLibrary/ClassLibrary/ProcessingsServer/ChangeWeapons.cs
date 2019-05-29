@@ -23,9 +23,10 @@ namespace ClassLibrary.ProcessingsServer
 				(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Grenade).Grena.flagFly = true;
 			}
 			Model.ListUsers[num].flagShoting = false;
+			short Time = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time;
 			Thread t = new Thread(() =>
 			{
-				Thread.Sleep(Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Time);
+				Thread.Sleep(Time);
 				Model.ListUsers[num].flagWaitShoting = false;
 			});
 			t.Start();
