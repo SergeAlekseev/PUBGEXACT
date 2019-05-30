@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClassLibrary</RootNamespace>
+    <AssemblyName>ClassLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\server\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="Armor.cs" />
+    <Compile Include="Box.cs" />
+    <Compile Include="BulletInfo.cs" />
+    <Compile Include="Bush.cs" />
+    <Compile Include="ControllerClient.cs" />
+    <Compile Include="ControllerServer.cs" />
+    <Compile Include="ControllersServer\ControllersS.cs" />
+    <Compile Include="ControllersServer\CInfoUsers.cs" />
+    <Compile Include="ControllersServer\CMap.cs" />
+    <Compile Include="ControllersServer\CPlay.cs" />
+    <Compile Include="ControllersServer\CStart.cs" />
+    <Compile Include="CTransfers.cs" />
+    <Compile Include="GeneralInfo.cs" />
+    <Compile Include="Grenade.cs" />
+    <Compile Include="GrenadeInfo.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Kill.cs" />
+    <Compile Include="LinearWeapons.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="Kit.cs" />
+    <Compile Include="MMove.cs" />
+    <Compile Include="ModelClent.cs" />
+    <Compile Include="ModelServer.cs" />
+    <Compile Include="NormalGun.cs" />
+    <Compile Include="NormalPistol.cs" />
+    <Compile Include="NormalShotgun.cs" />
+    <Compile Include="ProcessingsClient\AngelToZone.cs" />
+    <Compile Include="ProcessingsClient\Disconnect.cs" />
+    <Compile Include="ProcessingsClient\GetBoxesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetBulletsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetBushesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetCountGamesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetCountWinsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetGrenadesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetInfoItems.cs" />
+    <Compile Include="ProcessingsClient\GetKillsInfo.cs" />
+    <Compile Include="ProcessingsClient\GetMapBordersInfo.cs" />
+    <Compile Include="ProcessingsClient\GetNumber.cs" />
+    <Compile Include="ProcessingsClient\GetPrevZoneInfo.cs" />
+    <Compile Include="ProcessingsClient\GetTreesInfo.cs" />
+    <Compile Include="ProcessingsClient\GetZoneCompression.cs" />
+    <Compile Include="ProcessingsClient\GetZoneStartInfo.cs" />
+    <Compile Include="ProcessingsClient\PingInfoClient.cs" />
+    <Compile Include="ProcessingsClient\PlayerDeath.cs" />
+    <Compile Include="ProcessingsClient\ProcessingClient.cs" />
+    <Compile Include="ProcessingsClient\SingalForDroping.cs" />
+    <Compile Include="ProcessingsClient\UserItemInfo.cs" />
+    <Compile Include="ProcessingsServer\ChangeWeapons.cs" />
+    <Compile Include="ProcessingsServer\GetPlayersAngels.cs" />
+    <Compile Include="ProcessingsServer\GetPlayersMousesLocation.cs" />
+    <Compile Include="ProcessingsServer\GetUserName.cs" />
+    <Compile Include="ProcessingsServer\ItemDroping.cs" />
+    <Compile Include="ProcessingsServer\ItemTaken.cs" />
+    <Compile Include="ProcessingsServer\PingInfoServer.cs" />
+    <Compile Include="ProcessingsServer\PlayerMovementsInfo.cs" />
+    <Compile Include="ProcessingsServer\ProcessingServer.cs" />
+    <Compile Include="ProcessingsServer\Reload.cs" />
+    <Compile Include="ProcessingsServer\ShotDown.cs" />
+    <Compile Include="ProcessingsServer\ShotUp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shotgun.cs" />
+    <Compile Include="Tree.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="Weapon.cs" />
+    <Compile Include="Zone.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
