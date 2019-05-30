@@ -22,7 +22,7 @@ namespace Server.Tests
 			GeneralInfo expected = null;
 
 			//act	
-			GeneralInfo actual = controller.PlayerCheck(listG, userG);
+			GeneralInfo actual = ControllersS.cInfoUsers.PlayerCheck(listG, userG);
 
 			//assert 
 			Assert.AreEqual(expected, actual);
@@ -50,7 +50,7 @@ namespace Server.Tests
 			GeneralInfo userG = null;
 			GeneralInfo expected = null;
 			//act
-			GeneralInfo actual = controller.PlayerCheck(listG, userG);
+			GeneralInfo actual = ControllersS.cInfoUsers.PlayerCheck(listG, userG);
 			//assert 
 			Assert.AreEqual(expected, actual);
 		}
@@ -80,7 +80,7 @@ namespace Server.Tests
 			GeneralInfo expected = listG[0];
 
 			//act	
-			GeneralInfo actual = controller.PlayerCheck(listG, userG);
+			GeneralInfo actual = ControllersS.cInfoUsers.PlayerCheck(listG, userG);
 
 			//assert 
 			Assert.AreEqual(expected, actual);
@@ -99,7 +99,7 @@ namespace Server.Tests
 			bool expected = false;
 
 			//act	
-			bool actual = controller.CheckData(listG, userG);
+			bool actual = ControllersS.cInfoUsers.CheckData(listG, userG);
 
 			//assert 
 			Assert.AreEqual(expected, actual);
@@ -126,7 +126,7 @@ namespace Server.Tests
 			GeneralInfo userG = null;
 			bool expected = false;
 			//act
-			bool actual = controller.CheckData(listG, userG);
+			bool actual = ControllersS.cInfoUsers.CheckData(listG, userG);
 			//assert 
 			Assert.AreEqual(expected, actual);
 		}
@@ -156,7 +156,7 @@ namespace Server.Tests
 			bool expected = true;
 
 			//act	
-			bool actual = controller.CheckData(listG, userG);
+			bool actual = ControllersS.cInfoUsers.CheckData(listG, userG);
 
 			//assert 
 			Assert.AreEqual(expected, actual);
@@ -187,7 +187,7 @@ namespace Server.Tests
 			bool expected = false;
 
 			//act	
-			bool actual = controller.CheckData(listG, userG);
+			bool actual = ControllersS.cInfoUsers.CheckData(listG, userG);
 
 			//assert 
 			Assert.AreEqual(expected, actual);
@@ -206,7 +206,7 @@ namespace Server.Tests
 			bool expected = false;
 
 			//act	
-			bool actual = controller.PlayerSave(listG);
+			bool actual = ControllersS.cInfoUsers.PlayerSave(listG);
 
 			//assert
 			Assert.AreEqual(expected, actual);
@@ -232,7 +232,7 @@ namespace Server.Tests
 
 			bool expected = true;
 			//act	
-			bool actual = controller.PlayerSave(listG);
+			bool actual = ControllersS.cInfoUsers.PlayerSave(listG);
 
 			//assert
 			Assert.AreEqual(expected, actual);
@@ -248,7 +248,7 @@ namespace Server.Tests
 			model.Map.MapBorders = new Rectangle(0, 0, 12000, 12000);
 			bool expected = true;
 
-			bool actual = controller.GenerateItems();
+			bool actual = ControllersS.cMap.GenerateItems();
 
 			Assert.AreEqual(expected, actual);
 		}
@@ -261,7 +261,7 @@ namespace Server.Tests
 			model.Map.MapBorders = new Rectangle(0, 0, 6000, 6000);
 			bool expected = true;
 
-			bool actual = controller.GenerateItems();
+			bool actual = ControllersS.cMap.GenerateItems();
 
 			Assert.AreEqual(expected, actual);
 		}
@@ -279,7 +279,7 @@ namespace Server.Tests
 			model.Map.bordersForBullets = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
 			bool expected = true;
 
-			bool actual = controller.RandomTree();
+			bool actual = ControllersS.cMap.RandomTree();
 
 			Assert.AreEqual(expected, actual);
 		}
@@ -294,7 +294,7 @@ namespace Server.Tests
 			model.Map.bordersForBullets = new bool[model.Map.mapBorders.Width, model.Map.mapBorders.Height];
 			bool expected = true;
 
-			bool actual = controller.RandomTree();
+			bool actual = ControllersS.cMap.RandomTree();
 
 			Assert.AreEqual(expected, actual);
 		}
