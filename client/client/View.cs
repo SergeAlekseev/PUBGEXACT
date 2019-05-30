@@ -213,7 +213,6 @@ namespace client
 						g.DrawImage(model.Images[6], 5, 5);
 
 						bufferedGraphics.Graphics.DrawImage(background, 288, 288);
-						bufferedGraphics.Graphics.DrawString("Hp " + model.ThisUser.hp + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 500);
 						///////////
 						if (model.ThisUser.flagZone)
 						{
@@ -287,31 +286,47 @@ namespace client
 					#endregion
 
 					#region UserInteface
-
-					bufferedGraphics.Graphics.DrawString("Ping " + model.Ping + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 540, 2);
+					bufferedGraphics.Graphics.DrawString("Hp " + model.ThisUser.hp + "", new Font("Times New Roman", 14, FontStyle.Bold), Brushes.Red, 385, 520);
 
 					if (model.ArrayKills[2] != null)
 						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n" +
 															 model.ArrayKills[1].dead + " killed " + model.ArrayKills[1].killer + "\n" +
-															 model.ArrayKills[2].dead + " killed " + model.ArrayKills[2].killer, new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+															 model.ArrayKills[2].dead + " killed " + model.ArrayKills[2].killer, new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 2, 22);
 					else if (model.ArrayKills[1] != null)
 						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n" +
-															 model.ArrayKills[1].dead + " killed " + model.ArrayKills[1].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+															 model.ArrayKills[1].dead + " killed " + model.ArrayKills[1].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 2, 22);
 					else if (model.ArrayKills[0] != null)
-						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Black, 2, 22);
+						bufferedGraphics.Graphics.DrawString(model.ArrayKills[0].dead + " killed " + model.ArrayKills[0].killer + "\n", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 2, 22);
 
-					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 535, 24);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.userLocation.X + ":" + model.ThisUser.userLocation.Y + "", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.White, 535, 2);
 
-					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 10, FontStyle.Bold), Brushes.Red, 2, 2);
+					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.PaleVioletRed, 350, 2);
 
-					bufferedGraphics.Graphics.DrawString(model.CountGamers + " Gamers", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.DarkBlue, 150, 2);
+					bufferedGraphics.Graphics.DrawString(model.CountGamers + " Gamers", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.White, 180, 2);
 
 					if (model.ThisUser.Items[model.ThisUser.thisItem] != null)
 					{
-						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 12, FontStyle.Bold), Brushes.White, 2, 520);
+						bufferedGraphics.Graphics.DrawString(model.ThisUser.Items[model.ThisUser.thisItem].Name + " : " + model.ThisUser.Items[model.ThisUser.thisItem].Count + "", new Font("Times New Roman", 14, FontStyle.Bold), Brushes.White, 150, 520);
 					}
 
-					bufferedGraphics.Graphics.DrawString("Время до сужения зоны: " + model.Map.NextZone.TimeTocompression, new Font("Times New Roman", 13, FontStyle.Bold), Brushes.Orange, 300, 2);
+					bufferedGraphics.Graphics.DrawEllipse(Pens.White, 275, -25, 50, 50);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.White, 170, -25, 260, 50);
+					bufferedGraphics.Graphics.FillRectangle(Brushes.LightBlue, 150 + (model.ThisUser.thisItem - 1) * 50, 550, 50, 50);
+					bufferedGraphics.Graphics.DrawRectangle(Pens.White, 150, 550, 300, 50);
+
+					for (int i = 200; i < 500; i += 50)
+					{
+						bufferedGraphics.Graphics.DrawLine(Pens.White, i, 550, i, 600);
+						if ((model.ThisUser.Items[(i - 150) / 50] is NormalGun)) bufferedGraphics.Graphics.DrawImage(model.Images[8], i-48 , 563 , 46, 24);
+						if ((model.ThisUser.Items[(i - 150) / 50] is NormalShotgun)) bufferedGraphics.Graphics.DrawImage(model.Images[9], i - 48, 563, 46, 24);
+						if ((model.ThisUser.Items[(i - 150) / 50] is Grenade)) bufferedGraphics.Graphics.DrawImage(model.Images[11], i - 48, 552, 46, 46);
+						if ((model.ThisUser.Items[(i - 150) / 50] is NormalPistol)) bufferedGraphics.Graphics.DrawImage(model.Images[12], i - 48, 552, 46, 46);
+					}
+
+					
+
+
+					bufferedGraphics.Graphics.DrawString(model.Map.NextZone.TimeTocompression + "", new Font("Times New Roman", 13, FontStyle.Bold), Brushes.LightBlue, 290, 2);
 					#endregion
 
 				}
@@ -320,7 +335,7 @@ namespace client
 					#region Death
 
 					bufferedGraphics.Graphics.FillRectangle(Brushes.Black, 0, 0, PlayingField.Width, PlayingField.Height);
-					bufferedGraphics.Graphics.DrawString("You die!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
+					bufferedGraphics.Graphics.DrawString("You lose!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Red, 150, 275);
 					bufferedGraphics.Graphics.DrawString("You killed " + model.Killer, new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 340);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Red, 150, 375);
 					#endregion
@@ -331,7 +346,7 @@ namespace client
 					bufferedGraphics.Graphics.FillRectangle(Brushes.White, 0, 0, PlayingField.Width, PlayingField.Height);
 					bufferedGraphics.Graphics.DrawString("You win!", new Font("Times New Roman", 50, FontStyle.Bold), Brushes.Green, 150, 275);
 					bufferedGraphics.Graphics.DrawString(model.ThisUser.kills + " kills", new Font("Times New Roman", 25, FontStyle.Bold), Brushes.Green, 150, 340);
-					
+
 					#endregion
 				}
 				bufferedGraphics.Render(pictureBox);
@@ -401,7 +416,7 @@ namespace client
 
 		private void Client_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if ((e.KeyChar == 'q' || e.KeyChar == 'й' )||(e.KeyChar == 'Q' || e.KeyChar == 'Й'))
+			if ((e.KeyChar == 'q' || e.KeyChar == 'й') || (e.KeyChar == 'Q' || e.KeyChar == 'Й'))
 			{
 				MouseClickEvent = controller.ItemDroping;
 				MouseClickEvent();
@@ -412,7 +427,6 @@ namespace client
 				MouseClickEvent = controller.Mouse_Click;
 				MouseClickEvent();
 			}
-
 
 		}
 	}
