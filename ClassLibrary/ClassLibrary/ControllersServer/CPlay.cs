@@ -152,8 +152,11 @@ namespace ClassLibrary.ControllersServer
 
 							PlayerDeath death = new PlayerDeath();
 							death.Killer = "ZONA";
-
-							CTransfers.Writing(death, model.ListNs[i]);
+							try
+							{
+								CTransfers.Writing(death, model.ListNs[i]);
+							}
+							catch { }
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{

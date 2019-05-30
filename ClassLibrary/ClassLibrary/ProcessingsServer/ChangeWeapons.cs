@@ -27,7 +27,11 @@ namespace ClassLibrary.ProcessingsServer
 			Thread t = new Thread(() =>
 			{
 				Thread.Sleep(Time);
-				Model.ListUsers[num].flagWaitShoting = false;
+				try
+				{
+					Model.ListUsers[num].flagWaitShoting = false;
+				}
+				catch { }
 			});
 			t.Start();
 			Model.ListUsers[num].thisItem = numItems;
