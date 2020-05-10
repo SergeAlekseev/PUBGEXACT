@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "botLybrary", "botLybrary.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "..\ClassLibrary\ClassLibrary\ClassLibrary.csproj", "{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotLibrary1", "..\BotLibrary1\BotLibrary1.csproj", "{1DA51A5A-8066-4A02-988B-A29EB4BDDB17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DA51A5A-8066-4A02-988B-A29EB4BDDB17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DA51A5A-8066-4A02-988B-A29EB4BDDB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DA51A5A-8066-4A02-988B-A29EB4BDDB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DA51A5A-8066-4A02-988B-A29EB4BDDB17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
