@@ -73,5 +73,10 @@ namespace botLibrary
 			}
 
 		}
+
+		private void MyMenu_Load_1(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

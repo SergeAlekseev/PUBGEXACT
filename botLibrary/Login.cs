@@ -143,6 +143,11 @@ namespace botLibrary
 			nStream2.Write(massByts, 0, massByts.Count());
 		}
 
+		private void Login_Load(object sender, EventArgs e)
+		{
+
+		}
+
 		private void Ip_Click(object sender, EventArgs e)
 		{
 
