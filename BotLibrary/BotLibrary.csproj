@@ -9,7 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary\ClassLibrary\ClassLibrary.csproj" />
+    <Reference Include="ClassLibrary">
+      <HintPath>..\ClassLibrary\ClassLibrary\obj\Debug\ClassLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

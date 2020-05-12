@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary;
 
-namespace BotLibrary1
+namespace BotLibrary
 {
 	public class Map
 	{

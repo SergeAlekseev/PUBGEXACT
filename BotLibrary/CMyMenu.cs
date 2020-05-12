@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 
-namespace BotLibrary1
+namespace BotLibrary
 {
 	class CMyMenu
 	{
