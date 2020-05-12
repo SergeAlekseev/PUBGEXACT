@@ -19,7 +19,7 @@ namespace ClassLibrary.ProcessingsServer
 			{
 				case ClassLibrary.Action.action.moveUp: Model.ListMove[num].moveUp = true; break;
 				case ClassLibrary.Action.action.moveDown: Model.ListMove[num].moveDown = true; break;
-				case ClassLibrary.Action.action.noveLeft: Model.ListMove[num].moveLeft = true; break;
+				case ClassLibrary.Action.action.moveLeft: Model.ListMove[num].moveLeft = true; break;
 				case ClassLibrary.Action.action.moveRight: Model.ListMove[num].moveRight = true; break;
 				case ClassLibrary.Action.action.shiftDown: Model.ListMove[num].shift = true; break;
 

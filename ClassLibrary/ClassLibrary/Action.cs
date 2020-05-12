@@ -8,7 +8,7 @@ namespace ClassLibrary
 {
 	public class Action
 	{
-		public enum action { moveUp, moveDown, moveRight, noveLeft, stopUp, stopDown, stopLeft, stopRight, shiftDown, shiftUp };
+		public enum action { moveUp, moveDown, moveRight, moveLeft, stopUp, stopDown, stopLeft, stopRight, shiftDown, shiftUp };
 		public action act;
 		public Action()
 		{

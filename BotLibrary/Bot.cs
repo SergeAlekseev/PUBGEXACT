@@ -3,50 +3,54 @@ using System;
 using System.Drawing;
 using Action = ClassLibrary.Action;
 using System.Net.Sockets;
+using System.Threading;
+using Timer = System.Timers.Timer;
+using System.Threading.Tasks;
 
 namespace BotLibrary
 {
-	public class Bot
+	abstract public class Bot
 	{
 
-		public delegate bool ConnectD(string ip);
-		public event ConnectD ConnectEvent;
+		private delegate bool ConnectD(string ip);
+		private event ConnectD ConnectEvent;
 
-		public delegate void DisconnectD();
-		public event DisconnectD DisconnectEvent;
+		private delegate void DisconnectD();
+		private event DisconnectD DisconnectEvent;
 
-		public delegate void ActionD();
-		public event ActionD ActionEvent;
+		private delegate void ActionD();
+		private event ActionD ActionEvent;
 
-		public delegate void MouseLocatinD(Point MouseLocatin);
-		public event MouseLocatinD MouseLocatinEvent;
+		private delegate void MouseLocatinD(Point MouseLocatin);
+		private event MouseLocatinD MouseLocatinEvent;
 
-		public delegate void ShotUpD();
-		public event ShotUpD ShotUpEvent;
+		private delegate void ShotUpD();
+		private event ShotUpD ShotUpEvent;
 
-		public delegate void ShotDownD();
-		public event ShotDownD ShotDownEvent;
+		private delegate void ShotDownD();
+		private event ShotDownD ShotDownEvent;
 
-		public delegate double RotatateD();
-		public event RotatateD RotatateEvent;
+		private delegate double RotatateD();
+		private event RotatateD RotatateEvent;
 
-		public delegate void RechargeD();
-		public event RechargeD RechargeEvent;
+		private delegate void RechargeD();
+		private event RechargeD RechargeEvent;
 
-		public delegate bool СhangeItemD(byte num);
-		public event СhangeItemD СhangeItemEvent;
+		private delegate bool СhangeItemD(byte num);
+		private event СhangeItemD СhangeItemEvent;
 
-		public delegate void MouseClickD();
-		public event MouseClickD MouseClickEvent;
+		private delegate void MouseClickD();
+		private event MouseClickD MouseClickEvent;
 
 		static ModelClient model = new ModelClient();
 		ControllerClient controller = new ControllerClient(model);
 
-		
-		bool start = false;
-		bool MouseDown = false;
 
-		enum kompas
+		private bool start = false;
+		private bool MouseDown = false;
+		private Timer defaultTimer;
+
+		public enum kompas
 		{
 			Right, Left , Up, Down
 		}
@@ -73,8 +77,8 @@ namespace BotLibrary
 			controllerMenu = new CMyMenu(model);
 			controller = new ControllerClient(model);
 		}
-
-		public void connectToServer(string Name, string Pass, string ip)
+		abstract protected void doBot(ModelClient model);
+		private void connectToServer(string Name, string Pass, string ip)
 		{
 
 			model.ThisUser = new UserInfo(new Point(300, 300));
@@ -83,6 +87,8 @@ namespace BotLibrary
 			model.ThisUser.Name = model.GInfo.Name; //Предаю имя игрока для будущей проверки
 
 			ActionEvent += controller.PressKey;
+			createDefaultTimer();
+
 			ConnectEvent += controller.Connect;
 			DisconnectEvent += controller.Disconnect;
 
@@ -100,33 +106,42 @@ namespace BotLibrary
 			start = true;
 		}
 
-		public void ErrorConnect()
+		private void createDefaultTimer()
+		{
+			defaultTimer = new Timer(100);
+			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(model)/*)*/;
+			defaultTimer.Start();
+		}
+
+		private void ErrorConnect()
 		{
 			//"Неверно введен IP"; 
 		}
 
-		private void moveKompasStart(kompas kompas) //Обработчик нажатия на кнопку 
+		public void moveKompasStart(kompas kompas) //Обработчик нажатия на кнопку 
 		{
 			switch (kompas)
 			{
 				case kompas.Up: model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
 				case kompas.Down: model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
 				case kompas.Right: model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
-				case kompas.Left: model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+				case kompas.Left: model.Action.actionThishUser = Action.action.moveLeft; ActionEvent(); break;
 			}
 		}
-
-		private void rechange()
+		/// <summary>
+		/// При вызове этого метода ваш персонаж совершит перезарядку оружия
+		/// </summary>
+		public void rechange()
 		{
 			RechargeEvent();
 		}
 
-		private void changeItem(byte num)
+		public void changeItem(byte num)
 		{
 			СhangeItemEvent(num); 
 		}
 
-		private void moveKompasStop(kompas kompas) //Обработчик  отпускания кнопки
+		public void moveKompasStop(kompas kompas) //Обработчик  отпускания кнопки
 		{
 			switch (kompas)
 			{
@@ -137,25 +152,60 @@ namespace BotLibrary
 			}
 		}
 
+		/// <summary>
+		/// Этот метод заставит идти вашего персонажа в указанном направлении заданное время
+		/// </summary>
+		/// <param name="komp">Направление в которое нужно двигаться</param>
+		/// <param name="time">Время в миллисекундах</param>
+		public void moveToSomeTime(kompas komp, int time)
+		{
+			moveKompasStart(komp);
+			Thread.Sleep(time);
+			moveKompasStop(komp);
+		}
 
-		private void sprintON()
+		/// <summary>
+		/// Этот метод заставит идти вашего персонажа в указанном направлении, пока не достигнет указанной точки
+		/// </summary>
+		/// /// <param name="currentLocation"></param>
+		/// <param name="destination"></param>
+		public void moveToPoint(Point currentLocation, Point destination)
+		{
+			Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
+			kompas horizontalDirection;
+			kompas verticalDirection;
+
+			if (offset.X > 0) horizontalDirection = kompas.Right;
+			else horizontalDirection = kompas.Left;
+
+			if (offset.Y < 0) verticalDirection = kompas.Up;
+			else verticalDirection = kompas.Down;
+
+			moveKompasStart(horizontalDirection);
+			moveKompasStart(verticalDirection);
+			Thread.Sleep(75);
+			moveKompasStop(horizontalDirection);
+			moveKompasStop(verticalDirection);
+		}
+
+		public void sprintON()
 		{
 			model.Action.actionThishUser = Action.action.shiftUp; ActionEvent();
 		}
 
-		private void sprintOFF()
+		public void sprintOFF()
 		{
 			model.Action.actionThishUser = Action.action.shiftDown; ActionEvent();
 		}
 
 
-		private void disconect() //Вызвать событие в Controller
+		public void disconect() //Вызвать событие в Controller
 		{
 			DisconnectEvent();
 		}
 
 
-		private void shotOn()
+		public void shotOn()
 		{
 			if (!MouseDown)
 			{
@@ -164,7 +214,7 @@ namespace BotLibrary
 			}
 		}
 
-		private void ShotOff()
+		public void ShotOff()
 		{
 			if (MouseDown)
 			{
@@ -185,7 +235,7 @@ namespace BotLibrary
 		}
 		
 		/// <summary>
-		/// 
+		/// Connect to game on server
 		/// </summary>
 		private bool joinOnServer(string ip, string name, string pass)
 		{
@@ -213,7 +263,7 @@ namespace BotLibrary
 			}
 		}
 
-		public bool login(String ip, String name, String pass)
+		private bool login(String ip, String name, String pass)
 		{
 			try
 			{
