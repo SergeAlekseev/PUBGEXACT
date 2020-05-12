@@ -4,7 +4,7 @@ using System.Drawing;
 using Action = ClassLibrary.Action;
 using System.Net.Sockets;
 
-namespace BotLibrary1
+namespace BotLibrary
 {
 	public class Bot
 	{
@@ -60,20 +60,18 @@ namespace BotLibrary1
 			creatData();
 		}
 
+		public Bot(string ip, string name, string pass)
+		{
+			creatData();
+
+			join(ip, name, pass);
+		}
+
 		private void creatData()
 		{
 			transfer = new LoginTransfer();
 			controllerMenu = new CMyMenu(model);
 			controller = new ControllerClient(model);
-		}
-
-		public Bot(string ip, string name, string pass)
-		{
-			transfer = new LoginTransfer();
-			controllerMenu = new CMyMenu(model);
-			controller = new ControllerClient(model);
-
-			join(ip, name, pass);
 		}
 
 		public void connectToServer(string Name, string Pass, string ip)
