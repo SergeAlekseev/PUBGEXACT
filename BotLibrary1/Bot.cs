@@ -57,9 +57,23 @@ namespace BotLibrary1
 
 		public Bot()
 		{
+			creatData();
+		}
+
+		private void creatData()
+		{
 			transfer = new LoginTransfer();
 			controllerMenu = new CMyMenu(model);
 			controller = new ControllerClient(model);
+		}
+
+		public Bot(string ip, string name, string pass)
+		{
+			transfer = new LoginTransfer();
+			controllerMenu = new CMyMenu(model);
+			controller = new ControllerClient(model);
+
+			join(ip, name, pass);
 		}
 
 		public void connectToServer(string Name, string Pass, string ip)
