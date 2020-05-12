@@ -1,17 +1,13 @@
 ﻿using ClassLibrary;
 using System;
-<<<<<<< HEAD
 using System.Drawing;
 using Action = ClassLibrary.Action;
-=======
 using System.Net.Sockets;
->>>>>>> a42184e0714b3133182023a58f48017c657f28db
 
 namespace BotLibrary1
 {
 	public class Bot
 	{
-<<<<<<< HEAD
 
 		public delegate bool ConnectD(string ip);
 		public event ConnectD ConnectEvent;
@@ -53,6 +49,17 @@ namespace BotLibrary1
 		enum kompas
 		{
 			Right, Left , Up, Down
+		}
+
+		TcpClient client;
+		LoginTransfer transfer;
+		private CMyMenu controllerMenu;
+
+		public Bot()
+		{
+			transfer = new LoginTransfer();
+			controllerMenu = new CMyMenu(model);
+			controller = new ControllerClient(model);
 		}
 
 		public void connectToServer(string Name, string Pass, string ip)
@@ -154,20 +161,6 @@ namespace BotLibrary1
 			}
 		}
 
-		public bool join()
-=======
-		TcpClient client;
-		LoginTransfer transfer;
-		private CMyMenu controllerMenu;
-
-		public Bot()
->>>>>>> a42184e0714b3133182023a58f48017c657f28db
-		{
-			transfer = new LoginTransfer();
-			controllerMenu = new CMyMenu(model);
-			controller = new ControllerClient(model);
-		}
-
 		public bool join(string ip, string name, string pass)
 		{
 			controllerMenu.setNameAndPass(name, pass);
@@ -175,10 +168,6 @@ namespace BotLibrary1
 			//1. Авторизация бота
 			if (!login(ip, 2337, name, pass)) return false;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a42184e0714b3133182023a58f48017c657f28db
 			//2. Подключение бота на сервер
 			return joinOnServer(ip, name, pass);
 		}
