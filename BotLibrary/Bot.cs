@@ -178,7 +178,7 @@ namespace BotLibrary
 			controllerMenu.setNameAndPass(name, pass);
 
 			//1. Авторизация бота
-			if (!login(ip, 2337, name, pass)) return false;
+			if (!login(ip, name, pass)) return false;
 
 			//2. Подключение бота на сервер
 			return joinOnServer(ip, name, pass);
@@ -213,11 +213,11 @@ namespace BotLibrary
 			}
 		}
 
-		public bool login(String ip, int port, String name, String pass)
+		public bool login(String ip, String name, String pass)
 		{
 			try
 			{
-				TcpClient client = new TcpClient(ip, port);
+				TcpClient client = new TcpClient(ip, 3337);
 				if (correctData(ip, name, pass))
 				{
 					NetworkStream nStream = client.GetStream();
