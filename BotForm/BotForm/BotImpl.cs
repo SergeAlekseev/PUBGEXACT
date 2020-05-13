@@ -1,4 +1,5 @@
-﻿
+using System;
+using System.Drawing;
 using BotLibrary;
 using ClassLibrary;
 using System.Drawing;
@@ -14,17 +15,19 @@ namespace BotForm
 		/// <param name="model"></param>
 		protected override void doBot(ModelClient model)
 		{
-			if (model.serverStart)
+			Point botLocation = model.ThisUser.userLocation;
+
+			if (model.threadStart && model.Map.ListItems.Count > 0)
+			{
+				Point itemLocation = model.Map.ListItems[0].Location;
+				moveToPoint(botLocation, itemLocation, false);
+
+				tryTakeItem(itemLocation);
+			}
+			else
 			{
 				Point center = model.Map.NextZone.ZoneCenterCoordinates;
-				Point botLocation = model.ThisUser.userLocation;
-				Point userLocation = model.ListUsers[0].userLocation;
-				//if (model.ListUsers.Count != 0)
-				//userLocation
-				//else userLocation = new Point(0, 0);
 				moveToPoint(botLocation, center, false);
-
-				captureTarget(userLocation);
 			}
 		}
 	}

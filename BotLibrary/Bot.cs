@@ -43,7 +43,7 @@ namespace BotLibrary
 
 		private delegate void MouseClickD();
 		private event MouseClickD MouseClickEvent;
-
+    
 		static ModelClient privateModel = new ModelClient();
 		ControllerClient controller = new ControllerClient(privateModel);
 		private BotModel publicModel = new BotModel(privateModel);
@@ -116,7 +116,7 @@ namespace BotLibrary
 			ShotDownEvent += controller.ShotDown;
 
 			MouseLocatinEvent += controller.WriteMouseLocation;
-			RotatateEvent += controller.mouseMove;
+			RotatateEvent += controller.mouseMoveBot;
 			СhangeItemEvent += controller.ChangeItem;
 			RechargeEvent += controller.Recharge;
 
@@ -189,7 +189,7 @@ namespace BotLibrary
 		/// </summary>
 		/// /// <param name="currentLocation">Текущие координаты персонажа</param>
 		/// <param name="destination">Координаты точки к которой персонажу необходимо двигаться</param>
-		public void moveToPoint(Point currentLocation, Point destination, bool withSprint)
+		public void moveToPoint(Point currentLocation, Point destination, bool withSprint)// Потом уберу currentLocation т.к. это избыточный параметр
 		{
 			Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
 			kompas horizontalDirection;
@@ -223,6 +223,20 @@ namespace BotLibrary
 			privateModel.MouseCoord = target;
 			MouseLocatinEvent(target);
 			RotatateEvent();
+		}
+
+		public void tryTakeItem(Point itemLocation)
+		{
+			captureTarget(itemLocation);
+			MouseClickEvent = controller.botTakeItem;
+			MouseClickEvent();
+		}
+
+		public void dropItem(Point itemLocation)
+		{
+			captureTarget(itemLocation);
+			MouseClickEvent = controller.ItemDropingBot;
+			MouseClickEvent();
 		}
 
 		public void sprintON()

@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CMyMenu.cs" />
-    <Compile Include="Map.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
