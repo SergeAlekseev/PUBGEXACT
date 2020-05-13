@@ -47,6 +47,7 @@
 			this.PlayingField.Size = new System.Drawing.Size(600, 600);
 			this.PlayingField.TabIndex = 0;
 			this.PlayingField.TabStop = false;
+			this.PlayingField.Click += new System.EventHandler(this.PlayingField_Click);
 			this.PlayingField.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PlayingField_MouseDown);
 			this.PlayingField.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PlayingField_MouseUp);
 			// 

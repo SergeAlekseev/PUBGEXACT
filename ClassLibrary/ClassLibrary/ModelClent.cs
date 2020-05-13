@@ -15,6 +15,44 @@ namespace ClassLibrary
 {
 	public class ModelClient
 	{
+		public delegate void CountGamersD(int countGamers);
+		public event CountGamersD CountGamersEvent;
+
+		public delegate void KillerD(string killer);
+		public event KillerD KillerEvent;
+
+		public delegate void LifesD(short lifes);
+		public event LifesD LifesEvent;
+
+		public delegate void ListBulletD(List<BulletInfo> listBullet);
+		public event ListBulletD ListBulletEvent;
+
+		public delegate void ListGrenadeD(List<GrenadeInfo> listGrenade);
+		public event ListGrenadeD ListGrenadeEvent;
+
+		public delegate void ThisUserD(UserInfo thisUser);
+		public event ThisUserD ThisUserEvent;
+
+		public delegate void ListUsersD(List<UserInfo> listUsers);
+		public event ListUsersD ListUsersEvent;
+
+		public delegate void ActionD(Action action);
+		public event ActionD ActionEvent;
+
+		public delegate void MapD(Map map);
+		public event MapD MapEvent;
+
+		public delegate void GInfoD(GeneralInfo gInfo);
+		public event GInfoD GInfoEvent;
+
+		public delegate void ArrayKillsD(Kill[] arrayKills);
+		public event ArrayKillsD ArrayKillsEvent;
+
+		public delegate void ThreadStartD(bool threadStart);
+		public event ThreadStartD ThreadStartEvent;
+
+
+
 
 		public delegate void exitD();
 		public delegate bool setNameD(string s);
@@ -42,16 +80,20 @@ namespace ClassLibrary
 		double angelToZone;
 		string killer;
 		public Kill[] arrayKills = new Kill[3];
-		 NetworkStream nStream;
+		NetworkStream nStream;
 
-		public bool threadStart = false;
+		bool ThreadStart = false;
 		public bool serverStart;
 
 		public int number;
 		public int CountGamers
 		{
 			get { return countGamers; }
-			set { countGamers = value; }
+			set
+			{ 
+				countGamers = value;
+				CountGamersEvent(value);
+			}
 		}
 
 		public ModelClient()
@@ -69,20 +111,21 @@ namespace ClassLibrary
 		public Image[] Images { get { return images; } set { images = value; } }
 		public bool Die { get { return die; } set { die = value; } }
 		public bool Win { get { return win; } set { win = value; } }
-		public string Killer { get { return killer; } set { killer = value; } }
-		public short Lifes { get { return lifes; } set { lifes = value; } }
-		public List<BulletInfo> ListBullet { get { return listBullet; } set { listBullet = value; } }
-		public List<GrenadeInfo> ListGrenade { get { return listGrenade; } set { listGrenade = value; } }
-		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; } }
-		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; } }
-		public Action Action { get { return action; } set { action = value; } }
-		public int Ping { get { return ping; } set { ping = value; } }
-		public Map Map { get { return map; } set { map = value; } }
-		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; } }
+		public string Killer { get { return killer; } set { killer = value; KillerEvent(value); } }
+		public short Lifes { get { return lifes; } set { lifes = value; LifesEvent(value); } }
+		public List<BulletInfo> ListBullet { get { return listBullet; } set { listBullet = value; ListBulletEvent(value); } }
+		public List<GrenadeInfo> ListGrenade { get { return listGrenade; } set { listGrenade = value; ListGrenadeEvent(value); } }
+		public UserInfo ThisUser { get { return thisUser; } set { thisUser = value; ThisUserEvent(value); } }
+		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; ListUsersEvent(value); } }
+		public Action Action { get { return action; } set { action = value; ActionEvent(value); } }
+		public int Ping { get { return ping; } set { ping = value;  } }
+		public Map Map { get { return map; } set { map = value; MapEvent(value); } }
+		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; GInfoEvent(value); } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
 
-		public Kill[] ArrayKills { get { return arrayKills; } set { arrayKills = value; } }
-		//	public double Rotate { get { return rotate; } set { rotate = value; } }
+		public Kill[] ArrayKills { get { return arrayKills; } set { arrayKills = value; ArrayKillsEvent(value); } }
+
+		public bool threadStart { get => ThreadStart; set { ThreadStart = value; ThreadStartEvent(value); }  }  //FIXME
 	}
 }

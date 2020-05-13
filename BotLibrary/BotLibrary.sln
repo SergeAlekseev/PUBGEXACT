@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotLibrary", "BotLibrary.csproj", "{59C05ED5-EC52-4024-863E-54A27374C82B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "..\ClassLibrary\ClassLibrary\ClassLibrary.csproj", "{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{59C05ED5-EC52-4024-863E-54A27374C82B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C05ED5-EC52-4024-863E-54A27374C82B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59C05ED5-EC52-4024-863E-54A27374C82B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
