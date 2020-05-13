@@ -18,7 +18,6 @@ using ClassLibrary.ProcessingsServer;
 
 namespace ClassLibrary
 {
-
 	public class ControllerClient
 	{
 
@@ -40,18 +39,13 @@ namespace ClassLibrary
 		public Thread threadReading;
 		public Thread threadConsumer;
 
-		
-		
-
 		public System.Timers.Timer timerPing = new System.Timers.Timer();
 		public System.Timers.Timer timerMouseOverItem = new System.Timers.Timer();
-
 		public void JoinUser(string Name, string Password)
 		{
 			model.GInfo.Name = Name;
 			model.GInfo.Password = Password;
 		}
-
 		public void exit()
 		{
 			client.Close();
@@ -70,7 +64,6 @@ namespace ClassLibrary
 				Writing(sd);
 			}
 		}
-
 		public void ShotUp()
 		{
 			if (model.threadStart)
@@ -80,7 +73,6 @@ namespace ClassLibrary
 				Writing(su);
 			}
 		}
-
 		public void Mouse_Click()
 		{
 			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
@@ -105,26 +97,68 @@ namespace ClassLibrary
 				}
 			}
 		}
-
-		public void ItemDroping()
-		{		
-				Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
-
-				for (int i = 1; i < model.ThisUser.Items.Length; i++)
+		public void botTakeItem()
+		{
+			Point mousLoc = model.MouseCoord;
+			foreach (Item item in model.Map.ListItems)
+			{
+				if ((mousLoc.X >= item.Location.X - 15 && mousLoc.X <= item.Location.X + 15) && (mousLoc.Y >= item.Location.Y - 15 && mousLoc.Y <= item.Location.Y + 15))
 				{
-					if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+					if (Math.Abs(model.ThisUser.userLocation.X - item.Location.X) < 50 && Math.Abs(model.ThisUser.userLocation.Y - item.Location.Y) < 50)
 					{
-						ItemDroping itemDrop = new ItemDroping();
-						List<Item> listItems = new List<Item>();
-						listItems.Add(model.ThisUser.Items[i]);
-						itemDrop.items = listItems;
-						itemDrop.num = model.number;
-						itemDrop.itemLocation = model.ThisUser.userLocation;
+						ItemTaken itemTaken = new ItemTaken();
+						itemTaken.item = item;
+						itemTaken.num = model.number;
 
-						CTransfers.Writing(itemDrop, model.NStream);
+						CTransfers.Writing(itemTaken, model.NStream);
+						break;
+					}
+					else
+					{
+						// Сообщение о том, что игрок слишком далеко от желаемого предмета
 					}
 
-				}			
+				}
+			}
+		}
+		public void ItemDroping()
+		{		
+			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
+
+			for (int i = 1; i < model.ThisUser.Items.Length; i++)
+			{
+				if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+				{
+					ItemDroping itemDrop = new ItemDroping();
+					List<Item> listItems = new List<Item>();
+					listItems.Add(model.ThisUser.Items[i]);
+					itemDrop.items = listItems;
+					itemDrop.num = model.number;
+					itemDrop.itemLocation = model.ThisUser.userLocation;
+
+					CTransfers.Writing(itemDrop, model.NStream);
+				}
+			}			
+		}
+
+		public void ItemDropingBot()
+		{
+			Point mousLoc = model.MouseCoord;
+
+			for (int i = 1; i < model.ThisUser.Items.Length; i++)
+			{
+				if (i == model.ThisUser.thisItem && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+				{
+					ItemDroping itemDrop = new ItemDroping();
+					List<Item> listItems = new List<Item>();
+					listItems.Add(model.ThisUser.Items[i]);
+					itemDrop.items = listItems;
+					itemDrop.num = model.number;
+					itemDrop.itemLocation = model.ThisUser.userLocation;
+
+					CTransfers.Writing(itemDrop, model.NStream);
+				}
+			}
 		}
 
 		public void Writing(object obj)
@@ -304,7 +338,22 @@ namespace ClassLibrary
 
 		public double mouseMove()
 		{
-			double angleDegree = defineAngleBot(model.ThisUser.userLocation ,model.MouseCoord);
+			double angleDegree = defineAngle(model.MouseCoord, new Point(300, 600));
+			model.ThisUser.Rotate = angleDegree;
+
+			if (model.threadStart)
+			{
+				GetPlayersAngels gpa = new GetPlayersAngels();
+				gpa.num = model.number;
+				gpa.angels = angleDegree;
+				Writing(gpa);
+			}
+			return angleDegree;
+		}
+
+		public double mouseMoveBot()
+		{
+			double angleDegree = defineAngleBot(model.ThisUser.userLocation, model.MouseCoord);
 			model.ThisUser.Rotate = angleDegree;
 
 			if (model.threadStart)

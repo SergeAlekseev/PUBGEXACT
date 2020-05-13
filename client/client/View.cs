@@ -135,7 +135,7 @@ namespace client
 				case Keys.W: model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
 				case Keys.S: model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
 				case Keys.D: model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
-				case Keys.A: model.Action.actionThishUser = Action.action.noveLeft; ActionEvent(); break;
+				case Keys.A: model.Action.actionThishUser = Action.action.moveLeft; ActionEvent(); break;
 				case Keys.ShiftKey: case Keys.Shift: model.Action.actionThishUser = Action.action.shiftDown; ActionEvent(); break;
 
 				case Keys.D1: СhangeItemEvent(1); break;
