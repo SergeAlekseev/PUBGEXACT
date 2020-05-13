@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Threading;
 using Timer = System.Timers.Timer;
 using System.Threading.Tasks;
+using ClassLibrary.ProcessingsClient;
+using ClassLibrary.ProcessingsServer;
 
 namespace BotLibrary
 {
@@ -167,9 +169,9 @@ namespace BotLibrary
 		/// <summary>
 		/// Этот метод заставит идти вашего персонажа в указанном направлении, пока не достигнет указанной точки
 		/// </summary>
-		/// /// <param name="currentLocation"></param>
-		/// <param name="destination"></param>
-		public void moveToPoint(Point currentLocation, Point destination)
+		/// /// <param name="currentLocation">Текущие координаты персонажа</param>
+		/// <param name="destination">Координаты точки к которой персонажу необходимо двигаться</param>
+		public void moveToPoint(Point currentLocation, Point destination, bool withSprint)
 		{
 			Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
 			kompas horizontalDirection;
@@ -181,11 +183,28 @@ namespace BotLibrary
 			if (offset.Y < 0) verticalDirection = kompas.Up;
 			else verticalDirection = kompas.Down;
 
+			if (withSprint) sprintON();
 			moveKompasStart(horizontalDirection);
 			moveKompasStart(verticalDirection);
 			Thread.Sleep(75);
+			if (withSprint) sprintOFF();
 			moveKompasStop(horizontalDirection);
 			moveKompasStop(verticalDirection);
+
+			//По достижению точки бот немного колбасится возле неё по понятным причинам. 
+			//Не знаю исправлять ли это вообще как-то
+		}
+
+		/// <summary>
+		/// Метод заставляет персонажа смотреть в указанную точку
+		/// </summary>
+		/// <param name="currentLocation">Текущие координаты персонажа</param>
+		/// <param name="target">Координаты точки, на которую необходимо пристально смотреть</param>
+		public void captureTarget(Point target)
+		{
+			model.MouseCoord = target;
+			MouseLocatinEvent(target);
+			RotatateEvent();
 		}
 
 		public void sprintON()
