@@ -43,23 +43,25 @@ namespace BotLibrary
 
 		private delegate void MouseClickD();
 		private event MouseClickD MouseClickEvent;
-
-		static protected ModelClient model = new ModelClient();
-		ControllerClient controller = new ControllerClient(model);
-
+    
+		static ModelClient privateModel = new ModelClient();
+		ControllerClient controller = new ControllerClient(privateModel);
+		private BotModel publicModel = new BotModel(privateModel);
 
 		private bool start = false;
 		private bool MouseDown = false;
 		private Timer defaultTimer;
 
+		TcpClient client;
+		LoginTransfer transfer;
+		private CMyMenu controllerMenu;
+
+		public BotModel model { get { return publicModel; } }
+
 		public enum kompas
 		{
 			Right, Left , Up, Down
 		}
-
-		TcpClient client;
-		LoginTransfer transfer;
-		private CMyMenu controllerMenu;
 
 		public Bot()
 		{
@@ -73,20 +75,36 @@ namespace BotLibrary
 			join(ip, name, pass);
 		}
 
+		private void createModelsEvents()
+		{
+			privateModel.CountGamersEvent += model.setCountGamers;
+			privateModel.KillerEvent += model.setKiller;
+			privateModel.LifesEvent += model.setLifes;
+			privateModel.ListBulletEvent += model.setListBullet;
+			privateModel.ListGrenadeEvent += model.setListGrenade;
+			privateModel.ThisUserEvent += model.setThisUser;
+			privateModel.ListUsersEvent += model.setListUsers;
+			privateModel.ActionEvent += model.setAction;
+			privateModel.MapEvent += model.setMap;
+			privateModel.GInfoEvent += model.setGInfo;
+			privateModel.ArrayKillsEvent += model.setArrayKills;
+			privateModel.ThreadStartEvent += model.setThreadStart;
+		}
+
 		private void creatData()
 		{
 			transfer = new LoginTransfer();
-			controllerMenu = new CMyMenu(model);
-			controller = new ControllerClient(model);
+			controllerMenu = new CMyMenu(privateModel);
+			controller = new ControllerClient(privateModel);
 		}
 		abstract protected void doBot(ModelClient model);
 		private void connectToServer(string Name, string Pass, string ip)
 		{
 
-			model.ThisUser = new UserInfo(new Point(300, 300));
+			privateModel.ThisUser = new UserInfo(new Point(300, 300));
 			controller.JoinUser(Name, Pass);
 
-			model.ThisUser.Name = model.GInfo.Name; //Предаю имя игрока для будущей проверки
+			privateModel.ThisUser.Name = privateModel.GInfo.Name; //Предаю имя игрока для будущей проверки
 
 			ActionEvent += controller.PressKey;
 			createDefaultTimer();
@@ -111,7 +129,7 @@ namespace BotLibrary
 		private void createDefaultTimer()
 		{
 			defaultTimer = new Timer(100);
-			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(model)/*)*/;
+			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(privateModel)/*)*/;
 			defaultTimer.Start();
 		}
 
@@ -124,10 +142,10 @@ namespace BotLibrary
 		{
 			switch (kompas)
 			{
-				case kompas.Up: model.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
-				case kompas.Down: model.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
-				case kompas.Right: model.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
-				case kompas.Left: model.Action.actionThishUser = Action.action.moveLeft; ActionEvent(); break;
+				case kompas.Up: privateModel.Action.actionThishUser = Action.action.moveUp; ActionEvent(); break;
+				case kompas.Down: privateModel.Action.actionThishUser = Action.action.moveDown; ActionEvent(); break;
+				case kompas.Right: privateModel.Action.actionThishUser = Action.action.moveRight; ActionEvent(); break;
+				case kompas.Left: privateModel.Action.actionThishUser = Action.action.moveLeft; ActionEvent(); break;
 			}
 		}
 		/// <summary>
@@ -147,10 +165,10 @@ namespace BotLibrary
 		{
 			switch (kompas)
 			{
-				case kompas.Up: model.Action.actionThishUser = Action.action.stopUp; ActionEvent(); break;
-				case kompas.Down: model.Action.actionThishUser = Action.action.stopDown; ActionEvent(); break;
-				case kompas.Right: model.Action.actionThishUser = Action.action.stopRight; ActionEvent(); break;
-				case kompas.Left: model.Action.actionThishUser = Action.action.stopLeft; ActionEvent(); break;
+				case kompas.Up: privateModel.Action.actionThishUser = Action.action.stopUp; ActionEvent(); break;
+				case kompas.Down: privateModel.Action.actionThishUser = Action.action.stopDown; ActionEvent(); break;
+				case kompas.Right: privateModel.Action.actionThishUser = Action.action.stopRight; ActionEvent(); break;
+				case kompas.Left: privateModel.Action.actionThishUser = Action.action.stopLeft; ActionEvent(); break;
 			}
 		}
 
@@ -202,7 +220,7 @@ namespace BotLibrary
 		/// <param name="target">Координаты точки, на которую необходимо пристально смотреть</param>
 		public void captureTarget(Point target)
 		{
-			model.MouseCoord = target;
+			privateModel.MouseCoord = target;
 			MouseLocatinEvent(target);
 			RotatateEvent();
 		}
@@ -223,12 +241,12 @@ namespace BotLibrary
 
 		public void sprintON()
 		{
-			model.Action.actionThishUser = Action.action.shiftUp; ActionEvent();
+			privateModel.Action.actionThishUser = Action.action.shiftUp; ActionEvent();
 		}
 
 		public void sprintOFF()
 		{
-			model.Action.actionThishUser = Action.action.shiftDown; ActionEvent();
+			privateModel.Action.actionThishUser = Action.action.shiftDown; ActionEvent();
 		}
 
 

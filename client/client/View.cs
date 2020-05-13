@@ -427,6 +427,10 @@ namespace client
 				MouseClickEvent = controller.Mouse_Click;
 				MouseClickEvent();
 			}
+		}
+
+		private void PlayingField_Click(object sender, EventArgs e)
+		{
 
 		}
 	}

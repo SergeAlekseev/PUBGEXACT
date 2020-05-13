@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Drawing;
 using BotLibrary;
 using ClassLibrary;
-using Action = ClassLibrary.Action;
+using System.Drawing;
+
 
 namespace BotForm
 {
