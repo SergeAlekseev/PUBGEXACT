@@ -304,7 +304,7 @@ namespace ClassLibrary
 
 		public double mouseMove()
 		{
-			double angleDegree = defineAngle(model.MouseCoord, new Point(300, 600));
+			double angleDegree = defineAngleBot(model.ThisUser.userLocation ,model.MouseCoord);
 			model.ThisUser.Rotate = angleDegree;
 
 			if (model.threadStart)
@@ -316,7 +316,6 @@ namespace ClassLibrary
 			}
 			return angleDegree;
 		}
-
 		public bool setName(string Name)
 		{
 			if (model.threadStart)
@@ -343,6 +342,24 @@ namespace ClassLibrary
 
 			double angleDegree = angleRad / Math.PI * 180;
 			if (onePoint.X >= 300) angleDegree = 360 - angleDegree;
+
+			return angleDegree;
+		}
+
+		public double defineAngleBot(Point botLocation, Point target)
+		{
+			Point start1 = new Point { X = botLocation.X, Y = botLocation.Y };
+			Point end1 = new Point { X = botLocation.X, Y = botLocation.Y + 300};
+			Vector vector1 = Vector.FromPoints(start1, end1);
+
+			Point start2 = new Point {X = botLocation.X, Y = botLocation.Y};
+			Point end2 = new Point { X = target.X, Y = target.Y };
+			Vector vector2 = Vector.FromPoints(start2, end2);
+
+			double angleRad = Vector.CalculateAngleBetween(vector1, vector2);
+
+			double angleDegree = angleRad / Math.PI * 180;
+			if (target.X >= botLocation.X) angleDegree = 360 - angleDegree;
 
 			return angleDegree;
 		}
