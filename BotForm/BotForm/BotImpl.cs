@@ -13,11 +13,11 @@ namespace BotForm
 		/// 
 		/// </summary>
 		/// <param name="model"></param>
-		protected override void doBot(ModelClient model)
+		protected override void doBot(BotModel model)
 		{
+			
 			Point botLocation = model.ThisUser.userLocation;
-
-			if (model.threadStart && model.Map.ListItems.Count > 0)
+			if (model.ThreadStart && model.Map.ListItems.Count > 0)
 			{
 				Point itemLocation = model.Map.ListItems[0].Location;
 				moveToPoint(botLocation, itemLocation, false);

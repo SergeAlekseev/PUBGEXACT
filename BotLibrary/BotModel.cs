@@ -81,6 +81,7 @@ namespace BotLibrary
 			this.listUsers.Clear();
 			foreach (UserInfo user in listUsers)
 			{
+				if(user != null)
 				if (isInView(thisUser.userLocation, user.userLocation))
 				{
 					this.listUsers.Add(user);
@@ -95,7 +96,24 @@ namespace BotLibrary
 
 		public void setMap(ClassLibrary.Map map)
 		{
-			this.map = map;
+			this.map.ListBox = map.ListBox;
+			this.map.ListBush = map.ListBush;
+			this.map.ListTrees = map.ListTrees;
+			this.map.NextZone = map.NextZone;
+			this.map.PrevZone = map.PrevZone;
+			this.map.MapBorders = map.MapBorders;
+			this.map.bordersForBullets = map.bordersForBullets;
+			this.map.bordersForUsers = map.bordersForUsers;
+
+			this.map.ListItems.Clear();
+			foreach (Item item in map.ListItems)
+			{
+				if (item != null)
+					if (isInView(thisUser.userLocation, item.Location))
+					{
+						this.map.ListItems.Add(item);
+					}
+			}
 		}
 
 		public void setGInfo(GeneralInfo gInfo)

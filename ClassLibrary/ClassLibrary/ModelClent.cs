@@ -51,9 +51,6 @@ namespace ClassLibrary
 		public delegate void ThreadStartD(bool threadStart);
 		public event ThreadStartD ThreadStartEvent;
 
-
-
-
 		public delegate void exitD();
 		public delegate bool setNameD(string s);
 
@@ -119,13 +116,11 @@ namespace ClassLibrary
 		public List<UserInfo> ListUsers { get { return listUsers; } set { listUsers = value; ListUsersEvent(value); } }
 		public Action Action { get { return action; } set { action = value; ActionEvent(value); } }
 		public int Ping { get { return ping; } set { ping = value;  } }
-		public Map Map { get { return map; } set { map = value; MapEvent(value); } }
+		public Map Map { get { MapEvent(map); return map; } set { map = value; MapEvent(value); } }
 		public GeneralInfo GInfo { get { return gInfo; } set { gInfo = value; GInfoEvent(value); } }
 		public List<GeneralInfo> ListGInfo { get { return listGInfo; } set { listGInfo = value; } }
 		public Point MouseCoord { get { return mouseCoord; } set { mouseCoord = value; } }
-
 		public Kill[] ArrayKills { get { return arrayKills; } set { arrayKills = value; ArrayKillsEvent(value); } }
-
 		public bool threadStart { get => ThreadStart; set { ThreadStart = value; ThreadStartEvent(value); }  }  //FIXME
 	}
 }
