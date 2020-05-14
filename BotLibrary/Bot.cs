@@ -44,8 +44,8 @@ namespace BotLibrary
 		private delegate void MouseClickD();
 		private event MouseClickD MouseClickEvent;
     
-		static ModelClient privateModel = new ModelClient();
-		ControllerClient controller = new ControllerClient(privateModel);
+		private static ModelClient privateModel = new ModelClient();
+		private ControllerClient controller = new ControllerClient(privateModel);
 		private BotModel publicModel = new BotModel(privateModel);
 
 		private bool start = false;
@@ -96,8 +96,10 @@ namespace BotLibrary
 			transfer = new LoginTransfer();
 			controllerMenu = new CMyMenu(privateModel);
 			controller = new ControllerClient(privateModel);
+
+			createModelsEvents();
 		}
-		abstract protected void doBot(ModelClient model);
+		abstract protected void doBot(BotModel model);
 		private void connectToServer(string Name, string Pass, string ip)
 		{
 
@@ -129,7 +131,7 @@ namespace BotLibrary
 		private void createDefaultTimer()
 		{
 			defaultTimer = new Timer(100);
-			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(privateModel)/*)*/;
+			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(model)/*)*/;
 			defaultTimer.Start();
 		}
 
