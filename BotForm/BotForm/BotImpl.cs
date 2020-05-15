@@ -1,7 +1,4 @@
-using System;
-using System.Drawing;
 using BotLibrary;
-using ClassLibrary;
 using System.Drawing;
 
 

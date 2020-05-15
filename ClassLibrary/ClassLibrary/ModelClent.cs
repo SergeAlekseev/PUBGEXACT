@@ -16,40 +16,40 @@ namespace ClassLibrary
 	public class ModelClient
 	{
 		public delegate void CountGamersD(int countGamers);
-		public event CountGamersD CountGamersEvent;
+		public event CountGamersD CountGamersEvent = delegate { };
 
 		public delegate void KillerD(string killer);
-		public event KillerD KillerEvent;
+		public event KillerD KillerEvent = delegate {};
 
 		public delegate void LifesD(short lifes);
-		public event LifesD LifesEvent;
+		public event LifesD LifesEvent = delegate { };
 
 		public delegate void ListBulletD(List<BulletInfo> listBullet);
-		public event ListBulletD ListBulletEvent;
+		public event ListBulletD ListBulletEvent = delegate { };
 
 		public delegate void ListGrenadeD(List<GrenadeInfo> listGrenade);
-		public event ListGrenadeD ListGrenadeEvent;
+		public event ListGrenadeD ListGrenadeEvent = delegate { };
 
 		public delegate void ThisUserD(UserInfo thisUser);
-		public event ThisUserD ThisUserEvent;
+		public event ThisUserD ThisUserEvent = delegate { };
 
 		public delegate void ListUsersD(List<UserInfo> listUsers);
-		public event ListUsersD ListUsersEvent;
+		public event ListUsersD ListUsersEvent = delegate { };
 
 		public delegate void ActionD(Action action);
-		public event ActionD ActionEvent;
+		public event ActionD ActionEvent = delegate { };
 
 		public delegate void MapD(Map map);
-		public event MapD MapEvent;
+		public event MapD MapEvent = delegate { };
 
 		public delegate void GInfoD(GeneralInfo gInfo);
-		public event GInfoD GInfoEvent;
+		public event GInfoD GInfoEvent = delegate { };
 
 		public delegate void ArrayKillsD(Kill[] arrayKills);
-		public event ArrayKillsD ArrayKillsEvent;
+		public event ArrayKillsD ArrayKillsEvent = delegate { };
 
 		public delegate void ThreadStartD(bool threadStart);
-		public event ThreadStartD ThreadStartEvent;
+		public event ThreadStartD ThreadStartEvent = delegate { };
 
 		public delegate void exitD();
 		public delegate bool setNameD(string s);
