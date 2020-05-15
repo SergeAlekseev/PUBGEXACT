@@ -19,7 +19,7 @@ namespace BotLibrary
 		ClassLibrary.Map map = new ClassLibrary.Map(); 
 		short lifes;
 		GeneralInfo gInfo = new GeneralInfo();
-		string killer;
+		string killer = null;
 		Kill[] arrayKills = new Kill[3];
 		private bool threadStart = false;
 
