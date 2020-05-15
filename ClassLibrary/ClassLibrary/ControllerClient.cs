@@ -454,15 +454,12 @@ namespace ClassLibrary
 			ProcessingClient processing;
 			while (model.serverStart)
 			{
-
 				manualResetEvent.WaitOne();
 				if (SecureQueue.Count > 0)
 				{
-
 					SecureQueue.TryDequeue(out processing);
-					if (processing != null)
+					if (processing != null && model.ThisUser.hp > 0)
 					{
-
 						processing.Process(model);
 					}
 

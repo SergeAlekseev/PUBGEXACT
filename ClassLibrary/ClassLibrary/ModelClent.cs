@@ -91,7 +91,7 @@ namespace ClassLibrary
 				countGamers = value;
 				CountGamersEvent(value);
 			}
-		}
+		} 
 
 		public ModelClient()
 		{

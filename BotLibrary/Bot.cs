@@ -197,17 +197,16 @@ namespace BotLibrary
 		/// <param name="destination">Координаты точки к которой персонажу необходимо двигаться</param>
 		public void moveToPoint(Point currentLocation, Point destination, bool withSprint)// Потом уберу currentLocation т.к. это избыточный параметр
 		{
-			Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
+				Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
 
-			if (offset.X < -10) moveLeft();
-			else if (offset.X > 10) moveRight();
-			else moveStopX();
+				if (offset.X < -10) moveLeft();
+				else if (offset.X > 10) moveRight();
+				else moveStopX();
 
 
-			if (offset.Y < -10) moveUp();
-			else if (offset.Y > 10) moveDown();
-			else moveStopY();
-
+				if (offset.Y < -10) moveUp();
+				else if (offset.Y > 10) moveDown();
+				else moveStopY();
 		}
 
 		private void moveUp()
@@ -283,9 +282,12 @@ namespace BotLibrary
 
 		public void tryTakeItem(Point itemLocation)
 		{
-			captureTarget(itemLocation);
-			MouseClickEvent = controller.botTakeItem;
-			MouseClickEvent();
+			if(privateModel.ThisUser.hp > 0)
+			{
+				captureTarget(itemLocation);
+				MouseClickEvent = controller.botTakeItem;
+				MouseClickEvent();
+			}
 		}
 
 		public void dropItem(Point itemLocation)
