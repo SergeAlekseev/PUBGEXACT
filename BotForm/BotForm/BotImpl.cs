@@ -2,33 +2,77 @@ using System;
 using System.Drawing;
 using BotLibrary;
 using ClassLibrary;
-using System.Drawing;
-
+using System.Linq;
+using ClassLibrary.ProcessingsServer;
 
 namespace BotForm
 {
 	class BotImpl : Bot
 	{
+		bool isFullFlag = false;
+		bool isReload = false;
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="model"></param>
 		protected override void doBot(BotModel model)
 		{
-			
-			Point botLocation = model.ThisUser.userLocation;
-			if (model.ThreadStart && model.Map.ListItems.Count > 0)
+			if (model.ThreadStart)
 			{
-				Point itemLocation = model.Map.ListItems[0].Location;
-				moveToPoint(botLocation, itemLocation, false);
+				Point botLocation = model.ThisUser.userLocation;
+				if (model.Map.ListItems.Count > 0 && !isFullFlag && !isFull(model.ThisUser.Items))
+				{
+					Point itemLocation = model.Map.ListItems[0].Location;
+					moveToPoint(botLocation, itemLocation, false);
 
-				tryTakeItem(itemLocation);
+					tryTakeItem(itemLocation);
+				}
+				else
+				{
+					Point center = model.Map.NextZone.ZoneCenterCoordinates;
+					moveToPoint(botLocation, center, false);
+				}
+
+				if (model.ListUsers.Count > 1 && model.ThisUser.Items[model.ThisUser.thisItem] != null && model.ThisUser.Items[model.ThisUser.thisItem].Name != null)
+				{
+					captureTarget(model.ListUsers[0].userLocation);
+					if (!isEmptyBulets(model.ThisUser.Items[model.ThisUser.thisItem]))
+					{
+						shotOn();
+						isReload = false;
+					}
+						
+					else if(!isReload)
+					{
+						shotOff();
+						rechange();
+						isReload = true;
+					}
+				}
+				else
+				{
+					shotOff();
+				}
 			}
-			else
+			
+		}
+
+		private bool isFull(Item[] items)
+		{
+			for(int i = 1; i < items.Count(); i++)
 			{
-				Point center = model.Map.NextZone.ZoneCenterCoordinates;
-				moveToPoint(botLocation, center, false);
+				if (items[i].Name == null)
+				{
+					return false;
+				}
 			}
+			isFullFlag = true;
+			return true;
+		}
+
+		private bool isEmptyBulets(Item gun)
+		{
+			return gun.Count == 0;
 		}
 	}
 }

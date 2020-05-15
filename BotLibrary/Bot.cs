@@ -55,6 +55,10 @@ namespace BotLibrary
 		TcpClient client;
 		LoginTransfer transfer;
 		private CMyMenu controllerMenu;
+		bool isMoveLeft = false;
+		bool isMoveRight = false;
+		bool isMoveUp = false;
+		bool isMoveDown = false;
 
 		public BotModel model { get { return publicModel; } }
 
@@ -194,27 +198,77 @@ namespace BotLibrary
 		public void moveToPoint(Point currentLocation, Point destination, bool withSprint)// Потом уберу currentLocation т.к. это избыточный параметр
 		{
 			Point offset = new Point(destination.X - currentLocation.X, destination.Y - currentLocation.Y);
-			kompas horizontalDirection;
-			kompas verticalDirection;
 
-			if (offset.X > 0) horizontalDirection = kompas.Right;
-			else horizontalDirection = kompas.Left;
+			if (offset.X < -10) moveLeft();
+			else if (offset.X > 10) moveRight();
+			else moveStopX();
 
-			if (offset.Y < 0) verticalDirection = kompas.Up;
-			else verticalDirection = kompas.Down;
 
-			if (withSprint) sprintON();
-			moveKompasStart(horizontalDirection);
-			moveKompasStart(verticalDirection);
-			Thread.Sleep(75);
-			if (withSprint) sprintOFF();
-			moveKompasStop(horizontalDirection);
-			moveKompasStop(verticalDirection);
+			if (offset.Y < -10) moveUp();
+			else if (offset.Y > 10) moveDown();
+			else moveStopY();
 
-			//По достижению точки бот немного колбасится возле неё по понятным причинам. 
-			//Не знаю исправлять ли это вообще как-то
 		}
 
+		private void moveUp()
+		{
+			if(!isMoveUp)
+			{
+				moveKompasStop(kompas.Down);
+				moveKompasStart(kompas.Up);
+				isMoveUp = true;
+				isMoveDown = false;
+			}
+		}
+
+		private void moveDown()
+		{
+			if (!isMoveDown)
+			{
+				moveKompasStop(kompas.Up);
+				moveKompasStart(kompas.Down);
+				isMoveUp = false;
+				isMoveDown = true;
+			}
+		}
+
+		private void moveRight()
+		{
+			if (!isMoveRight)
+			{
+				moveKompasStop(kompas.Left);
+				moveKompasStart(kompas.Right);
+				isMoveRight = true;
+				isMoveLeft = false;
+			}
+		}
+
+		private void moveLeft()
+		{
+			if (!isMoveLeft)
+			{
+				moveKompasStop(kompas.Right);
+				moveKompasStart(kompas.Left);
+				isMoveRight = false;
+				isMoveLeft = true;
+			}
+		}
+
+		private void moveStopX()
+		{
+			moveKompasStop(kompas.Right);
+			moveKompasStop(kompas.Left);
+			isMoveRight = false;
+			isMoveLeft = false;
+		}
+
+		private void moveStopY()
+		{
+			moveKompasStop(kompas.Up);
+			moveKompasStop(kompas.Down);
+			isMoveUp = false;
+			isMoveDown = false;
+		}
 		/// <summary>
 		/// Метод заставляет персонажа смотреть в указанную точку
 		/// </summary>
@@ -267,7 +321,7 @@ namespace BotLibrary
 			}
 		}
 
-		public void ShotOff()
+		public void shotOff()
 		{
 			if (MouseDown)
 			{
