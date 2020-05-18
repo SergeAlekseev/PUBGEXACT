@@ -46,7 +46,7 @@ namespace ClassLibrary
 		
 		
 
-		public void StartGame() //основа
+		public bool StartGame() //основа
 		{
 			if (!model.workingGame && model.workingServer)
 			{
@@ -78,7 +78,9 @@ namespace ClassLibrary
 				ControllersS.cPlay.timerUsersInZone.Elapsed += (x, y) => { ControllersS.cPlay.timerUsersInZone_Tick(); };
 				ControllersS.cPlay.timerUsersInZone.Start();
 				StartGameEvent("Игра идёт");
+				return true;
 			}
+			return false;
 		}
 
 		public ControllerServer(ModelServer model)//основа

@@ -22,13 +22,16 @@ namespace ClassLibrary
 		public int kills = 0;
 		public Item[] Items = new Item[7];
 		public byte thisItem = 1;
-		public string Name;
+		private string name;
 		public bool PrivateWorkingThread;
 		public short PistolBullets=999, GunBullets=999, ShotgunBullets=999;
+
+		public string Name { get => name; set => name = value; }
 
 		public UserInfo(Point userLocation)
 		{
 			this.userLocation = userLocation;
 		}
+
 	}
 }

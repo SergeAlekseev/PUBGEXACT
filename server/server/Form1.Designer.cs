@@ -35,12 +35,14 @@
 			this.startGame = new System.Windows.Forms.Button();
 			this.maps = new System.Windows.Forms.Button();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.button1 = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// start
 			// 
 			this.start.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.start.Location = new System.Drawing.Point(90, 190);
+			this.start.Location = new System.Drawing.Point(25, 191);
 			this.start.Name = "start";
 			this.start.Size = new System.Drawing.Size(101, 23);
 			this.start.TabIndex = 0;
@@ -51,7 +53,7 @@
 			// stop
 			// 
 			this.stop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.stop.Location = new System.Drawing.Point(289, 190);
+			this.stop.Location = new System.Drawing.Point(224, 191);
 			this.stop.Name = "stop";
 			this.stop.Size = new System.Drawing.Size(75, 23);
 			this.stop.TabIndex = 1;
@@ -72,7 +74,7 @@
 			// startGame
 			// 
 			this.startGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.startGame.Location = new System.Drawing.Point(90, 109);
+			this.startGame.Location = new System.Drawing.Point(25, 110);
 			this.startGame.Name = "startGame";
 			this.startGame.Size = new System.Drawing.Size(274, 52);
 			this.startGame.TabIndex = 3;
@@ -83,7 +85,7 @@
 			// maps
 			// 
 			this.maps.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.maps.Location = new System.Drawing.Point(197, 190);
+			this.maps.Location = new System.Drawing.Point(132, 191);
 			this.maps.Name = "maps";
 			this.maps.Size = new System.Drawing.Size(86, 23);
 			this.maps.TabIndex = 4;
@@ -99,11 +101,31 @@
 			this.menuStrip1.TabIndex = 5;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
+			// listBox1
+			// 
+			this.listBox1.FormattingEnabled = true;
+			this.listBox1.Location = new System.Drawing.Point(313, 12);
+			this.listBox1.Name = "listBox1";
+			this.listBox1.Size = new System.Drawing.Size(120, 173);
+			this.listBox1.TabIndex = 6;
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(313, 191);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(120, 23);
+			this.button1.TabIndex = 7;
+			this.button1.Text = "Смотреть";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
 			// Server
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(445, 238);
+			this.Controls.Add(this.button1);
+			this.Controls.Add(this.listBox1);
 			this.Controls.Add(this.maps);
 			this.Controls.Add(this.startGame);
 			this.Controls.Add(this.status);
@@ -128,6 +150,8 @@
 		private System.Windows.Forms.Button startGame;
 		private System.Windows.Forms.Button maps;
 		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ListBox listBox1;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

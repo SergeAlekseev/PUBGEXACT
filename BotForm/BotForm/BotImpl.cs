@@ -1,12 +1,11 @@
 using BotLibrary;
-<<<<<<< HEAD
+
 using System.Drawing;
 
-=======
 using ClassLibrary;
 using System.Linq;
 using ClassLibrary.ProcessingsServer;
->>>>>>> 4f8542ccdfbdb77cf260fa1125027c1e28759d27
+
 
 namespace BotForm
 {

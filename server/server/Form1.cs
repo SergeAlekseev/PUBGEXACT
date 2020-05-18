@@ -20,7 +20,7 @@ namespace server
 		public delegate void StartServerD();
 		public event StartServerD StartServerEvent;
 
-		public delegate void StartGameD();
+		public delegate bool StartGameD();
 		public event StartGameD StartGameEvent;
 
 		public delegate void StopServerD();
@@ -59,6 +59,8 @@ namespace server
 			controller.StopServerEvent += writeStatus;
 			controller.StartServerEvent += writeStatus;
 			controller.StartGameEvent += writeStatus;
+
+			
 		}
 
 		private void menuItem_Click(object sender, EventArgs e)
@@ -94,7 +96,13 @@ namespace server
 
 		private void startGame_Click(object sender, EventArgs e)
 		{
-			StartGameEvent();
+			if (StartGameEvent()) 
+			{
+
+				listBox1.DataSource = model.ListUsers;
+				listBox1.DisplayMember = "Name";
+
+			}
 		}
 
 		private void writeStatus(string text)
@@ -125,6 +133,12 @@ namespace server
 		private void Server_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			Client form = new Client(model, (UserInfo)listBox1.SelectedItem);
+			form.Show();
 		}
 	}
 }
