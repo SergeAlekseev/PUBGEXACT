@@ -120,7 +120,7 @@ namespace server
 
 							bufferedGraphics.Graphics.DrawImage(background, 288, 288);
 							///////////
-							if (thisUser.flagZone)
+							/*if (thisUser.flagZone)
 							{
 								Bitmap background1 = new Bitmap(images[5]);
 
@@ -133,7 +133,7 @@ namespace server
 								g1.DrawImage(images[4], 0, 42, 16, 16);
 
 								bufferedGraphics.Graphics.DrawImage(background1, 250, 250, 100, 100);
-							}
+							}*/
 							//////////
 
 							//		if (thisUser.flagZone) bufferedGraphics.Graphics.DrawLine(Pens.Black, thisUser.userLocation.X + PlayingField.Width / 2 - thisUser.userLocation.X, thisUser.userLocation.Y + PlayingField.Height / 2 - thisUser.userLocation.Y, model.Map.NextZone.ZoneCenterCoordinates.X + PlayingField.Width / 2 - thisUser.userLocation.X, model.Map.NextZone.ZoneCenterCoordinates.Y + PlayingField.Height / 2 - thisUser.userLocation.Y);
