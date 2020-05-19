@@ -12,6 +12,7 @@ namespace BotForm
 	public partial class Form1 : Form
 	{
 		BotImpl bot;
+		bool botStart = false;
 		public Form1()
 		{
 			InitializeComponent();
@@ -27,13 +28,14 @@ namespace BotForm
 				if(bot.join(serverIp.Text, name.Text, password.Text))
 				{
 					this.label1.Text += "Подключився\n";
+					botStart = true;
 				}
 				this.label1.Text += "Закончили\n";
 
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.ToString());
+				this.label1.Text += "\n" + ex + "\n";
 			}
 		}
 
@@ -48,7 +50,8 @@ namespace BotForm
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			bot.closeBot();
+			if(botStart)
+				bot.disconect();
 		}
 	}
 }
