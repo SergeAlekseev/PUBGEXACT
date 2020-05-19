@@ -16,10 +16,18 @@ namespace ClassLibrary
 		public double Length { get; private set; }
 
 
-		private Vector(double x, double y)
+		public Vector(double x, double y)
 		{
 			X = x;
 			Y = y;
+
+			CalculateLength();
+		}
+
+		public Vector(Point p1, Point p2)
+		{
+			X = p1.X - p2.X;
+			Y = p1.Y - p2.Y;
 
 			CalculateLength();
 		}
