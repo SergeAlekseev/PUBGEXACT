@@ -285,7 +285,6 @@ namespace ClassLibrary
 
 		public void Disconnect()
 		{
-
 			if (model.threadStart)
 			{
 				model.serverStart = false;
@@ -296,7 +295,6 @@ namespace ClassLibrary
 				manualResetEvent.Set();
 				model.NStream.Close();
 				CloseEvent();
-
 			}
 		}
 

@@ -145,7 +145,7 @@ namespace BotLibrary
 			//"Неверно введен IP"; 
 		}
 
-		public void closeBot()
+		private void closeBot()
 		{
 			defaultTimer.Stop();
 			//TODO вынести этот метод в реализацию, чтобы он может форму отрубал или консоль, ну приложение в целом, а не только таймер
