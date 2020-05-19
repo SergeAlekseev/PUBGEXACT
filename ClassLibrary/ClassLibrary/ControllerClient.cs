@@ -458,7 +458,7 @@ namespace ClassLibrary
 				if (SecureQueue.Count > 0)
 				{
 					SecureQueue.TryDequeue(out processing);
-					if (processing != null && model.ThisUser.hp > 0)
+					if (processing != null)
 					{
 						processing.Process(model);
 					}

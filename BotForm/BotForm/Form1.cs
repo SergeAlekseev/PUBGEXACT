@@ -11,34 +11,44 @@ namespace BotForm
 {
 	public partial class Form1 : Form
 	{
-		String str = "";
+		BotImpl bot;
 		public Form1()
 		{
 			InitializeComponent();
+			bot = new BotImpl();
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				str += "Начали\n";
-				this.label1.Text = str;
-				BotImpl bot = new BotImpl();
+				this.label1.Text += "Начали\n"; ;				
 		
-				if(bot.join("127.0.0.1", "chippanah99ff", "12312312"))
+				if(bot.join(serverIp.Text, name.Text, password.Text))
 				{
-					str += "Подключився\n";
-					this.label1.Text = str;
+					this.label1.Text += "Подключився\n";
 				}
+				this.label1.Text += "Закончили\n";
 
-				str += "Закончили\n";
-				this.label1.Text = str;
-		
 			}
 			catch(Exception ex)
 			{
 				MessageBox.Show(ex.ToString());
 			}
+		}
+
+		private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			char l = e.KeyChar;
+			if ((l < '0' || l > '9') && l != '\b' && l != '.')
+			{
+				e.Handled = true;
+			}
+		}
+
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			bot.closeBot();
 		}
 	}
 }

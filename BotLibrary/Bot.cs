@@ -127,6 +127,7 @@ namespace BotLibrary
 			RechargeEvent += controller.Recharge;
 
 			controller.ErrorConnect += ErrorConnect;
+			controller.CloseEvent += closeBot;
 
 			ConnectEvent(ip); //Подключается к тому же, к чему была подключена форма меню
 			start = true;
@@ -142,6 +143,12 @@ namespace BotLibrary
 		private void ErrorConnect()
 		{
 			//"Неверно введен IP"; 
+		}
+
+		public void closeBot()
+		{
+			defaultTimer.Stop();
+			//TODO вынести этот метод в реализацию, чтобы он может форму отрубал или консоль, ну приложение в целом, а не только таймер
 		}
 
 		public void moveKompasStart(kompas kompas) //Обработчик нажатия на кнопку 
