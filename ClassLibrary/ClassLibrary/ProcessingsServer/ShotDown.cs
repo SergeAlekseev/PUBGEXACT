@@ -142,7 +142,7 @@ namespace ClassLibrary.ProcessingsServer
 							PlayerDeath pd = new PlayerDeath();
 							pd.Killer = bulletInfo.owner;
 							CTransfers.Writing(pd, model.ListNs[j]);
-
+						//	model.ListNs.RemoveAt(j); //////////////////////////////////////////////////////
 						}
 						break;
 					}
@@ -243,7 +243,7 @@ namespace ClassLibrary.ProcessingsServer
 						PlayerDeath pd = new PlayerDeath();
 						pd.Killer = grena.owner;
 						CTransfers.Writing(pd, model.ListNs[j]);
-
+					//	model.ListNs.RemoveAt(j); //////////////////////////////////////////////////////
 					}
 				}
 			}

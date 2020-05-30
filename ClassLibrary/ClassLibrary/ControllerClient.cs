@@ -73,7 +73,7 @@ namespace ClassLibrary
 				Writing(su);
 			}
 		}
-		public void Mouse_Click()
+		public void takeItem_Ckick()
 		{
 			Point mousLoc = new Point(model.MouseCoord.X - 300 + model.ThisUser.userLocation.X, model.MouseCoord.Y - 300 + model.ThisUser.userLocation.Y);
 			foreach (Item item in model.Map.ListItems)
