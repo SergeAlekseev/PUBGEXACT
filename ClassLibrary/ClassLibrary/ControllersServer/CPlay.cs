@@ -52,7 +52,7 @@ namespace ClassLibrary.ControllersServer
 			}
 
 		}
-		public void timerZone_Tick()//игра
+	public void timerZone_Tick()//Кароче таймер посылает мёртвым игрокам сообщения о зоне. Потом пофиксить
 		{
 			if (model.Map.NextZone.TimeTocompression > 0)
 			{
@@ -61,7 +61,7 @@ namespace ClassLibrary.ControllersServer
 
 				foreach (NetworkStream n in model.ListNs)
 				{
-					CTransfers.Writing(Compress, n);
+					CTransfers.Writing(Compress, n); //FIXME здесь мб отправляется мёртвым челам сообщения
 				}
 
 				model.Map.NextZone.TimeTocompression -= 1;
@@ -73,7 +73,7 @@ namespace ClassLibrary.ControllersServer
 
 				foreach (NetworkStream n in model.ListNs)
 				{
-					CTransfers.Writing(Compress, n);
+					CTransfers.Writing(Compress, n); //FIXME здесь мб отправляется мёртвым челам сообщения
 				}
 
 				timerZone.Stop();
@@ -96,12 +96,12 @@ namespace ClassLibrary.ControllersServer
 					model.Map.PrevZone.ZoneRadius = (int)radius;
 					for (int i = 0; i < model.ListUsers.Count; i++)
 					{
-						if (model.ListUsers[i] != null && model.ListNs[i].CanWrite)
+						if (model.ListUsers[i] != null)
 						{
 							GetPrevZoneInfo prevZoneInfo = new GetPrevZoneInfo();
 							prevZoneInfo.prevZone = model.Map.PrevZone;
 
-							if (!CTransfers.Writing(prevZoneInfo, model.ListNs[i])) return;
+							CTransfers.Writing(prevZoneInfo, model.ListNs[i]);
 						}
 					}
 					Thread.Sleep(40);
@@ -119,7 +119,7 @@ namespace ClassLibrary.ControllersServer
 							GetZoneStartInfo nextZoneInfo = new GetZoneStartInfo();
 							nextZoneInfo.nextZone = model.Map.NextZone;
 
-							if (!CTransfers.Writing(nextZoneInfo, model.ListNs[i])) return;
+							CTransfers.Writing(nextZoneInfo, model.ListNs[i]);
 						}
 					}
 					model.Map.NextZone.TimeTocompression = 60;
@@ -147,7 +147,7 @@ namespace ClassLibrary.ControllersServer
 						{
 
 							Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
-							"Player " + model.ListUsers[i].Name + " died from zone"+ Environment.NewLine +
+							"Player " + model.ListUsers[i].Name + " died from zone" + Environment.NewLine +
 							"Kills - " + model.ListUsers[i].kills + Environment.NewLine +
 							"============================================================================");
 
@@ -157,11 +157,8 @@ namespace ClassLibrary.ControllersServer
 
 							PlayerDeath death = new PlayerDeath();
 							death.Killer = "ZONA";
-							try
-							{
-								CTransfers.Writing(death, model.ListNs[i]);
-							}
-							catch { }
+
+							CTransfers.Writing(death, model.ListNs[i]);
 
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
@@ -173,7 +170,6 @@ namespace ClassLibrary.ControllersServer
 							kill.kill.killer = "ZONA";
 							kill.kill.dead = model.ListUsers[i].Name;
 
-
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{
 								if (model.ListUsers[k] != null)
@@ -181,6 +177,7 @@ namespace ClassLibrary.ControllersServer
 									CTransfers.Writing(kill, model.ListNs[k]);
 								}
 							}
+							//model.ListNs.RemoveAt(i); //////////////////////////////////////////////////////
 						}
 					}
 
@@ -277,7 +274,7 @@ namespace ClassLibrary.ControllersServer
 		{
 			for (int i = 0; i < model.ListUsers.Count; i++)
 			{
-				if (model.ListUsers[i] != null)
+				if (model.ListUsers[i] != null && model.ListUsers[i].hp > 0)
 				{
 					GetCountGamesInfo gamesInfo = new GetCountGamesInfo();
 					gamesInfo.count = model.CountGamers;
@@ -290,7 +287,7 @@ namespace ClassLibrary.ControllersServer
 
 				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
-					if (model.ListUsers[i] != null)
+					if (model.ListUsers[i] != null && model.ListUsers[i].hp > 0)
 					{
 
 						foreach (GeneralInfo g in model.ListGInfo)
@@ -299,7 +296,7 @@ namespace ClassLibrary.ControllersServer
 							{
 								g.Wins += 1;
 								Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
-									"Player " + model.ListUsers[i].Name + "win!" + Environment.NewLine +
+									"Player " + model.ListUsers[i].Name + " win!" + Environment.NewLine +
 									"Kills - " + model.ListUsers[i].kills + Environment.NewLine +
 									"============================================================================");
 							}
@@ -362,7 +359,7 @@ namespace ClassLibrary.ControllersServer
 					model.CountGamers -= 1;
 					writingCountGamers();
 
-					Debug.WriteLine(" | Player disconnect" + ie.ToString());
+					Debug.WriteLine("Player disconnect _____");
 				}
 			}
 			catch (Exception e)

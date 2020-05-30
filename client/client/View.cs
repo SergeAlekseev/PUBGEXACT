@@ -424,7 +424,7 @@ namespace client
 			}
 			else if (e.KeyChar == 'f' || e.KeyChar == 'а' || (e.KeyChar == 'F' || e.KeyChar == 'А'))
 			{
-				MouseClickEvent = controller.Mouse_Click;
+				MouseClickEvent = controller.takeItem_Ckick;
 				MouseClickEvent();
 			}
 		}

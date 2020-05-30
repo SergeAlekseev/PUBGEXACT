@@ -221,7 +221,7 @@ namespace ClassLibrary
 						{
 							CTransfers.Writing(d, ns);
 						}
-						catch (Exception err) { Debug.WriteLine(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
+						catch (Exception err) { Debug.WriteLine("Ошибка в ControllerServer, методе StopServer | " + err.Message); }
 					}
 				}
 				foreach (System.Timers.Timer t in model.ListTimers)

@@ -74,12 +74,12 @@ namespace ClassLibrary
 				}
 				return true;
 			}
-			catch (Exception err) 
-			{ 
+			catch (Exception err)
+			{
 				Debug.WriteLine(err.ToString() + " |Ошибка в CTransfers, методе Writing(2)");
 				return false;
 			}
-}
+		}
 
 		static public void WritingInMenu(object obj, byte numComand, NetworkStream nStream)
 		{
