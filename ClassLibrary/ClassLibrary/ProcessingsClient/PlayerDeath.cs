@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace ClassLibrary.ProcessingsClient
 {
 	public class PlayerDeath : ProcessingClient

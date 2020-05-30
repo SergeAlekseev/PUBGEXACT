@@ -200,7 +200,7 @@ namespace ClassLibrary.ControllersServer
 			{
 				if (model.ListUsers[i] != null)
 				{
-					ControllersS.cPlay.SendingInformationAboutObjects(i);//Отправляется инфа обо всех объектах новоый карты
+					ControllersS.cPlay.sendMapObjectsInfo(i);//Отправляется инфа обо всех объектах новоый карты
 
 					do
 						model.ListUsers[i] = new UserInfo(new Point(random.Next(2, model.Map.MapBorders.Width - 2), random.Next(2, model.Map.MapBorders.Height - 2)));

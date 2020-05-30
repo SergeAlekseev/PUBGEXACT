@@ -1,83 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using ClassLibrary;
+﻿using System.Threading;
+using System.Diagnostics;
+using System.Data;
+using System;
+
 namespace ClassLibrary.ProcessingsServer
 {
 	public class Reload : ProcessingServer
 	{
 		ModelServer Model;
-		public override void Process(ModelServer Model)
+		public override void Process(ModelServer model)
 		{
-			this.Model = Model;
+			this.Model = model;
 			try
 			{
-				if (Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] is Weapon && Model.ListUsers[num].Items[Model.ListUsers[num].thisItem]!=null)
+				if (model.ListUsers[num].Items[model.ListUsers[num].thisItem] is Weapon && model.ListUsers[num].Items[model.ListUsers[num].thisItem]!=null)
 				{
-					Model.ListUsers[num].flagRecharge = true;
-					Model.ListShoting[num].Abort();
-					Model.ListUsers[num].flagShoting = false;
+					model.ListUsers[num].flagRecharge = true;
+					model.ListShoting[num].Abort();
+					model.ListUsers[num].flagShoting = false;
 					Thread t = new Thread(() =>
 					{
 						int time = 0;
-						while (Model.ListUsers[num].flagRecharge)
+						while (model.ListUsers[num] != null && model.ListUsers[num].flagRecharge)
 						{
 							time++;
 							Thread.Sleep(100);
 
-							if (time >= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].TimeReloading)
+							if (model.ListUsers[num] != null && time >= model.ListUsers[num].Items[model.ListUsers[num].thisItem].TimeReloading)
 							{
-								switch ((Model.ListUsers[num].Items[Model.ListUsers[num].thisItem] as Weapon).TypeBullets)
+								switch ((model.ListUsers[num].Items[model.ListUsers[num].thisItem] as Weapon).TypeBullets)
 								{
 									case Weapon.typeBullets.Gun:
 										{
-											Model.ListUsers[num].GunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-											Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											Model.ListUsers[num].GunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											if (Model.ListUsers[num].GunBullets < 0)
+											model.ListUsers[num].GunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+											model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											model.ListUsers[num].GunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											if (model.ListUsers[num].GunBullets < 0)
 											{
-												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].GunBullets;
-												Model.ListUsers[num].GunBullets = 0;
+												model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].GunBullets;
+												model.ListUsers[num].GunBullets = 0;
 											}
 											break;
 										}
 									case Weapon.typeBullets.Pistol:
 										{
-											Model.ListUsers[num].PistolBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-											Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											Model.ListUsers[num].PistolBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											if (Model.ListUsers[num].PistolBullets < 0)
+											model.ListUsers[num].PistolBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+											model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											model.ListUsers[num].PistolBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											if (model.ListUsers[num].PistolBullets < 0)
 											{
-												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].PistolBullets;
-												Model.ListUsers[num].PistolBullets = 0;
+												model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].PistolBullets;
+												model.ListUsers[num].PistolBullets = 0;
 											}
 											break;
 										}
 									case Weapon.typeBullets.Shotgun:
 										{
-											Model.ListUsers[num].ShotgunBullets += Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count;
-											Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count = Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											Model.ListUsers[num].ShotgunBullets -= Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].MaxCount;
-											if (Model.ListUsers[num].ShotgunBullets < 0)
+											model.ListUsers[num].ShotgunBullets += model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count;
+											model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count = model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											model.ListUsers[num].ShotgunBullets -= model.ListUsers[num].Items[model.ListUsers[num].thisItem].MaxCount;
+											if (model.ListUsers[num].ShotgunBullets < 0)
 											{
-												Model.ListUsers[num].Items[Model.ListUsers[num].thisItem].Count += Model.ListUsers[num].ShotgunBullets;
-												Model.ListUsers[num].ShotgunBullets = 0;
+												model.ListUsers[num].Items[model.ListUsers[num].thisItem].Count += model.ListUsers[num].ShotgunBullets;
+												model.ListUsers[num].ShotgunBullets = 0;
 											}
 											break;
 										}
 								}
 
-								Model.ListUsers[num].flagRecharge = false;
+								model.ListUsers[num].flagRecharge = false;
 							}
 						}
-
-
 					});
 					t.Start();
 				}
+			}
+			catch(NullReferenceException NRE)
+			{
+				Debug.WriteLine("Экстренное завершение перезарядки");
 			}
 			catch { };
 		}

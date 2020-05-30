@@ -18,6 +18,7 @@ using System.Collections.Concurrent;
 using Newtonsoft.Json.Linq;
 using ClassLibrary.ProcessingsServer;
 using ClassLibrary.ProcessingsClient;
+using System.Diagnostics;
 
 namespace ClassLibrary
 {
@@ -93,12 +94,6 @@ namespace ClassLibrary
 			new ControllersS(model, this);
 		}
 
-		
-
-		
-
-		
-
 		public void start()//основа
 		{
 			if (ControllersS.cInfoUsers.PlayerRead(null) != null)
@@ -171,25 +166,23 @@ namespace ClassLibrary
 						lock (model.ListUsers)
 						{
 							model.ListUsers.Add(userInfoTmp);
+							Debug.WriteLine("Player connected");
 						}
 
-
+						KeyValuePair<int, TcpClient> pair = new KeyValuePair<int, TcpClient>(model.number, tc);		
 
 						model.ListNs.Add(tc.GetStream());
 						model.ListMove.Add(new MMove());
-						model.ListShoting.Add(new Thread(ControllersS.cPlay.InfoUsers));
+						model.ListShoting.Add(new Thread(ControllersS.cPlay.sendUserInfo));
 						Thread thread = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.PlayUser));
 
 						model.ListShoting.Add(new Thread(Pusto));
-						Thread thread3 = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.PlayUser));
 
 						thread.Start(tc);
 
-
-
-						Thread thread2 = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.InfoUsers));
+						Thread thread2 = new Thread(new ParameterizedThreadStart(ControllersS.cPlay.sendUserInfo));
 						thread2.Priority = ThreadPriority.Highest;
-						thread2.Start(tc);
+						thread2.Start(pair);
 					}
 					catch
 					{
@@ -228,7 +221,7 @@ namespace ClassLibrary
 						{
 							CTransfers.Writing(d, ns);
 						}
-						catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
+						catch (Exception err) { Debug.WriteLine(err.Message + " |Ошибка в ControllerServer, методе StopServer"); }
 					}
 				}
 				foreach (System.Timers.Timer t in model.ListTimers)
@@ -254,6 +247,7 @@ namespace ClassLibrary
 
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)//основа
 		{
+			Trace.WriteLine("============================================================================");
 			StopServer();
 		}
 

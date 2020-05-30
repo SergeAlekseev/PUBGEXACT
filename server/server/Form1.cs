@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Threading;
-using System.Collections.Concurrent;
-using System.Net.Sockets;
-using System.Net;
-using Newtonsoft.Json;
 using ClassLibrary;
+using System.Diagnostics;
+using System.IO;
 
 namespace server
 {
@@ -32,6 +25,7 @@ namespace server
 		ToolStripMenuItem fileItem;
 		public ListBox listBox = new ListBox();
 
+		public static String LOG_FILE_NAME = "logs.log";
 		public Server()
 		{
 			InitializeComponent();
@@ -53,14 +47,18 @@ namespace server
 			StartServerEvent += controller.start;
 			StartGameEvent += controller.StartGame;
 
-			CTransfers.ErrorEvent += AddError;
-
-			controller.ErrorEvent += AddError;
 			controller.StopServerEvent += writeStatus;
 			controller.StartServerEvent += writeStatus;
 			controller.StartGameEvent += writeStatus;
 
-			
+			Debug.Listeners.Add(new TextWriterTraceListener(LOG_FILE_NAME, "log"));
+			Debug.AutoFlush = true;
+			Debug.WriteLine("Server start");
+			Debug.Indent();
+
+			Trace.Indent();
+			Trace.WriteLine("============================================================================");
+			Trace.WriteLine("Match start");			
 		}
 
 		private void menuItem_Click(object sender, EventArgs e)
@@ -83,15 +81,18 @@ namespace server
 		private void start_Click(object sender, EventArgs e)
 		{
 			StartServerEvent();
+			Debug.WriteLine("The game is open to connect");
 		}
 
 		private void stop_Click(object sender, EventArgs e)
 		{
 			StopServerEvent();
+			Debug.WriteLine("Game stop");
 		}
 		private void Server_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			StopServerEvent();
+			Debug.WriteLine("Server close");
 		}
 
 		private void startGame_Click(object sender, EventArgs e)
@@ -101,7 +102,7 @@ namespace server
 
 				listBox1.DataSource = model.ListUsers;
 				listBox1.DisplayMember = "Name";
-
+				Debug.WriteLine("Game start");
 			}
 		}
 
@@ -116,13 +117,8 @@ namespace server
 			}
 			catch (Exception err)
 			{
-				AddError(err.Message + "| Ошибка в отправке статуса работы форме сервера");
+				Debug.WriteLine(err.Message + "| Ошибка в отправке статуса работы форме сервера");
 			}
-		}
-
-		public void AddError(string Error)
-		{
-			listBox.Items.Add(Error);
 		}
 
 		private void maps_Click(object sender, EventArgs e)
@@ -135,7 +131,7 @@ namespace server
 
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void clickUserFromBoxToView(object sender, EventArgs e)
 		{
 			Client form = new Client(model, (UserInfo)listBox1.SelectedItem);
 			form.Show();
