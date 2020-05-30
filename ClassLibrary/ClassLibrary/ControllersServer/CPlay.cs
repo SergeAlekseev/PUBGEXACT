@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -14,7 +15,6 @@ namespace ClassLibrary.ControllersServer
 {
 	public class CPlay
 	{
-
 		public System.Timers.Timer timerZone, timerUsersInZone;
 		public ConcurrentQueue<ProcessingServer> SecureQueue = new ConcurrentQueue<ProcessingServer>(); //___________________________________
 		ModelServer model;
@@ -101,7 +101,7 @@ namespace ClassLibrary.ControllersServer
 							GetPrevZoneInfo prevZoneInfo = new GetPrevZoneInfo();
 							prevZoneInfo.prevZone = model.Map.PrevZone;
 
-							CTransfers.Writing(prevZoneInfo, model.ListNs[i]);
+							if (!CTransfers.Writing(prevZoneInfo, model.ListNs[i])) return;
 						}
 					}
 					Thread.Sleep(40);
@@ -119,7 +119,7 @@ namespace ClassLibrary.ControllersServer
 							GetZoneStartInfo nextZoneInfo = new GetZoneStartInfo();
 							nextZoneInfo.nextZone = model.Map.NextZone;
 
-							CTransfers.Writing(nextZoneInfo, model.ListNs[i]);
+							if (!CTransfers.Writing(nextZoneInfo, model.ListNs[i])) return;
 						}
 					}
 					model.Map.NextZone.TimeTocompression = 60;
@@ -145,6 +145,11 @@ namespace ClassLibrary.ControllersServer
 						model.ListUsers[i].hp -= model.DamageZone;
 						if (model.ListUsers[i].hp <= 0)
 						{
+
+							Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
+							"Player " + model.ListUsers[i].Name + " died from zone"+ Environment.NewLine +
+							"Kills - " + model.ListUsers[i].kills + Environment.NewLine +
+							"============================================================================");
 
 							SingalForDroping Signal = new SingalForDroping();
 							CTransfers.Writing(Signal, model.ListNs[i]);
@@ -187,10 +192,10 @@ namespace ClassLibrary.ControllersServer
 		{
 			int num = model.number;   //шанс ошибки при одновременном подключении
 
-			SendingInformationAboutObjects(num); //Отправка инфы обо всех объектах карты
+			sendMapObjectsInfo(num); //Отправка инфы обо всех объектах карты
 
 			model.CountGamers += 1;
-			writingCountGames();
+			writingCountGamers();
 
 			model.ListUsers[num].Items[1] = new Item();
 			model.ListUsers[num].Items[2] = new Item();
@@ -204,23 +209,23 @@ namespace ClassLibrary.ControllersServer
 
 		}
 
-		public bool SendingInformationAboutObjects(int num)//игра
+		public bool sendMapObjectsInfo(int num)//игра
 		{
+
+			GetNumber gNumber = new GetNumber();
+			gNumber.num = model.number;
+			GetBushesInfo bushesInfo = new GetBushesInfo();
+			bushesInfo.listBush = model.Map.ListBush;
+			GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
+			bordersInfo.rectangle = model.Map.MapBorders;
+			GetBoxesInfo boxesInfo = new GetBoxesInfo();
+			boxesInfo.listBox = model.Map.ListBox;
+			GetInfoItems itemsInfo = new GetInfoItems();
+			itemsInfo.listItems = model.Map.ListItems;
+			GetTreesInfo treesInfo = new GetTreesInfo();
+			treesInfo.listTree = model.Map.ListTrees;
 			try
 			{
-				GetNumber gNumber = new GetNumber();
-				gNumber.num = model.number;
-				GetBushesInfo bushesInfo = new GetBushesInfo();
-				bushesInfo.listBush = model.Map.ListBush;
-				GetMapBordersInfo bordersInfo = new GetMapBordersInfo();
-				bordersInfo.rectangle = model.Map.MapBorders;
-				GetBoxesInfo boxesInfo = new GetBoxesInfo();
-				boxesInfo.listBox = model.Map.ListBox;
-				GetInfoItems itemsInfo = new GetInfoItems();
-				itemsInfo.listItems = model.Map.ListItems;
-				GetTreesInfo treesInfo = new GetTreesInfo();
-				treesInfo.listTree = model.Map.ListTrees;
-
 				CTransfers.Writing(gNumber, model.ListNs[num]);
 				Thread.Sleep(100);
 				CTransfers.Writing(bushesInfo, model.ListNs[num]); // Отправка инфы о кустах
@@ -234,44 +239,41 @@ namespace ClassLibrary.ControllersServer
 				CTransfers.Writing(itemsInfo, model.ListNs[num]); // Отправка инфы о вещах
 				return true;
 			}
-			catch (Exception) { return false; }
+			catch (Exception e)
+			{
+				Debug.WriteLine("Error in sending info about objects of map | " + e.ToString());
+				return false;
+			}
 
 		}
-		public void InfoUsers(object tc)//игра
+		public void sendUserInfo(object tc)//игра
 		{
-			TcpClient tcp = (TcpClient)tc;
+			KeyValuePair<int, TcpClient> pair = (KeyValuePair<int, TcpClient>)tc;
+
+			TcpClient tcp = pair.Value;
 			Thread.Sleep(200);
 			NetworkStream nStream = tcp.GetStream();
 			bool PrivateWorkingThread = true;
+
 			while (model.workingThread && PrivateWorkingThread)
 			{
-				try
-				{
-					AngelToZone angel = new AngelToZone();
-					angel.listUserInfo = model.ListUsers;
-					GetBulletsInfo buletsInfo = new GetBulletsInfo();
-					lock (model.ListBullet)
-						buletsInfo.listBulets = model.ListBullet.ToList<BulletInfo>();
-					GetGrenadesInfo grenadesInfo = new GetGrenadesInfo();
-					lock (model.ListGrenade)
-						grenadesInfo.grenadesInfo = model.ListGrenade.ToList<GrenadeInfo>();
+				AngelToZone angel = new AngelToZone();
+				angel.listUserInfo = model.ListUsers;
+				GetBulletsInfo buletsInfo = new GetBulletsInfo();
+				lock (model.ListBullet)
+					buletsInfo.listBulets = model.ListBullet.ToList<BulletInfo>();
+				GetGrenadesInfo grenadesInfo = new GetGrenadesInfo();
+				lock (model.ListGrenade)
+					grenadesInfo.grenadesInfo = model.ListGrenade.ToList<GrenadeInfo>();
 
-					CTransfers.Writing(angel, nStream);
-					CTransfers.Writing(buletsInfo, nStream);
-					CTransfers.Writing(grenadesInfo, nStream);
-					Thread.Sleep(10);
-				}
-				catch (System.IO.IOException err)
-				{
-					//ErrorEvent(err.Message + " |Ошибка в ControllerServer, методе InfoUsers");
-					PrivateWorkingThread = false;
-				}
+				if (!CTransfers.Writing(angel, nStream)) break;
+				if (!CTransfers.Writing(buletsInfo, nStream)) break;
+				if (!CTransfers.Writing(grenadesInfo, nStream)) break;
+				Thread.Sleep(10);
 			}
-
-
 		}
 
-		public void writingCountGames()//игра
+		public void writingCountGamers()//игра
 		{
 			for (int i = 0; i < model.ListUsers.Count; i++)
 			{
@@ -286,8 +288,6 @@ namespace ClassLibrary.ControllersServer
 			if (model.CountGamers == 1 && model.workingGame)
 			{
 
-
-
 				for (int i = 0; i < model.ListUsers.Count; i++)
 				{
 					if (model.ListUsers[i] != null)
@@ -296,7 +296,14 @@ namespace ClassLibrary.ControllersServer
 						foreach (GeneralInfo g in model.ListGInfo)
 						{
 							if (g.Name == model.ListUsers[i].Name)
+							{
 								g.Wins += 1;
+								Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
+									"Player " + model.ListUsers[i].Name + "win!" + Environment.NewLine +
+									"Kills - " + model.ListUsers[i].kills + Environment.NewLine +
+									"============================================================================");
+							}
+
 						}
 						CTransfers.Writing(new GetCountWinsInfo(), model.ListNs[i]);
 						break;
@@ -325,11 +332,14 @@ namespace ClassLibrary.ControllersServer
 
 						try
 						{
-							SecureQueue.Enqueue(JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss));
+							ProcessingServer processingServer = JsonConvert.DeserializeObject<ProcessingServer>(tmpString, CTransfers.jss);
+							SecureQueue.Enqueue(processingServer);
+							Debug.WriteLine("Processing - [" + processingServer.GetType().Name + "], player [" + model.ListUsers[processingServer.num].Name + "]");
 						}
 						catch
 						{
-							model.ListNs[num].Read(new Byte[2], 0, 2);
+							model.ListNs[num].Read(new Byte[2], 0, 2); //Что здесь происходит 
+							Debug.WriteLine("What is going on");
 						}
 
 						manualResetEvent.Set();
@@ -338,9 +348,8 @@ namespace ClassLibrary.ControllersServer
 					timerMove.Stop();
 
 				}
-				catch (System.IO.IOException)
+				catch (System.IO.IOException ie)
 				{
-					//ErrorEvent("Отключение игрока в Producer");
 					if (model.ListUsers.Count != 0 && model.ListUsers[num] != null)
 					{
 						model.ListUsers[num].flagShoting = false;
@@ -351,20 +360,20 @@ namespace ClassLibrary.ControllersServer
 						}
 					}
 					model.CountGamers -= 1;
-					writingCountGames();
+					writingCountGamers();
 
-
+					Debug.WriteLine(" | Player disconnect" + ie.ToString());
 				}
 			}
-			catch
+			catch (Exception e)
 			{
-				//ErrorEvent("Ложный вызов продюсера");
+				Debug.WriteLine(e.ToString() + " | Ложный вызов продюсера");
 				timerMove.Stop();
 			}
 
 		}
 
-		public void Consumer(object obj)//игра
+		public void Consumer(object obj)//игра Здесь тоже может произойти ошибка, если ссылка в модуле указывает на null
 		{
 			Thread.Sleep(100);
 			ProcessingServer processing;
@@ -373,14 +382,9 @@ namespace ClassLibrary.ControllersServer
 				manualResetEvent.WaitOne();
 				if (SecureQueue.Count > 0)
 				{
-
 					SecureQueue.TryDequeue(out processing);
 					if (processing != null)
-					{
-						
-							processing.Process(model);
-						
-					}
+						processing.Process(model);
 
 					Thread.Yield();
 				}

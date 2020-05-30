@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Diagnostics;
+using System.IO;
 
 namespace ClassLibrary
 {
@@ -14,8 +16,8 @@ namespace ClassLibrary
 		public static JsonSerializerSettings jss = new JsonSerializerSettings
 		{
 			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-			TypeNameHandling = Newtonsoft.Json.TypeNameHandling.All,
-			Formatting = Newtonsoft.Json.Formatting.Indented,
+			TypeNameHandling = TypeNameHandling.All,
+			Formatting = Formatting.Indented,
 		};
 
 		static public string Reading(NetworkStream nStream)
@@ -39,12 +41,12 @@ namespace ClassLibrary
 			while (countReadingBytes != lengthBytesRaed)
 				countReadingBytes += nStream.Read(readBytes, countReadingBytes, readBytes.Count() - countReadingBytes);
 
-			string tmpString = System.Text.Encoding.UTF8.GetString(readBytes);
+			string tmpString = Encoding.UTF8.GetString(readBytes);
 
 			return tmpString;
 		}
 
-		static public void Writing(object obj, NetworkStream nStream)
+		static public bool Writing(object obj, NetworkStream nStream)
 		{
 			string serialized = "";
 			try
@@ -54,10 +56,8 @@ namespace ClassLibrary
 					serialized = JsonConvert.SerializeObject(obj, jss);
 				}
 
-
 				byte[] massByts = Encoding.UTF8.GetBytes(serialized);
 				byte[] countRead = BitConverter.GetBytes(massByts.Count());
-
 
 				lock (nStream)
 				{
@@ -66,11 +66,20 @@ namespace ClassLibrary
 						nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 						nStream.Write(massByts, 0, massByts.Count());
 					}
-					catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в CTransfers, методе Writing"); }
+					catch (IOException err)
+					{
+						Debug.WriteLine("Отправка в закрытое соединение | " + err.StackTrace);
+						return false;
+					}
 				}
+				return true;
 			}
-			catch (Exception err) { ErrorEvent(err.Message + " |Ошибка в CTransfers, методе Writing"); }
-		}
+			catch (Exception err) 
+			{ 
+				Debug.WriteLine(err.ToString() + " |Ошибка в CTransfers, методе Writing(2)");
+				return false;
+			}
+}
 
 		static public void WritingInMenu(object obj, byte numComand, NetworkStream nStream)
 		{
@@ -84,10 +93,8 @@ namespace ClassLibrary
 			byte[] typeComand = new byte[1];
 			typeComand[0] = numComand;
 
-
 			lock (nStream)
 			{
-
 				nStream.Write(typeComand, 0, 1);//Отпраляет тип команды
 				nStream.Write(countRead, 0, 4);//Отпраляет кол-во байт, которое сервер должен будет читать
 				nStream.Write(massByts, 0, massByts.Count());

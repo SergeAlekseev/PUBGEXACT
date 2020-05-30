@@ -1,11 +1,7 @@
-﻿using ClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClassLibrary.ProcessingsClient
 {
@@ -17,7 +13,7 @@ namespace ClassLibrary.ProcessingsClient
 		{
 
 			model.ListUsers = listUserInfo;
-			model.ThisUser =model.ListUsers[model.number];
+			model.ThisUser = model.ListUsers[model.number];
 
 			model.AngelToZone = defineAngleZone(model.Map.NextZone.ZoneCenterCoordinates,model.ThisUser.userLocation);
 		}

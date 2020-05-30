@@ -135,7 +135,7 @@ namespace BotLibrary
 
 		private void createDefaultTimer()
 		{
-			defaultTimer = new Timer(100);
+			defaultTimer = new Timer(190);
 			defaultTimer.Elapsed += /*async*/(sender, e) => /*await Task.Run(() =>*/ doBot(model)/*)*/;
 			defaultTimer.Start();
 		}

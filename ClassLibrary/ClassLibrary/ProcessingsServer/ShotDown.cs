@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary;
 using ClassLibrary.ProcessingsClient;
 
 namespace ClassLibrary.ProcessingsServer
@@ -14,6 +12,11 @@ namespace ClassLibrary.ProcessingsServer
 	{
 		UserInfo userInfo;
 		ModelServer model;
+
+		public ShotDown()
+		{
+			Debug.Listeners.Add(new TextWriterTraceListener("logs.log", "log"));
+		}
 		public override void Process(ModelServer Model)
 		{
 			this.model = Model;
@@ -102,8 +105,12 @@ namespace ClassLibrary.ProcessingsServer
 						popad[0] = 6;
 						model.ListUsers[j].hp -= bulletInfo.damage;
 						flagBreak = true;
-						if (model.ListUsers[j].hp <= 0)
+						if (model.ListUsers[j] != null && model.ListUsers[j].hp <= 0)
 						{
+							Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
+							"Player " + model.ListUsers[j].Name + " died from " + bulletInfo.owner + Environment.NewLine +
+							"Kills - " + model.ListUsers[j].kills + Environment.NewLine +
+							"============================================================================");
 
 							SingalForDroping Signal = new SingalForDroping();
 							CTransfers.Writing(Signal, model.ListNs[j]);
@@ -112,9 +119,9 @@ namespace ClassLibrary.ProcessingsServer
 							
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
-								if (g.Name == model.ListUsers[j].Name)
+								if (model.ListUsers[j] != null && g.Name == model.ListUsers[j].Name)
 									g.Dies += 1;
-								if (g.Name == bulletInfo.owner)
+								if (model.ListUsers[j] != null && g.Name == bulletInfo.owner)
 									g.Kills += 1;
 							}
 
@@ -124,9 +131,9 @@ namespace ClassLibrary.ProcessingsServer
 
 							for (int k = 0; k < model.ListUsers.Count; k++)
 							{
-								if (model.ListUsers[k] != null)
+								if (model.ListUsers[k] != null && model.ListUsers[k] != null)
 								{
-									if (model.ListUsers[k].Name == bulletInfo.owner)
+									if (model.ListUsers[k] != null && model.ListUsers[k].Name == bulletInfo.owner)
 										model.ListUsers[k].kills += 1;
 									CTransfers.Writing(kill, model.ListNs[k]);
 								}

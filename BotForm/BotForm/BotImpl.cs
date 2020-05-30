@@ -151,7 +151,7 @@ namespace BotForm
 		{
 			for(int i = 1; i < items.Count(); i++)
 			{
-				if (items[i].Name == null)
+				if (items[i] ==  null || items[i].Name == null)
 				{
 					return false;
 				}
