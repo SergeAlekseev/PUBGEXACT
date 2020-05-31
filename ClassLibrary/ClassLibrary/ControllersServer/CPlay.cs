@@ -203,7 +203,6 @@ namespace ClassLibrary.ControllersServer
 
 			Thread Producerthread = new Thread(new ParameterizedThreadStart(Producer));
 			Producerthread.Start(num);
-
 		}
 
 		public bool sendMapObjectsInfo(int num)//игра
