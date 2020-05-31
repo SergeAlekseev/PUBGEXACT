@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using ClassLibrary;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace server
 {
@@ -26,20 +27,11 @@ namespace server
 		public ListBox listBox = new ListBox();
 
 		public static String LOG_FILE_NAME = "logs.log";
-		public Server()
+		public Server(bool isAuto)
 		{
-			InitializeComponent();
-			#region CreatedFormListBox
 
-			fileItem = new ToolStripMenuItem("Файл");
-
-			ToolStripMenuItem newItem = new ToolStripMenuItem("Список ошибок");
-			newItem.Click += menuItem_Click;
-			fileItem.DropDownItems.Add(newItem);
-
-
-			menuStrip1.Items.Add(fileItem);
-			#endregion
+			Debug.Listeners.Add(new TextWriterTraceListener(LOG_FILE_NAME, "log"));
+			Debug.AutoFlush = true;
 
 			controller = new ControllerServer(model);
 
@@ -51,14 +43,43 @@ namespace server
 			controller.StartServerEvent += writeStatus;
 			controller.StartGameEvent += writeStatus;
 
-			Debug.Listeners.Add(new TextWriterTraceListener(LOG_FILE_NAME, "log"));
-			Debug.AutoFlush = true;
-			Debug.WriteLine("Server start");
-			Debug.Indent();
+			if (!isAuto)
+			{
+				InitializeComponent();
+				#region CreatedFormListBox
+
+				fileItem = new ToolStripMenuItem("Файл");
+
+				ToolStripMenuItem newItem = new ToolStripMenuItem("Список ошибок");
+				newItem.Click += menuItem_Click;
+				fileItem.DropDownItems.Add(newItem);
+
+
+				menuStrip1.Items.Add(fileItem);
+				#endregion
+				Debug.WriteLine("Server start from WindowsFrom");
+				Debug.Indent();
+			}
+			else
+			{
+				InitializeComponent();
+				new Thread(autoRun).Start();
+				Debug.WriteLine("Server start automatically");
+				Debug.Indent();
+			}
 
 			Trace.Indent();
 			Trace.WriteLine("============================================================================");
-			Trace.WriteLine("Match start");			
+			Trace.WriteLine("Match start");
+		}
+
+		private void autoRun()
+		{
+			start_Click(null, null);
+
+			Thread.Sleep(3000);
+
+			startGame_Click(null, null);
 		}
 
 		private void menuItem_Click(object sender, EventArgs e)
@@ -97,9 +118,8 @@ namespace server
 
 		private void startGame_Click(object sender, EventArgs e)
 		{
-			if (StartGameEvent()) 
+			if (StartGameEvent())
 			{
-
 				listBox1.DataSource = model.ListUsers;
 				listBox1.DisplayMember = "Name";
 				Debug.WriteLine("Game start");

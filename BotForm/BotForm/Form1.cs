@@ -13,6 +13,17 @@ namespace BotForm
 	{
 		BotImpl bot;
 		bool botStart = false;
+		public Form1(String ip)
+		{
+			InitializeComponent();
+			serverIp.Text = ip;
+			name.Text = "autoBot";
+			password.Text = "111";
+
+			bot = new BotImpl();
+			button1_Click(null, null);
+		}
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -23,9 +34,9 @@ namespace BotForm
 		{
 			try
 			{
-				this.label1.Text += "Начали\n"; ;				
-		
-				if(bot.join(serverIp.Text, name.Text, password.Text))
+				this.label1.Text += "Начали\n"; ;
+
+				if (bot.join(serverIp.Text, name.Text, password.Text))
 				{
 					this.label1.Text += "Подключився\n";
 					botStart = true;
@@ -33,7 +44,7 @@ namespace BotForm
 				this.label1.Text += "Закончили\n";
 
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				this.label1.Text += "\n" + ex + "\n";
 			}
@@ -50,7 +61,7 @@ namespace BotForm
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if(botStart)
+			if (botStart)
 				bot.disconect();
 		}
 	}
