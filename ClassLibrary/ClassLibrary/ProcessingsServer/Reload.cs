@@ -26,7 +26,7 @@ namespace ClassLibrary.ProcessingsServer
 							time++;
 							Thread.Sleep(100);
 
-							if (model.ListUsers[num] != null && time >= model.ListUsers[num].Items[model.ListUsers[num].thisItem].TimeReloading)
+							if (model.ListUsers[num] != null && model.ListUsers[num].Items[model.ListUsers[num].thisItem].Name != null && time >= model.ListUsers[num].Items[model.ListUsers[num].thisItem].TimeReloading)
 							{
 								switch ((model.ListUsers[num].Items[model.ListUsers[num].thisItem] as Weapon).TypeBullets)
 								{

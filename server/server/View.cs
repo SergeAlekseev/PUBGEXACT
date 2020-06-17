@@ -236,7 +236,7 @@ namespace server
 						#endregion
 
 					}
-					else if (thisUser.hp > 0)
+					else if (thisUser.hp <= 0)
 					{
 						#region Death
 

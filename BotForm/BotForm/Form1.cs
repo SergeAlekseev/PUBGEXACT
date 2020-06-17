@@ -1,11 +1,5 @@
-﻿
-
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
+﻿using System;
 using System.Windows.Forms;
-using Timer = System.Timers.Timer;
 
 namespace BotForm
 {
@@ -21,7 +15,7 @@ namespace BotForm
 			password.Text = "111";
 
 			bot = new BotImpl();
-			button1_Click(null, null);
+			startBot(null, null);
 		}
 
 		public Form1()
@@ -30,7 +24,7 @@ namespace BotForm
 			bot = new BotImpl();
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void startBot(object sender, EventArgs e)
 		{
 			try
 			{

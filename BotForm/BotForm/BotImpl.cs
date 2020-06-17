@@ -1,7 +1,5 @@
 using BotLibrary;
-
 using System.Drawing;
-
 using ClassLibrary;
 using System.Linq;
 using ClassLibrary.ProcessingsServer;
@@ -64,9 +62,9 @@ namespace BotForm
 
 					else if (!isReload)
 					{
+						isReload = true;
 						shotOff();
 						rechange();
-						isReload = true;
 					}
 				}
 				else
@@ -75,16 +73,6 @@ namespace BotForm
 				}
 			}
 
-		}
-
-		private bool inBox(Point botLocation, List<Box> boxes)
-		{
-			foreach(Box box in boxes)
-			{
-				if ((botLocation.X > box.Location.X - 30 && botLocation.X < box.Location.X + 30) && (botLocation.Y > box.Location.Y - 30 && botLocation.Y < box.Location.Y + 30))
-					return true;
-			}
-			return false;
 		}
 
 		private static bool isGrenade(BotModel model)
