@@ -15,6 +15,7 @@ namespace ClassLibrary.ProcessingsServer
 		public override void Process(ModelServer Model)
 		{
 			this.Model = Model;
+			if(Model.ListUsers[num] != null)
 			Model.ListUsers[num].mouseLocation = mouse;
 		}
 	}

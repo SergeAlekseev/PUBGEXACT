@@ -1,12 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClassLibrary.ProcessingsServer
+﻿namespace ClassLibrary.ProcessingsServer
 {
 	public class GetPlayersAngels : ProcessingServer
 	{
@@ -15,8 +7,9 @@ namespace ClassLibrary.ProcessingsServer
 		public override void Process(ModelServer Model)
 		{
 			this.Model = Model;
-			Model.ListUsers[num].Rotate = angels;
-		
+			if (Model.ListUsers[num] != null)
+				Model.ListUsers[num].Rotate = angels;
+
 		}
 	}
 }

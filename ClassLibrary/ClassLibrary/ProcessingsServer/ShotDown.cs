@@ -98,14 +98,14 @@ namespace ClassLibrary.ProcessingsServer
 				bulletInfo.location.Y = (int)Y;
 				for (int j = 0; j < model.ListUsers.Count; j++)
 				{
-					if (model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9 && model.ListUsers[j].hp > 0)
+					if (model.ListUsers.Count != 0 && model.ListUsers[j] != null && Math.Abs(model.ListUsers[j].userLocation.X - X) <= 9 && Math.Abs(model.ListUsers[j].userLocation.Y - Y) <= 9 && model.ListUsers[j].hp > 0)
 					{
 
 						byte[] popad = new byte[1];
 						popad[0] = 6;
 						model.ListUsers[j].hp -= bulletInfo.damage;
 						flagBreak = true;
-						if (model.ListUsers[j] != null && model.ListUsers[j].hp <= 0)
+						if (model.ListUsers.Count != 0 && model.ListUsers[j] != null && model.ListUsers[j].hp <= 0)
 						{
 							Trace.WriteLine(Environment.NewLine + "============================================================================" + Environment.NewLine +
 							"Player " + model.ListUsers[j].Name + " died from " + bulletInfo.owner + Environment.NewLine +
@@ -115,18 +115,20 @@ namespace ClassLibrary.ProcessingsServer
 							SingalForDroping Signal = new SingalForDroping();
 							CTransfers.Writing(Signal, model.ListNs[j]);
 
-							await Task.Delay(600);
+							//await Task.Delay(600);
+							Thread.Sleep(600);
 							
 							foreach (GeneralInfo g in model.ListGInfo)
 							{
-								if (model.ListUsers[j] != null && g.Name == model.ListUsers[j].Name)
+								if (model.ListUsers.Count != 0 && model.ListUsers[j] != null && g.Name == model.ListUsers[j].Name)
 									g.Dies += 1;
-								if (model.ListUsers[j] != null && g.Name == bulletInfo.owner)
+								if (model.ListUsers.Count != 0 && model.ListUsers[j] != null && g.Name == bulletInfo.owner)
 									g.Kills += 1;
 							}
 
 							GetKillsInfo kill = new GetKillsInfo();
 							kill.kill.killer = bulletInfo.owner;
+							if(model.ListUsers.Count != 0 && model.ListUsers[j] != null)
 							kill.kill.dead = model.ListUsers[j].Name;
 
 							for (int k = 0; k < model.ListUsers.Count; k++)
@@ -141,6 +143,7 @@ namespace ClassLibrary.ProcessingsServer
 
 							PlayerDeath pd = new PlayerDeath();
 							pd.Killer = bulletInfo.owner;
+							if (model.ListNs.Count != 0 && model.ListNs[j] != null)
 							CTransfers.Writing(pd, model.ListNs[j]);
 						//	model.ListNs.RemoveAt(j); //////////////////////////////////////////////////////
 						}

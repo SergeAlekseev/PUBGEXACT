@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotForm", "BotForm\BotForm.csproj", "{47FD9C70-87AD-4B37-B60A-0A0723009630}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotLibrary", "..\BotLibrary\BotLibrary.csproj", "{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotLibrary", "..\BotLibrary\BotLibrary.csproj", "{29B0D1D5-18D2-44BB-B97C-7CEA1A966A0B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "..\ClassLibrary\ClassLibrary\ClassLibrary.csproj", "{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}"
 EndProject
@@ -19,10 +19,10 @@ Global
 		{47FD9C70-87AD-4B37-B60A-0A0723009630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47FD9C70-87AD-4B37-B60A-0A0723009630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47FD9C70-87AD-4B37-B60A-0A0723009630}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29B0D1D5-18D2-44BB-B97C-7CEA1A966A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29B0D1D5-18D2-44BB-B97C-7CEA1A966A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29B0D1D5-18D2-44BB-B97C-7CEA1A966A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29B0D1D5-18D2-44BB-B97C-7CEA1A966A0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU

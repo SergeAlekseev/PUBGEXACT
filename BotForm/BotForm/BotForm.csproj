@@ -86,11 +86,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\BotLibrary\BotLibrary.csproj">
-      <Project>{7834F7A4-5C5C-4F7A-8B7C-A3A4431972E2}</Project>
+      <Project>{29b0d1d5-18d2-44bb-b97c-7cea1a966a0b}</Project>
       <Name>BotLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ClassLibrary\ClassLibrary\ClassLibrary.csproj">
-      <Project>{013AC4C5-74D5-44D7-A4DB-4D4289FAE6B7}</Project>
+      <Project>{013ac4c5-74d5-44d7-a4db-4d4289fae6b7}</Project>
       <Name>ClassLibrary</Name>
     </ProjectReference>
   </ItemGroup>
